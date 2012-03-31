@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="download.html"><img src="images/icon-down.png"/>Download</a></li>
+      <li><a href="source.html"><img src="images/icon_code.png"/>Source</a></li>
+      <li><a href="documentation.html"><img src="images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="faq.html"><img src="images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="contact.html"><img src="images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding">
+    <h2>Tengine, goes to open source</h2><br/>
+    <p>We're glad to announce that <a href="http://tengine.taobao.org" target="_blank">Tengine</a>, our hacked-up version of Nginx at Taobao now becomes an open source project. </p>
+    <p><a href="http://www.taobao.com" target="_blank">Taobao</a> is the largest e-commerce website in Asia and ranked #12 on Alexa’s top global sites list. Our website serves billions of pageviews per day. For busy website as us, Nginx is obviously the best choice. Thanks to Nginx's high performance, small footprint and flexibility, we have done more with less. </p>
+    <p>We first learned the Nginx internals by using it as a traditional web server and developing dozens of modules. Then from June of this year we started hacking the Nginx core to expand its capabilities. As some of the features we have developed may also benefit other Nginx users and websites, so why not open source them? We do not want to be just open source software users, but also open source contributors. That's why the Tengine open source project came out.</p>
+    <p>Tengine is based on the latest stable version of Nginx (Nginx-1.0.10). Here are a few features and bug fixes you may be interested in Tengine:</p>
+    <ul>
+      <li>Logging enhancement. It supports syslog (local and remote) and pipe logging. You can also do log sampling, i.e. not all requests have to be written.</li>
+      <li>Protects the server when the system load and memory use goes high.</li>
+      <li>Combines multiple CSS or JavasScript requests into one request to reduce the downloading time.</li>
+      <li>Sets the worker process number and CPU affinities automatically. Setting Nginx's worker_cpu_affinity is not a pain any more.</li>
+      <li>Enhanced limit_req module with whitelist support and more limit_req directives in one location.</li>
+      <li>More operations engineer friendly server information, so host can be located easily when error happens.</li>
+      <li>More command lines support. You can list all modules compiled in and the directives supported, even the content of configuration file itself.</li>
+      <li>Set expiration for files according to specific content type.</li>
+      <li>Error pages can be set back to 'default'.</li>
+      <li>...</li>
+    </ul>
+    <p>Basically, Tengine can be considered as a better or superset of Nginx. You can download the tar ball here:</p>
+    <p><a href="http://tengine.taobao.org/download/tengine.tar.gz">http://tengine.taobao.org/download/tengine.tar.gz</a></p>
+    <p>We want to say thank you to the Nginx team, especially to Igor. Thank you very much for your great work! We would love to donate the patches against the Nginx-1.1 branch later if you think the patches are okay.</p>
+    <p>Frankly, I'm not sure whether the features in Tengine right now can impress you guys or not. It's the first step we moving towards open source after all. We have built a team working on Tengine and have quite a long to-do list. I promise you more enhancements are coming out.</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

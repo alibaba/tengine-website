@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="download_cn.html"><img src="images/icon-down.png"/>下载</a></li>
+      <li><a href="source_cn.html"><img src="images/icon_code.png"/>源码</a></li>
+      <li><a href="documentation_cn.html"><img src="images/icon-doc.png"/>文档</a></li>
+      <li><a href="faq_cn.html"><img src="images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="contact_cn.html"><img src="images/icon-contact.png"/>联系我们</a></li>
+	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div id="faq" class="one_col more_padding">
+    <h2>FAQ</h2><br/>
+    <ul>
+      <li>
+        <p>问：Tengine的名字来由是什么？</p>
+        <p>答：因为Tengine所基于开发的Nginx的意思是Engine-X。Tengine在淘宝开发，所以我们把Engine-X中的X替换成Taobao。Tengine即Taobao-Engine，再进一步简写，就是Tengine。它可以念成tee-engine，或者ten-gine。</p>
+      </li>
+      <li>
+        <p>问：Tengine采用什么开源协议？</p>
+        <p>答：和Nginx本身一样的类BSD协议。我们充分尊重Nginx的作者Igor Sysoev和他的工作成果，也严格遵守Nginx的协议。</p>
+      </li>
+      <li>
+        <p>问：Tengine为什么不直接提交到Nginx官方，而是重新取了一个名字？</p>
+        <p>答：正如Tengine的开源公告中所说的那样，我们会在接下来的时间尽最大的努力提交我们的patch给Nginx官方。但考虑到Nginx以往的发展历史（patch比较难被接受），而且其中我们开发的“syslog/pipe支持”等功能就是Nginx作者明确拒绝纳入的功能。但是我们确实需要一个开源渠道。无论我们的patch会不会被接受，我们把自己在Nginx开发上的工作开源出来的决心不会变。</p>
+      </li>
+      <li>
+        <p>问：Tengine的开源看起来稍微有点仓促，为什么？</p>
+        <p>答：Tengine本来计划的开源时间是2012年，届时的功能和特色会比现在丰富得多。在今年12月初就提前开源的一个原因是我们要在<a href="http://velocity.oreilly.com.cn/2011/index.php?func=autobio&name=%E6%9C%B1%E7%85%A7%E8%BF%9C" target="_blank">Velocity</a>大会上介绍淘宝在Nginx的定制和开发上的一些工作。为了表示我们做技术分享的诚意，就把其中的一些成果提前开源了。</p>
+      </li>
+      <li>
+        <p>问：Tengine的文档为什么这么少？</p>
+        <p>答：原因同第4个，因为Tengine项目开源日期的提前。我们会在接下来的时间里完善现有功能的文档。</p>
+      </li>
+    </ul>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

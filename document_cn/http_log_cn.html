@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">ngx_http_log_module</div>
+    <div class="mod_intro">
+<p>扩展日志模块，提供syslog和pipe，以及日志采样。</p>
+<p>开启syslog日志功能需要在编译是添加参数<strong>--with-syslog</strong>，否则syslog不会生效。</p>
+<p>syslog模块兼容syslogd。使用syslog-ng需要修改配置文件以支持udp和unix-dgram，并屏蔽unix-stream：
+<pre>
+    source s_sys {
+        file ("/proc/kmsg" program_override("kernel: "));
+        unix-dgram ("/dev/log");
+        internal();
+        udp(ip(0.0.0.0) port(514));
+    };
+</pre>
+</p>
+    </div>
+    <div class="dh">指令</div>
+    <div class="directive">
+Syntax: <b>access_log</b> log_target [format [ratio=ratio [buffer=size]]] | off<br/>
+Default: access_log logs/access.log combined ratio=1<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+<p>
+同nginx原有access_log，各参数有固定顺序。
+<ul>
+<li>log_target<br/>
+兼容以前的log_file参数，并添加下面三种日志类型：
+<pre>
+    file:/path/to/file
+    syslog:facility[:loglevel:[target_ip[:target_port] | target_udgram_addr]]
+    "pipe:/path/to/exec parms"
+</pre>
+</li>
+<li>
+ratio<br/>
+在buffer参数前，指定tengine以固定的采样率记录日志。例如：ratio=0.0001，那么每经过10000条记录，tengine会记录一条。<br/>
+如果需要使用buffer参数而不需要设置日志采样，不能省略此参数，需要设置ratio=1。<br/>
+下面介绍下支持的三种log_target：
+<ul>
+<li>file<br/>
+与nginx的log_file对应的类型；
+</li>
+<li>syslog<br/>
+支持通过syslog方式记录日志；
+<pre>
+    facility := auth | authpriv | cron | daemon | ftp | kern | lpr | mail | mark | news | security | syslog
+              | user | uucp | local0 | local1 | local2 | local3 | local4 | local5 | local6 | local7
+
+    loglevel := crit | err | error | emerg | panic | alert | warn | warning | info | notice | debug
+    loglevel默认值 = info
+
+    target_ip[:target_port]：日志输出目的主机的IP地址和端口，端口默认是UDP(514)。这里syslog只支持UDP协议
+
+    target_udgram_addr：unix dgram地址，默认为Unix dgram(/dev/log)。这里syslog只支持UNIX DGRAM协议
+</pre>
+例如：
+<pre>
+    syslog:user::127.0.0.1           以user类型和info级别将日志发送给127.0.0.1:514的UDP端口
+    syslog:user:debug                以user类型和debug级别将日志发送给本机Unix dgram(/dev/log)
+    syslog:cron:debug:10.232.4.28    以cron类型和debug级别将日志发送到主机10.232.4.28:514的udp端口
+    syslog:auth:err:10.232.4.28:10   以auth类型和err级别将日志发送到主机10.232.4.28:10的udp端口
+</pre>
+</li>
+<li>pipe<br/>
+因为pipe命令行中含有空格的缘故，pipe需要使用双引号引用，命令行中的双引号需要转义。<br/>
+另外pipe进程的(user, group)遵循tengine指令user的配置，如果没有使用user指令配置的话，pipe进程将遵循tengine的默认用户设置，在编译时没有制定的情况下，默认设置是(nobody, nobody)。请注意给与pipe进程适当的权限。
+</li>
+</li>
+</ul>
+</p>
+    </div>
+    <div class="directive">
+Syntax: <b>error_log</b> log_target [debug | info | notice | warn | error | crit]<br/>
+Default: error_log logs/error.log<br/>
+Context: core, http, server, location
+    </div>
+    <div class="introduce"><p>为error_log增加syslog和pipe支持，使用同access_log。</p></div>
+    <div class="directive">
+Syntax: <b>syslog_retry_interval</b> seconds<br/>
+Default: syslog_retry_interval 1800<br/>
+Context: core
+    </div>
+    <div class="introduce"><p>建立连接失败后，下一次重试的时间间隔，单位：秒。</p></div>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

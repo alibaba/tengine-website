@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">ngx_http_ssl_module</div>
+    <div class="dh">指令</div>
+    <div class="directive">
+Syntax: <b>ssl_pass_phrase_dialog</b> [builtin | exec:/path/to/exec]<br/>
+Default: ssl_pass_phrase_dialog builtin<br/>
+Context: http, server
+    </div>
+    <div class="introduce">
+<p>
+设置tengine处理使用密钥加密的证书时，通过指定方式获取证书密钥。
+类似于apache指令：SSLPassPhraseDialog
+支持的参数：
+<ul>
+<li>builtin<br/>通过控制台交互方式获得密钥</li>
+<li>exec:/path/to/exec<br/>执行/path/to/exec，将其输出结果作为密钥</li>
+</ul>
+</p>
+    </div>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

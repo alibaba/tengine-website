@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="download.html"><img src="images/icon-down.png"/>Download</a></li>
+      <li><a href="source.html"><img src="images/icon_code.png"/>Source</a></li>
+      <li><a href="documentation.html"><img src="images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="#"><img src="images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="contact.html"><img src="images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div id="changelog" class="one_col more_padding">
+    <h2>ChangeLog</h2>
+    <div class="hr"></div>
+    <ul><a name="1_2_4"></a><h4>Tengine-1.2.4 [30 Mar 2012]</h4>
+      <li>Feature: adds the user_agent module.</li>
+      <li>Feature: adds the 'log_escape' directive.</li>
+      <li>Change: merges changes between nginx-1.0.12 and nginx-1.0.14.</li>
+      <li>Bugfix: fixes a bug in the limit_req module.</li>
+      <li>Bugfix: fixes a bug in subrequest.</li>
+    </ul>
+    <ul><a name="1_2_3"></a><h4>Tengine-1.2.3 [27 Feb 2012]</h4>
+      <li>Feature: adds the 'request_time_cache' directive, to get more precise $request_time/$request_time_msec/$request_time_usec. </li>
+      <li>Feature: adds the 'slice' module to get a slice of a static file.</li>
+      <li>Change: merges changes between nginx-1.0.11 and nginx-1.0.12.</li>
+      <li>Change: deletes unused browsers detection.</li>
+      <li>Bugfix: fixes a bug in upstream when reading header.</li>
+      <li>Bugfix: fixes a bug in 'expires_by_types'.</li>
+    </ul>
+    <ul><a name="1_2_2"></a><h4>Tengine-1.2.2 [11 Jan 2012]</h4>
+      <li>Feature: adds input body filter mechanism. </li>
+      <li>Feature: adds SSL dialog support to mail module.</li>
+      <li>Change: merges changes between nginx-1.0.10 and nginx-1.0.11.</li>
+      <li>Change: now 'lingering_close' is off by default.</li>
+      <li>Bugfix: fixes the bug with pipe logs.</li>
+      <li>Bugfix: fixes the 'forbid_action' bug of limit_req module.</li>
+      <li>Bugfix: fixes the 'backtrace_max_stack_size' bug.</li>
+      <li>Bugfix: fixes the footer module bug when output body is empty.</li>
+      <li>Bugfix: fixes the last hostname letter bug of syslog.</li>
+    </ul>
+
+    <ul><a name="1_2_1"></a><h4>Tengine-1.2.1 [06 Dev 2011]</h4>
+      <li>Bugfix: fixes the segmentation fault in case of using default error log<br>
+       or access log of tengine. This bug was introduced by creating file<br>
+       doesn't exist.</li>
+    </ul>
+
+    <ul><a name="1_2_0"></a><h4>Tengine-1.2.0 [29 Nov 2011]</h4>
+      <li>The first public release.</li>
+      <li>Feature: adds syslog support to error_log and access_log.</li>
+      <li>Feature: adds pipe support to error_log and access_log.</li>
+      <li>Feature: adds realloc() APIs.</li>
+      <li>Feature: supports more time specific variables.</li>
+      <li>Feature: the backtrace module.</li>
+      <li>Feature: add whitelist to limit_req and more limit_req directives<br>
+       are allowed in a location.</li>
+      <li>Feature: the sysguard module.</li>
+      <li>Change: suppresses warnings when dumping config contents.</li>
+      <li>Feature: adds two new APIs, ngx_http_header_in and ngx_http_header_out.</li>
+      <li>Feature: adds two variables, $request_time_msec and $request_time_usec.</li>
+      <li>Feature: the module ngx_http_footer_filter_module.</li>
+      <li>Feature: adds variable $conn_requests which is similar %K in Apache.</li>
+      <li>Feature: adds variable $host_comment to show hostnames and time.</li>
+      <li>Bugfix: fixes $sent_http_connection and $sent_http_keep_alive.</li>
+      <li>Feature: adds 'ratio' parameter to access_log so now access log can be<br>
+       sampled.</li>
+      <li>Bugfix: fixes the file in open_file_cache can't be updated.</li>
+      <li>Feature: adds the 'server_info' and 'server_admin' directives to show<br>
+       more information when 4xx/5xx errors encountered.</li>
+      <li>Feature: adds the '-d' option to dump content of configuration file.</li>
+      <li>Change: 'msie_padding' is now turned off by default.</li>
+      <li>Bugfix: fixes the bug when subrequest_in_memory and upstream keepalive<br>
+       being used.</li>
+      <li>Feature: adds the 'expires_by_types' directive.</li>
+      <li>Feature: adds the '-l' option to list all supported directives.</li>
+      <li>Feature: adds the ngx_atoll() API, which can convert a string to a long<br>
+       long integer (64 bits).</li>
+      <li>Feature: now status lines (302, 405) are RFC-2616 compatibale.</li>
+      <li>Feature: now ngx_escape_uri/ngx_unescape_uri supports encoding/decoding<br>
+       style of Java and PHP.</li>
+      <li>Feature: now config files included are sorted.</li>
+      <li>Feature: error_page now supports default error page (nginx).</li>
+      <li>Bugfix: error_page directive can't detect duplicate codes and inherited<br>
+       correctly.</li>
+      <li>Feature: add response time statistics to the stub_status module.</li>
+      <li>Feature: the "server_tag" directive.</li>
+      <li>Feature: now the "worker_processes" supports "auto" parameter, which<br>
+       sets the worker process numbers to the cores automatically.</li>
+      <li>Feature: now the "worker_cpu_affinity" supports "auto" parameter,<br>
+       which binds the worker processes to the cores automatically.</li>
+      <li>Feature: the "ssl_pass_phrase_dialog" directive.</li>
+      <li>Feature: adds "-s start" option.</li>
+      <li>Feature: adds "-m" option to list all compiled in modules.</li>
+      <li>Bugfix: a segmentation fault might occur in FastCGI module, while<br>
+       processing duplicated HTTP headers; the bug had appeared in 0.8.40.</li>
+      <li>Bugfix: "worker_cpu_affinity" might be wrong.</li>
+    </ul>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

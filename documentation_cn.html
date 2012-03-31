@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu_cn">
+    <ul>
+      <li><a href="download_cn.html"><img src="images/icon-down.png"/>下载</a></li>
+      <li><a href="source_cn.html"><img src="images/icon_code.png"/>源码</a></li>
+      <li><a href="documentation_cn.html"><img src="images/icon-doc.png"/>文档</a></li>
+      <li><a href="faq_cn.html"><img src="images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="contact_cn.html"><img src="images/icon-contact.png"/>联系我们</a></li>
+	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding">
+    <h2>文档</h2>
+    <div class="hr"></div>
+    
+    <h3>资料下载</h3>
+      <li><a href="download/nginx@taobao.pdf">淘宝网Nginx定制开发实战（Velocity China 2011）</a><br/>
+   
+    <p />
+    <h3>模块文档</h3>
+      <li><a href="document_cn/core_cn.html">主功能</a></li>
+      <li><a href="document_cn/http_backtrace_cn.html">backtrace模块功能</a></li>
+      <li><a href="document_cn/http_headers_cn.html">headers模块功能</a></li>
+      <li><a href="document_cn/http_log_cn.html">log模块功能</a></li>
+      <li><a href="document_cn/http_ssl_cn.html">ssl模块功能</a></li>
+      <li><a href="document_cn/http_stub_status_cn.html">stub_status模块功能</a></li>
+      <li><a href="document_cn/http_sysguard_cn.html">sysguard模块功能</a></li>
+      <li><a href="document_cn/http_limit_req_cn.html">limit_req模块功能</a></li>
+      <li><a href="document_cn/http_footer_filter_cn.html">footer filter模块功能</a></li>
+      <li><a href="document_cn/variables_cn.html">变量</a></li>
+    <h3>开发文档</h3>
+      <li><a href="http://blog.zhuzhaoyuan.com/2012/01/a-mechanism-to-help-write-web-application-firewalls-for-nginx/">使用input filter开发应用</a>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

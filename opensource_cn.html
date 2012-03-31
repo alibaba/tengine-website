@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu_cn">
+    <ul>
+      <li><a href="download_cn.html"><img src="images/icon-down.png"/>下载</a></li>
+      <li><a href="source_cn.html"><img src="images/icon_code.png"/>源码</a></li>
+      <li><a href="documentation_cn.html"><img src="images/icon-doc.png"/>文档</a></li>
+      <li><a href="faq_cn.html"><img src="images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="contact_cn.html"><img src="images/icon-contact.png"/>联系我们</a></li>
+	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding">
+    <h2>淘宝Web服务器Tengine正式开源</h2><br/>
+    <p>我们很高兴的宣布由淘宝网核心系统部开发的<a href="http://tengine.taobao.org" target="_blank">Tengine</a>服务器终于正式开源了。</p>
+    <p><a href="http://www.taobao.com" target="_blank">淘宝网</a>是亚洲最大的电子商务网站，Alexa全球排名第12位。每天访问淘宝网的PV超过了几十亿。大压力的访问，对淘宝网的Web服务器提出了严苛的要求。经过一系列的对比，我们最终选择了Nginx作为我们的Web服务器，因为它性能高，又非常节省资源（CPU和内存），并且有足够的灵活性。</p>
+    <p>一开始我们使用Nginx还仅仅用它来处理静态文件、PHP等，接着我们又在Nginx上开发了几十个各种用途的模块。随着对Nginx的越来越了解，我们发现它本身已经不能够完全满足我们的需求了，所以我们就开始对Nginx核心进行定制和开发。考虑到我们开发的功能中的一些对其它的互联网用户也可能有用处，所以我们就想到了把这些公用的功能开源出来。淘宝网是开源软件的用户和受益者，我们也想成为开源软件的贡献者。这就是我们决定开源Tengine的原因。</p>
+    <p>Tengine基于最新的Nginx稳定版（Nginx-1.0.10），在它的基础上开发了一些功能和做了一些bug修复，比如：</p>
+    <ul>
+      <li>组合多个CSS、JavaScript文件的访问请求变成一个请求；</li>
+      <li>支持管道和syslog形式的日志和抽样；</li>
+      <li>自动根据CPU数目设置亲缘性；</li>
+      <li>监控系统的负载和资源占用从而对系统进行保护；</li>
+      <li>显示对运维人员更友好的出错信息，便于定位出错机器；</li>
+      <li>更强大的访问速度限制模块；</li>
+      <li>backtrace模块，程序崩溃的时候可以显示出错的调用栈；</li>
+      <li>根据文件类型设置过期时间；</li>
+      <li>...</li>
+    </ul>
+    <p>基本上，Tengine可以被看作一个更好的Nginx，或者是Nginx的超集。可以在这里下载：</p>
+    <p><a href="http://tengine.taobao.org/download/tengine.tar.gz">http://tengine.taobao.org/download/tengine.tar.gz</a></p>
+    <p>在这里，我们想向Nginx团队致谢，尤其感谢Nginx的作者Igor Sysoev的伟大工作。我们也很乐意并在接下来的时间里将我们的工作成果捐献给Nginx官方。</p>
+    <p>坦率的讲，现在Tengine的特性还不够多，但这是我们将我们在Nginx上的工作推向开源的第一步。我们已经围绕Tengine组建了一个团队，而且内部还有一个很长的计划列表。Tengine开源不是项目开发的结束，而是开发的开始。相信接下来大家会看到我们在Tengine上的更多工作进展。</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

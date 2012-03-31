@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">ngx_http_headers_module</div>
+    <div class="mod_intro"><p>
+在nginx本身原有的设置过期时间的基础上，增加了expires_by_types指令，用于根据Content-Type来设置过期时间。<br/>
+原有的功能介绍看<a href="http://wiki.nginx.org/HttpHeadersModule" target="_blank">这里</a>。
+<pre class="mod_example">
+    expires_by_types       24h text/html;
+    expires_by_types       modified +24h text/xml;
+    expires_by_types       @15h30m text/xml;
+    expires_by_types       0 text/xml;
+    expires_by_types       -1 text/xml;
+    expires_by_types       epoch text/xml;
+</pre></p>
+    </div>
+    <div class="dh">指令</div>
+    <div class="directive">
+Syntax: expires_by_types [[modified] time | @time-of-day | epoch | max | off] content-type1<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[content-type2] [content-type3] ...<br/>
+Default: -<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+<p>该指令配置过期时间及其对应的content-type。过期时间的配置可参考expires的配置。在配置时间之后，可加上一到多个content-type。</p>
+<p>注意，在即有expires也有expires_by_types出现时，规则如下：
+<ul>
+<li>在同一级别中，如果同时出现expires与expires_by_type时，出现在expires_by_type中的content-type会优先选择expires_by_types中配置的，而没有出现在content-type中的，会选择expires中配置的；</li>
+<li>当本级别与上一级别都没有配置expires off时，expires与expires_by_types当本级别没有配置时分配继承上一级别的配置信息，然后再按照规则一执行；</li>
+<li>当本级别配置有expires off时，此时模块会忽略expires_by_types的所有配置，并禁用掉expires；</li>
+<li>当本级别没有配置expires，而上一级别有配置expires off时，本级别的expires_by_types将不受上一级别的expires的影响。</li>
+</ul>
+如：
+<pre>
+    location /url {
+        expires                10s;
+        expires_by_types       24s text/html;
+    }
+</pre>
+此时，/url下面的文档，text/html类型的会返回24s的过期时间，而其它类型的会返回10s的过期时间。
+<pre>
+    expires                    10s;
+    expires_by_types           24s text/html;
+
+    location /url {
+        expires_by_types       20s text/rss;
+    }
+</pre>
+此时，/url下面的文档，text/rss类型的会返回20s的过期时间，而其它类型的会返回10s的过期时间。因为location里面的expires_by_types将上层的expires_by_types覆盖了。而expires 10s则被继承了下来。
+<pre>
+    expires                    10s;
+    expires_by_types           24s text/html;
+
+    location /url {
+        expires off;
+        expires_by_types       20s text/rss;
+    }
+</pre>
+此时，/url下面的所有文档，都不会有过期时间。
+<pre>
+    expires off;
+    expires_by_types           24s text/html;
+
+    location /url {
+        expires_by_types       20s text/rss;
+    }
+</pre>
+此时，/url下面的文档，text/rss类型的会返回20s的过期时间，其它类型的没有过期时间。注意，expires off不会继承过来。
+</p>
+    </div>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

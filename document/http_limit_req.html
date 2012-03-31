@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="#"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">ngx_http_limit_req_module</div>
+    <div class="dh">Directive</div>
+    <div class="directive">
+Syntax: <b>limit_req_log_level</b> info | notice | warn | error<br/>
+Default: limit_req_log_level warn<br/>
+Context: http
+    </div>
+    <div class="introduce">
+<p>The same as the Nginx's <a href="http://wiki.nginx.org/HttpLimitReqModule#limit_req_log_level">limit_req_log_level</a></p>
+    </div>
+    <div class="directive">
+Syntax: <b>limit_req_zone</b> $session_variable1 $session_variable2 ... zone=name_of_zone:size rate=rate<br/>
+Default: none<br/>
+Context: http
+    </div>
+    <div class="introduce">
+<p>
+It's similar to the Nginx, while Tengine can support several limit variables and limit_req_zone directives in one block. For example:
+<pre>
+    limit_req_zone $binary_remote_addr zone=one:3m rate=1r/s;
+    limit_req_zone $binary_remote_addr $uri zone=two:3m rate=1r/s;
+    limit_req_zone $binary_remote_addr $request_uri zone=thre:3m rate=1r/s;
+</pre>
+The above second directive means the request from the same remote ip and uri will be limited to one request per second.
+</p>
+    </div>
+    <div class="directive">
+Syntax: <b>limit_req</b> [on | off] | zone=zone_name burst=burst [forbid_action=action] [nodelay]<br/>
+Default: none<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+<p>The parameter of 'zone', 'burst' and 'nodelay' are the same meaning as the original limit_req moduel.</p>
+<p>You can turn this directive on or off, default is on. This module support multiple directives in a block. If there are multiple limit_req directives, all the limit directives are executed in order. If the first limitation is exceeded, the first limit action will be triggered.</p>
+<p>forbid_action means the action to do when some limit conditions are triggered. It can be the name of location, default action is 503. For example:
+<pre>
+    limit_req_zone $binary_remote_addr zone=one:3m rate=1r/s;
+    limit_req_zone $binary_remote_addr $uri zone=two:3m rate=1r/s;
+    limit_req_zone $binary_remote_addr $request_uri zone=three:3m rate=1r/s;
+
+    location / {
+        limit_req zone=one burst=5;
+        limit_req zone=two forbid_action=@test1;
+        limit_req zone=three burst=3 forbid_action=@test2;
+    }
+
+    location /off {
+        limit_req off;
+    }
+
+    location @test1 {
+        rewrite ^ /test1.html;
+    }
+
+    location @test2 {
+        rewrite ^  /test2.html;
+    }
+</pre>
+</p>
+    </div>
+    <div class="directive">
+Syntax: <b>limit_req_whitelist</b> geo_var_name=var_name geo_var_value=var_value<br/>
+Default: none<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+<p>
+It means the whitelist. This directive needs work with geo module, the 'geo_var_name' is the variable name which is specified in geo module, 'geo_var_value' is the variable value. For example: 
+<pre>
+    geo $white_ip {
+        ranges;
+        default 0;
+        127.0.0.1-127.0.0.255 1;
+    }
+
+    limit_req_whitelist geo_var_name=white_ip geo_var_value=1;
+</pre>
+It means the ip from the range of 127.0.0.1 to 127.0.0.255 will be ignored by the 'limit_req' directive.
+</p>
+    </div>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
