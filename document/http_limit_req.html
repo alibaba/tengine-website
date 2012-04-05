@@ -55,7 +55,7 @@
       <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
       <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
       <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
-      <li><a href="#"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
       <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
 	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
     </ul>
@@ -64,15 +64,8 @@
   <div class="clear"></div>
   <div class="one_col more_padding font16">
     <div class="module">ngx_http_limit_req_module</div>
-    <div class="dh">Directive</div>
-    <div class="directive">
-Syntax: <b>limit_req_log_level</b> info | notice | warn | error<br/>
-Default: limit_req_log_level warn<br/>
-Context: http
-    </div>
-    <div class="introduce">
-<p>The same as the Nginx's <a href="http://wiki.nginx.org/HttpLimitReqModule#limit_req_log_level">limit_req_log_level</a></p>
-    </div>
+This is the enhanced version of nginx's limit_req module with white list support, and more limit conditions are allowed in a single location.
+    <div class="dh">Directives</div>
     <div class="directive">
 Syntax: <b>limit_req_zone</b> $session_variable1 $session_variable2 ... zone=name_of_zone:size rate=rate<br/>
 Default: none<br/>
@@ -80,13 +73,12 @@ Context: http
     </div>
     <div class="introduce">
 <p>
-It's similar to the Nginx, while Tengine can support several limit variables and limit_req_zone directives in one block. For example:
-<pre>
-    limit_req_zone $binary_remote_addr zone=one:3m rate=1r/s;
-    limit_req_zone $binary_remote_addr $uri zone=two:3m rate=1r/s;
-    limit_req_zone $binary_remote_addr $request_uri zone=thre:3m rate=1r/s;
+Support more than one limit variables. For example:
+<pre class="mod_example">
+limit_req_zone $binary_remote_addr $uri zone=one:3m rate=1r/s;
+limit_req_zone $binary_remote_addr $request_uri zone=two:3m rate=1r/s;
 </pre>
-The above second directive means the request from the same remote ip and uri will be limited to one request per second.
+The last line of the above example indicates a client can access a specific URI only once in a second.
 </p>
     </div>
     <div class="directive">
@@ -95,31 +87,33 @@ Default: none<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
-<p>The parameter of 'zone', 'burst' and 'nodelay' are the same meaning as the original limit_req moduel.</p>
-<p>You can turn this directive on or off, default is on. This module support multiple directives in a block. If there are multiple limit_req directives, all the limit directives are executed in order. If the first limitation is exceeded, the first limit action will be triggered.</p>
-<p>forbid_action means the action to do when some limit conditions are triggered. It can be the name of location, default action is 503. For example:
-<pre>
-    limit_req_zone $binary_remote_addr zone=one:3m rate=1r/s;
-    limit_req_zone $binary_remote_addr $uri zone=two:3m rate=1r/s;
-    limit_req_zone $binary_remote_addr $request_uri zone=three:3m rate=1r/s;
+Multiple limit conditions are allowed in a single block. And all the conditions are examined in order.<p/>
+You can turn this directive on or off (default is on).<p/>
+'forbid_action' specifies the action URL to redirect. It can be a named location. By default, tengine will return 503.<br/>
+For example:
 
-    location / {
-        limit_req zone=one burst=5;
-        limit_req zone=two forbid_action=@test1;
-        limit_req zone=three burst=3 forbid_action=@test2;
-    }
+<pre class="mod_example">
+limit_req_zone $binary_remote_addr zone=one:3m rate=1r/s;
+limit_req_zone $binary_remote_addr $uri zone=two:3m rate=1r/s;
+limit_req_zone $binary_remote_addr $request_uri zone=three:3m rate=1r/s;
 
-    location /off {
-        limit_req off;
-    }
+location / {
+&nbsp;&nbsp;&nbsp;&nbsp;limit_req zone=one burst=5;
+&nbsp;&nbsp;&nbsp;&nbsp;limit_req zone=two forbid_action=@test1;
+&nbsp;&nbsp;&nbsp;&nbsp;limit_req zone=three burst=3 forbid_action=@test2;
+}
 
-    location @test1 {
-        rewrite ^ /test1.html;
-    }
+location /off {
+&nbsp;&nbsp;&nbsp;&nbsp;limit_req off;
+}
 
-    location @test2 {
-        rewrite ^  /test2.html;
-    }
+location @test1 {
+&nbsp;&nbsp;&nbsp;&nbsp;rewrite ^ /test1.html;
+}
+
+location @test2 {
+&nbsp;&nbsp;&nbsp;&nbsp;rewrite ^  /test2.html;
+}
 </pre>
 </p>
     </div>
@@ -130,17 +124,18 @@ Context: http, server, location
     </div>
     <div class="introduce">
 <p>
-It means the whitelist. This directive needs work with geo module, the 'geo_var_name' is the variable name which is specified in geo module, 'geo_var_value' is the variable value. For example: 
-<pre>
-    geo $white_ip {
-        ranges;
-        default 0;
-        127.0.0.1-127.0.0.255 1;
-    }
+Set the whitelist.<p/>
+This directive needs work with the geo module. The 'geo_var_name' is the variable name declared in the geo module, 'geo_var_value' is its value. For example: 
+<pre class="mod_example">
+geo $white_ip {
+&nbsp;&nbsp;&nbsp;&nbsp;ranges;
+&nbsp;&nbsp;&nbsp;&nbsp;default 0;
+&nbsp;&nbsp;&nbsp;&nbsp;127.0.0.1-127.0.0.255 1;
+}
 
-    limit_req_whitelist geo_var_name=white_ip geo_var_value=1;
+limit_req_whitelist geo_var_name=white_ip geo_var_value=1;
 </pre>
-It means the ip from the range of 127.0.0.1 to 127.0.0.255 will be ignored by the 'limit_req' directive.
+It means requests from IP (127.0.0.1 to 127.0.0.255) will be considered safe and let pass.
 </p>
     </div>
   </div>

@@ -55,7 +55,7 @@
       <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
       <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
       <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
-      <li><a href="#"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
       <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
 	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
     </ul>
@@ -65,20 +65,12 @@
   <div class="one_col more_padding font16">
     <div class="module">ngx_http_log_module</div>
     <div class="mod_intro">
-<p>We enhanced the log module, while we add the support of syslog, pipe, and log sampling. </p>
-<p>To enable this feature, you should add the configure argument <strong>--with-syslog</strong></p>
-<p>The syslog module can work directly with syslogd. If you use syslog-ng, you need modify its configure file to support UDP and unix-dgram, and disable unix-stream. Here is an example of syslog-ng:
-<pre>
-    source s_sys {
-        file ("/proc/kmsg" program_override("kernel: "));
-        unix-dgram ("/dev/log");
-        internal();
-        udp(ip(0.0.0.0) port(514));
-    };
-</pre>
-</p>
+<p>Logging via syslog and pipe is supported in tengine. To use it, you should enable the syslog module first:<br/>
+./configure --with-syslog<br/>
+<p>The syslog module can talk directly to syslogd or syslog-ng.</p>
+Log sampling is also possible in tengine to reduce the count of log records.
     </div>
-    <div class="dh">Directive</div>
+    <div class="dh">Directives</div>
     <div class="directive">
 Syntax: <b>access_log</b> log_target [format [ratio=ratio [buffer=size]]] | off<br/>
 Default: access_log logs/access.log combined ratio=1<br/>
@@ -86,51 +78,61 @@ Context: http, server, location
     </div>
     <div class="introduce">
 <p>
-The same as nginx's original directive 'access_log', every parameter has a fixed order.
+Basically, you can use it as same as nginx's 'access_log'. Except for:
 <ul>
-<li>log_target<br/>
-It's compatible with former 'log_file' parameter. We add three new log media types:
-<pre>
-    file:/path/to/file
-    syslog:facility[:loglevel:[target_ip[:target_port] | target_udgram_addr]]
-    "pipe:/path/to/exec parms"
+<li>log_target</li>
+It's compatible with the log_file parameter, while three new log media types are supported:
+<pre  class="mod_example">
+file:/path/to/file
+syslog:facility[:loglevel:[target_ip[:target_port] | target_udgram_addr]]
+"pipe:/path/to/exec param1 param2"
 </pre>
-</li>
-<li>
-ratio<br/>
-It specify a sampling frequency for logging. For example, ratio=0.0001, it means tengine will only log once within every 10000 records.
-If you want to use the parameter of 'buffer', you can't omit this parameter. You should specify it explicitly, like ratio=1.<br/>
-There are three log_targets：
-<ul>
-<li>file<br/>
-The same meaning as the nginx 'log_file'.
-</li>
-<li>syslog<br/>
-support syslog to log your records. 
-<pre>
-    facility := auth | authpriv | cron | daemon | ftp | kern | lpr | mail | mark | news | security | syslog
-              | user | uucp | local0 | local1 | local2 | local3 | local4 | local5 | local6 | local7
-
-    loglevel := crit | err | error | emerg | panic | alert | warn | warning | info | notice | debug
-    default loglevel = info
-
-    target_ip[:target_port]: The log destination server ip and port, the default port is 514. It just supports the UDP protocol here.
-    target_udgram_addr：The address of unix dgram, the default address is "/dev/log". It just supports the UNIX DGRAM protocol.
+<ul/>
+<li>'file'<br/>
+Disk file, which is the same as the nginx's.</li>
+<li>'syslog'<br/>
+Support logging via syslog (UDP).</li>
+<pre class="mod_example">
+facility := auth | authpriv | cron | daemon | ftp | kern | lpr | mail | mark <br/>    | news | security | syslog | user | uucp | local0 | local1 | local2 <br/>    | local3 | local4 | local5 | local6 | local7<br/>
+loglevel := crit | err | error | emerg | panic | alert | warn | warning | <br/>    info | notice | debug
 </pre>
-For example:
-<pre>
-    syslog:user::127.0.0.1           set the UDP log packet to 127.0.0.1:514 with facility 'user' and level 'info'
-    syslog:user:debug                set the log packet to local Unix dgram(/dev/log) with facility 'user' and level 'debug'
-    syslog:cron:debug:10.232.4.28    set the UDP log packet to 10.232.4.28:514 with facility 'cron' and level 'debug'
-    syslog:auth:err:10.232.4.28:10   set the UDP log packet to 10.232.4.28:10 with facility 'auth' and 'err'
+The default loglevel is 'info'.
+<pre class="mod_example">
+target_ip[:target_port]
 </pre>
-</li>
-<li>pipe<br/>
-While there may be space in the command of 'pipe', the pipe name should be wrapped by double quotes. Double quotes in the command name should be escaped.<br/>
-The pipe's default privilege follows the configure in the directive of 'user'. If you don't specify the user name, and you don't set it in compiling time, the default user is nobody, default group is nobody too. You should note that and grant it proper authority.   
-</li>
-</li>
+The IP address and port of destination server. The default port is 514. And UDP is the only supported protocol.
+<pre class="mod_example">
+target_udgram_addr
+</pre>
+Specify the address of unix_dgram. The default address is "/dev/log". UNIX DGRAM is the only supported protocol.
+<p/>
+<p/>
+Here are a few examples:
+<pre class="mod_example">
+syslog:user::127.0.0.1
+</pre>
+Log to 127.0.0.1:514, with facility 'user' and level 'info'.
+<pre class="mod_example">
+syslog:user:debug
+</pre>
+Log to local Unix dgram(/dev/log) with facility 'user' and level 'debug'.
+<pre class="mod_example">
+syslog:cron:debug:10.232.4.28
+</pre>
+Log to 10.232.4.28:514 with facility 'cron' and level 'debug'.
+<pre class="mod_example">
+syslog:auth:err:10.232.4.28:10
+</pre>
+Log to 10.232.4.28:10 with facility 'auth' and level 'err'.<p/>
+<li>'pipe'</li>
+Since there may be space characters, the pipe name should be wrapped by quotes.<p/>
+The privilege of the pipe is the same the worker process (default user and group are 'nobody').   
+<p/>
 </ul>
+<li>ratio</li>
+Specify a sampling ratio.<p/>
+For example, ratio=0.0001, which means tengine will log only once in every 10000 records.<br/>
+This parameter must be explicitly specified, e.g. ratio=1, if you want to use the 'buffer' parameter.<p/><p/>
 </p>
     </div>
     <div class="directive">
@@ -139,14 +141,14 @@ Default: error_log logs/error.log<br/>
 Context: core, http, server, location
     </div>
     <div class="introduce">
-	<p>Add the support of syslog and pipe for 'error_log', it's similar with 'access_log'.</p>
+	<p>Syslog and pipe are also supported, which is similar to 'access_log'.</p>
 	</div>
     <div class="directive">
 Syntax: <b>syslog_retry_interval</b> seconds<br/>
 Default: syslog_retry_interval 1800<br/>
 Context: core
     </div>
-    <div class="introduce"><p>The retry interval when Nginx connects unsuccessfully to the remote syslog port. </p></div>
+    <div class="introduce"><p>The retry interval in case tengine fails to connect to the remote syslog server. </p></div>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
