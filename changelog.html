@@ -66,87 +66,87 @@
     <h2>ChangeLog</h2>
     <div class="hr"></div>
     <ul><a name="1_2_4"></a><h4>Tengine-1.2.4 [30 Mar 2012]</h4>
-      <li>Feature: adds the user_agent module.</li>
-      <li>Feature: adds the 'log_escape' directive.</li>
-      <li>Change: merges changes between nginx-1.0.12 and nginx-1.0.14.</li>
-      <li>Bugfix: fixes a bug in the limit_req module.</li>
-      <li>Bugfix: fixes a bug in subrequest.</li>
+      <li>Feature: added the user_agent module. (Junmin Xiong)</li>
+      <li>Feature: added the 'log_escape' directive. (agentzh, Yixiao)</li>
+      <li>Change: merged changes between nginx-1.0.12 and nginx-1.0.14. (Shudu)</li>
+      <li>Bugfix: fixed a bug in the limit_req module. (liseen.wan)</li>
+      <li>Bugfix: fixed a bug in subrequest. (Lizi)</li>
     </ul>
     <ul><a name="1_2_3"></a><h4>Tengine-1.2.3 [27 Feb 2012]</h4>
-      <li>Feature: adds the 'request_time_cache' directive, to get more precise $request_time/$request_time_msec/$request_time_usec. </li>
-      <li>Feature: adds the 'slice' module to get a slice of a static file.</li>
-      <li>Change: merges changes between nginx-1.0.11 and nginx-1.0.12.</li>
-      <li>Change: deletes unused browsers detection.</li>
-      <li>Bugfix: fixes a bug in upstream when reading header.</li>
-      <li>Bugfix: fixes a bug in 'expires_by_types'.</li>
+      <li>Feature: added the 'request_time_cache' directive to get more precise<br/>
+       $request_time/$request_time_msec/$request_time_usec. (Yuanzhuo)</li>
+      <li>Feature: added the slice module. (Shudu)</li>
+      <li>Change: merged changes between nginx-1.0.11 and nginx-1.0.12. (Shudu)</li>
+      <li>Change: deleted unused browsers detection. (Shudu)</li>
+      <li>Bugfix: fixed a bug in upstream when reading header. (Lizi)</li>
+      <li>Bugfix: fixed a bug in 'expires_by_types'. (Lizi)</li>
     </ul>
     <ul><a name="1_2_2"></a><h4>Tengine-1.2.2 [11 Jan 2012]</h4>
-      <li>Feature: adds input body filter mechanism. </li>
-      <li>Feature: adds SSL dialog support to mail module.</li>
-      <li>Change: merges changes between nginx-1.0.10 and nginx-1.0.11.</li>
-      <li>Change: now 'lingering_close' is off by default.</li>
-      <li>Bugfix: fixes the bug with pipe logs.</li>
-      <li>Bugfix: fixes the 'forbid_action' bug of limit_req module.</li>
-      <li>Bugfix: fixes the 'backtrace_max_stack_size' bug.</li>
-      <li>Bugfix: fixes the footer module bug when output body is empty.</li>
-      <li>Bugfix: fixes the last hostname letter bug of syslog.</li>
+      <li>Feature: added the input body filter mechanism. (Weiyue)</li>
+      <li>Feature: added SSL dialog support to the mail module. (Weiyue)</li>
+      <li>Change: merged changes between nginx-1.0.10 and nginx-1.0.11. (Shudu)</li>
+      <li>Change: turned 'lingering_close' off by default. (Shudu)</li>
+      <li>Bugfix: fixed a bug in pipe logs. (Weiyue)</li>
+      <li>Bugfix: fixed a 'forbid_action' bug in the limit_req module. (Diaoliang)</li>
+      <li>Bugfix: fixed a bug in 'backtrace_max_stack_size'. (Diaoliang)</li>
+      <li>Bugfix: fixed a bug in the footer module when output body is empty.<br/>
+       (Junmin Xiong)</li>
+      <li>Bugfix: fixed the last hostname letter omitted bug in syslog. (Weiyue)</li>
     </ul>
 
     <ul><a name="1_2_1"></a><h4>Tengine-1.2.1 [06 Dev 2011]</h4>
-      <li>Bugfix: fixes the segmentation fault in case of using default error log<br>
-       or access log of tengine. This bug was introduced by creating file<br>
-       doesn't exist.</li>
+      <li>Bugfix: fixed a segmentation fault bug when using default error log or access<br/>
+      log. (Yuanzhuo)</li>
     </ul>
 
     <ul><a name="1_2_0"></a><h4>Tengine-1.2.0 [29 Nov 2011]</h4>
       <li>The first public release.</li>
-      <li>Feature: adds syslog support to error_log and access_log.</li>
-      <li>Feature: adds pipe support to error_log and access_log.</li>
-      <li>Feature: adds realloc() APIs.</li>
-      <li>Feature: supports more time specific variables.</li>
-      <li>Feature: the backtrace module.</li>
-      <li>Feature: add whitelist to limit_req and more limit_req directives<br>
-       are allowed in a location.</li>
-      <li>Feature: the sysguard module.</li>
-      <li>Change: suppresses warnings when dumping config contents.</li>
-      <li>Feature: adds two new APIs, ngx_http_header_in and ngx_http_header_out.</li>
-      <li>Feature: adds two variables, $request_time_msec and $request_time_usec.</li>
-      <li>Feature: the module ngx_http_footer_filter_module.</li>
-      <li>Feature: adds variable $conn_requests which is similar %K in Apache.</li>
-      <li>Feature: adds variable $host_comment to show hostnames and time.</li>
-      <li>Bugfix: fixes $sent_http_connection and $sent_http_keep_alive.</li>
-      <li>Feature: adds 'ratio' parameter to access_log so now access log can be<br>
-       sampled.</li>
-      <li>Bugfix: fixes the file in open_file_cache can't be updated.</li>
-      <li>Feature: adds the 'server_info' and 'server_admin' directives to show<br>
-       more information when 4xx/5xx errors encountered.</li>
-      <li>Feature: adds the '-d' option to dump content of configuration file.</li>
-      <li>Change: 'msie_padding' is now turned off by default.</li>
-      <li>Bugfix: fixes the bug when subrequest_in_memory and upstream keepalive<br>
-       being used.</li>
-      <li>Feature: adds the 'expires_by_types' directive.</li>
-      <li>Feature: adds the '-l' option to list all supported directives.</li>
-      <li>Feature: adds the ngx_atoll() API, which can convert a string to a long<br>
-       long integer (64 bits).</li>
-      <li>Feature: now status lines (302, 405) are RFC-2616 compatibale.</li>
-      <li>Feature: now ngx_escape_uri/ngx_unescape_uri supports encoding/decoding<br>
-       style of Java and PHP.</li>
-      <li>Feature: now config files included are sorted.</li>
-      <li>Feature: error_page now supports default error page (nginx).</li>
-      <li>Bugfix: error_page directive can't detect duplicate codes and inherited<br>
-       correctly.</li>
-      <li>Feature: add response time statistics to the stub_status module.</li>
-      <li>Feature: the "server_tag" directive.</li>
-      <li>Feature: now the "worker_processes" supports "auto" parameter, which<br>
-       sets the worker process numbers to the cores automatically.</li>
-      <li>Feature: now the "worker_cpu_affinity" supports "auto" parameter,<br>
-       which binds the worker processes to the cores automatically.</li>
-      <li>Feature: the "ssl_pass_phrase_dialog" directive.</li>
-      <li>Feature: adds "-s start" option.</li>
-      <li>Feature: adds "-m" option to list all compiled in modules.</li>
-      <li>Bugfix: a segmentation fault might occur in FastCGI module, while<br>
-       processing duplicated HTTP headers; the bug had appeared in 0.8.40.</li>
-      <li>Bugfix: "worker_cpu_affinity" might be wrong.</li>
+      <li>Feature: added syslog support to error_log and access_log. (Weiyue)</li>
+      <li>Feature: added pipe support to error_log and access_log. (Weiyue)</li>
+      <li>Feature: added realloc() related APIs. (Gongyuan)</li>
+      <li>Feature: added time specific variables. (Yixiao)</li>
+      <li>Feature: added the backtrace module. (Diaoliang)</li>
+      <li>Feature: added whitelist support to the limit_req module. (Diaoliang)</li>
+      <li>Feature: now more limit_req directives are allowed in a single location. (Diaoliang)</li>
+      <li>Feature: added the sysguard module. (Lizi)</li>
+      <li>Feature: added two APIs, ngx_http_header_in and ngx_http_header_out. (Lizi)</li>
+      <li>Feature: added two variables, $request_time_msec and $request_time_usec. (Jinglong)</li>
+      <li>Feature: added the footer module. (Yunxing)</li>
+      <li>Feature: added the $conn_requests variable which is similar to Apache's '%K'. (Lieyuan)</li>
+      <li>Feature: added the $host_comment variable. (Yunxing)</li>
+      <li>Feature: added a 'ratio' parameter to access_log so now access log can <br/>be sampled. (Weiyue)</li>
+      <li>Feature: added the 'server_info' and 'server_admin' directives to show<br/>
+       more information when 4xx/5xx errors encountered. (Lieyuan)</li>
+      <li>Feature: added the '-d' command line option to dump contents of<br/>
+       the configuration files. (Piaoling)</li>
+      <li>Feature: added response time statistics to the stub_status module. (Jinglong)</li>
+      <li>Feature: added the 'server_tag' directive. (Shudu)</li>
+      <li>Feature: now the 'worker_processes' supports the 'auto' parameter, which<br/>
+       sets the worker process numbers to the cores automatically. (Weiyue)</li>
+      <li>Feature: now the 'worker_cpu_affinity' directive supports the 'auto'<br/>
+       parameter, which binds the worker processes to the cores automatically. (Weiyue)</li>
+      <li>Feature: added the 'ssl_pass_phrase_dialog' directive. (Weiyue)</li>
+      <li>Feature: added the '-s start' command line option. (Shudu)</li>
+      <li>Feature: added '-m' command line option to list all compiled-in modules. (Shudu)</li>
+      <li>Feature: added the 'expires_by_types' directive. (Lizi)</li>
+      <li>Feature: added the '-l' command line option to list all supported directives. (Junmin Xiong)</li>
+      <li>Feature: added the ngx_atoll() API, which can convert a string to a long<br/>
+       long integer (64 bits). (Lizi)</li>
+      <li>Feature: now status lines (302, 405) are RFC-2616 compatibale. (Shudu)</li>
+      <li>Feature: now ngx_escape_uri/ngx_unescape_uri supports encoding/decoding</br>
+       style of Java and PHP. (Shudu)</li>
+      <li>Feature: now configuration files included are sorted. (Shudu)</li>
+      <li>Feature: now 'error_page' can be reset to 'default' (Shudu)</li>
+      <li>Change: turned 'msie_padding' off by default. (Shudu)</li>
+      <li>Bugfix: fixed a bug when subrequest_in_memory and upstream keepalive<br/>
+       being used. (Lizi)</li>
+      <li>Bugfix: fixed a bug in $sent_http_connection and $sent_http_keep_alive. (Zhongsheng)</li>
+      <li>Bugfix: fixed a bug that error_page directive can't detect duplicate<br/>
+       codes and inherited correctly. (Shudu)</li>
+      <li>Bugfix: fixed a segmentation fault bug in the FastCGI module, while<br/>
+       processing duplicated HTTP headers. (Diaoliang)</li>
+      <li>Bugfix: fixed a bug that file in open_file_cache can't be updated. (Weiyue)</li>
+      <li>Bugfix: fixed a bug in 'worker_cpu_affinity'. (Weiyue)</li>
     </ul>
   </div>
 </div>
