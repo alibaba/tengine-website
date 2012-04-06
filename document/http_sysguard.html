@@ -100,7 +100,7 @@ Default: none<br/>
 Context: http, server
     </div>
     <div class="introduce"><p>Specify the load threshold. <p/>
-When the system load exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL.</p></div>
+When the system load exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL defined.</p></div>
     <div class="directive">
 Syntax: <b>sysguard_mem</b> swapratio=ratio% [action=/url]<br/>
 Default: none<br/>
@@ -114,7 +114,7 @@ Default: sysguard_interval 1s<br/>
 Context: http, server
     </div>
     <div class="introduce"><p>Specify the time interval to update your system information. <p/>
-The default value is 1 second, which means tengine updates the server status once a second.</p></div>
+The default value is one second, which means tengine updates the server status once a second.</p></div>
     <div class="directive">
 Syntax: <b>sysguard_log_level</b> [info | notice | warn | error]<br/>
 Default: sysguard_log_level error<br/>
