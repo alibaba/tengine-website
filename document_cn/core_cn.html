@@ -114,6 +114,16 @@ Default: msie_padding off<br/>
 Context: http, server, location
     </div>
     <div class="introduce"><p>此指令关闭或开启MSIE浏览器的msie_padding特性，若启用选项，nginx会为response头部填满512字节，这样就阻止了相关浏览器会激活友好错误界面，因此不会隐藏更多的错误信息。Tengine中默认关闭此功能。</p></div>
+    <div class="directive">
+Syntax: <b>request_time_cache</b> [on | off]<br/>
+Default: request_time_cache on<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+      <p>设置成'off'时，tengine将不使用时间缓存，$request_time、$request_time_msec和$request_time_usec将会得到更精确的时间。
+      </p>
+    </div>
+
   </div>
 </div>
 <div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
