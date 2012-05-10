@@ -65,6 +65,14 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="1_2_5"></a><h4>Tengine-1.2.5 [2012-05-09]</h4>
+      <li>Feature：增加upstream_check模块，对后端服务器做主动健康检查，以自动的下线失效的服务器；</li>
+      <li>Feature：允许syslog输出日志时指定程序的标识（program identifier）；</li>
+      <li>Change：合并nginx-1.0.14至nginx-1.0.15之间的修改；</li>
+      <li>Change：将accept_mutex_delay的默认值从500毫秒更改为100毫秒以提高性能；</li>
+      <li>Bugfix：修复syslog的一个在后端服务器连接不上导致端错误的bug；</li>
+      <li>Bugfix：修复access_log可能和buffer参数冲突的bug；</li>
+    </ul>
     <ul><a name="1_2_4"></a><h4>Tengine-1.2.4 [2012-03-30]</h4>
       <li>Feature：增加user_agent模块；</li>
       <li>Feature：增加log_escape指令；</li>

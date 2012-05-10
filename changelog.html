@@ -65,6 +65,16 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_2_5"></a><h4>Tengine-1.2.5 [09 May 2012]</h4>
+      <li>Feature: added the upstream_check module which could be used to do proactive<br/>
+       health check of upstream servers. (Wenjing)</li>
+      <li>Feature: now allow to specify program identifiers with syslogs. (Weiyue)</li>
+      <li>Change: merged changes between nginx-1.0.14 and nginx-1.0.15. (Shudu)</li>
+      <li>Change: the default value of 'accept_mutex_delay' was changed from 500ms<br/>
+       to 100ms to gain better performance. (Shudu)</li>
+      <li>Bugfix: fixed a segmentation fault bug in syslog when failed to connect to an upstream server. (Weiyue)</li>
+      <li>Bugfix: fixed the bug of 'access_log' might not be compatible with the 'buffer' parameter. (Weiyue)</li>
+    </ul>
     <ul><a name="1_2_4"></a><h4>Tengine-1.2.4 [30 Mar 2012]</h4>
       <li>Feature: added the user_agent module. (Junmin Xiong)</li>
       <li>Feature: added the 'log_escape' directive. (agentzh, Yixiao)</li>
