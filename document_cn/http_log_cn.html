@@ -80,19 +80,19 @@
     </div>
     <div class="dh">指令</div>
     <div class="directive">
-Syntax: <b>access_log</b> log_target [format [ratio=ratio [buffer=size]]] | off<br/>
+Syntax: <b>access_log</b> log_target [format [ratio=ratio] [buffer=size]] | off<br/>
 Default: access_log logs/access.log combined ratio=1<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
 <p>
-同nginx原有access_log，各参数有固定顺序。
+format（含）前面的各参数顺序固定，后面的参数可乱序。此格式兼容nginx原有access_log格式。
 <ul>
 <li>log_target<br/>
 兼容以前的log_file参数，并添加下面三种日志类型：
 <pre>
     file:/path/to/file
-    syslog:facility[:loglevel:[target_ip[:target_port] | target_udgram_addr]]
+    syslog:facility[:[loglevel][:[target_ip:[target_port] | target_udgram_addr][:ident]]]
     "pipe:/path/to/exec parms"
 </pre>
 </li>
@@ -114,16 +114,25 @@ ratio<br/>
     loglevel := crit | err | error | emerg | panic | alert | warn | warning | info | notice | debug
     loglevel默认值 = info
 
-    target_ip[:target_port]：日志输出目的主机的IP地址和端口，端口默认是UDP(514)。这里syslog只支持UDP协议
+    target_ip:[target_port]：日志输出目的主机的IP地址和端口，端口默认是UDP(514)。这里syslog只支持UDP协议
 
     target_udgram_addr：unix dgram地址，默认为Unix dgram(/dev/log)。这里syslog只支持UNIX DGRAM协议
+
+    ident: 自定义标志，可以用于应用信息
 </pre>
 例如：
 <pre>
-    syslog:user::127.0.0.1           以user类型和info级别将日志发送给127.0.0.1:514的UDP端口
-    syslog:user:debug                以user类型和debug级别将日志发送给本机Unix dgram(/dev/log)
-    syslog:cron:debug:10.232.4.28    以cron类型和debug级别将日志发送到主机10.232.4.28:514的udp端口
-    syslog:auth:err:10.232.4.28:10   以auth类型和err级别将日志发送到主机10.232.4.28:10的udp端口
+    syslog:user:info:127.0.0.1:514:ident          以user类型和info级别将日志发送给127.0.0.1:514的UDP端口，并设置应用标记为ident
+        syslog的输出样例："May  4 15:44:15 local ident[26490]: XXXXXXXX"
+    syslog:auth:err:10.232.4.28::ident            以auth类型和err级别将日志发送到主机10.232.4.28:514的UDP端口，并设置应用标记为ident
+    syslog:user:info:/dev/log:ident               以user类型和info级别将日志发送给本机Unix dgram(/dev/log)，并设置应用标记为ident
+    syslog:user::/dev/log:ident                   以user类型和info级别将日志发送给本机Unix dgram(/dev/log)，并设置应用标记为ident
+    syslog:user:info::ident                       以user类型和info级别将日志发送给本机Unix dgram(/dev/log)，并设置应用标记为ident
+    syslog:cron:debug:/dev/log                    以cron类型和debug级别将日志发送到主机Unix dgram(/dev/log)，并使用默认标记
+        syslog的输出样例："May  4 15:44:15 local NGINX[26490]: XXXXXXXX"
+    syslog:user::127.0.0.1                        以user类型和info级别将日志发送给127.0.0.1:514的UDP端口，并使用默认标记
+    syslog:user:debug                             以user类型和debug级别将日志发送给本机Unix dgram(/dev/log)，并使用默认标记
+    syslog:user                                   以user类型和info级别将日志发送给本机Unix dgram(/dev/log)，并使用默认标记
 </pre>
 </li>
 <li>pipe<br/>
