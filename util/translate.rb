@@ -6,6 +6,8 @@ def parse_line(line)
     line.gsub!(/<h1>(.*?)<\/h1>/, '<div class="dh">\1</div>')
     line.gsub!(/<h2>.*?<\/h2>/, '<br /><br />')
     line.gsub!(/<pre>/, '<pre class="mod_example">')
+    line.gsub!(/<p>Syntax/, '<div class="directive"><p>Syntax')
+    line.gsub!(/(<p>Context:.*<\/p>)/, '\1</div>')
 
     return line
 end
