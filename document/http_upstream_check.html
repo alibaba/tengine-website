@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+
+<div class="module">ngx_http_upstream_check_module</div>
+
+<p>Add proactive health check for the upstream servers.</p>
+
+<div class="dh">Examples</div>
+
+<pre class="mod_example"><code>http {
+    upstream cluster {
+        # simple round-robin
+        server 192.168.0.1:80;
+        server 192.168.0.2:80;
+
+        check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+        check_http_send "GET / HTTP/1.0\r\n\r\n";
+        check_http_expect_alive http_2xx http_3xx;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://cluster;
+        }
+
+        location /status {
+            check_status;
+
+            access_log   off;
+            allow SOME.IP.ADD.RESS;
+            deny all;
+       }
+    }
+}
+</code></pre>
+
+<div class="dh">Directives</div>
+
+<br /><br />
+
+<p>Syntax: <strong>check</strong> <code>interval=milliseconds [fall=count] [rise=count] [timeout=milliseconds] [default_down=true|false] [type=tcp|ssl_hello|mysql|ajp]</code></p>
+
+<p>Default: If the parameters are omitted, default values are: <code>interval=30000 fall=5 rise=2 timeout=1000 default_down=true type=tcp</code></p>
+
+<p>Context: <code>upstream</code></p>
+
+<p>Add health check for the upstream servers.</p>
+
+<p>The parameters' meanings are:</p>
+
+<ul>
+<li><code>interval</code>: the check request's interval time.</li>
+<li><code>fall</code>(fall_count): After fall_count failure checks, the server is marked down.</li>
+<li><code>rise</code>(rise_count): After rise_count successful checks, the server is marked up.</li>
+<li><code>timeout</code>: the check request's timeout.</li>
+<li><code>default_down</code>: specify initial state of backend server, default is down.</li>
+<li><code>type</code>: the check protocol type:
+<ul>
+<li><code>tcp</code>: a simple TCP socket connect and peek one byte.</li>
+<li><code>ssl_hello</code>: send a client SSL hello packet and receive the server SSL hello packet.</li>
+<li><code>http</code>: send a http request packet, receive and parse the http response to diagnose if the upstream server is alive.</li>
+<li><code>mysql</code>: connect to the mysql server, receive the greeting response to diagnose if the upstream server is alive.</li>
+<li><code>ajp</code>: send an AJP Cping packet, receive and parse the AJP Cpong response to diagnose if the upstream server is alive.</li>
+</ul></li>
+</ul>
+
+<br /><br />
+
+<p>Syntax: <strong>check_http_send</strong> <code>http_packet</code></p>
+
+<p>Default: <code>"GET / HTTP/1.0\r\n\r\n"</code></p>
+
+<p>Context: <code>upstream</code></p>
+
+<p>If the check type is http, the check function will send this http packet to the upstream server.</p>
+
+<br /><br />
+
+<p>Syntax: <strong>check_http_expect_alive</strong> <code>[ http_2xx | http_3xx | http_4xx | http_5xx ]</code></p>
+
+<p>Default: <code>http_2xx | http_3xx</code></p>
+
+<p>Context: <code>upstream</code></p>
+
+<p>These status codes indicate the upstream server's http response is OK and the check response is successful.</p>
+
+<br /><br />
+
+<p>Syntax: <strong>check_shm_size</strong> <code>size</code></p>
+
+<p>Default: <code>1M</code></p>
+
+<p>Context: <code>http</code></p>
+
+<p>Default size is one megabytes. If you want to check thousands of servers, the shared memory may be not enough, you can enlarge it with this directive.</p>
+
+<br /><br />
+
+<p>Syntax: <strong>check_status</strong></p>
+
+<p>Default: <code>none</code></p>
+
+<p>Context: <code>location</code></p>
+
+<p>Display the status of checking servers. This directive should be used in the http block.</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
