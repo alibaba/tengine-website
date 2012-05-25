@@ -65,6 +65,18 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_3_0"></a><h4>Tengine-1.3.0 [25 May 2012]</h4>
+      <li>Feature: added the Lua module which embeds the power of Lua into Tengine. <br/>
+       (chaoslawful)</li>
+      <li>Feature: added the procs module which provides a mechanism to support <br/>
+       standalone process more easily. (Yuanzhuo)</li>
+      <li>Change: renamed the parameter from nogreedy to greedy in the user_agent <br/>
+       module. (Junmin Xiong)</li>
+      <li>Bugfix: fixed a segmentation fault bug in syslog with uninitialized <br/>
+       pointer problem. (Weiyue)</li>
+      <li>Bugfix: fixed a compile error in syslog with --with-ipv6 configuration <br/>
+       parameter. (Weiyue)</li>
+    </ul>
     <ul><a name="1_2_5"></a><h4>Tengine-1.2.5 [09 May 2012]</h4>
       <li>Feature: added the upstream_check module which could be used to do proactive<br/>
        health checks of upstream servers. (Wenjing)</li>
