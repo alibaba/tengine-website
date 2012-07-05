@@ -72,13 +72,15 @@
     <h2>Features</h2>
     <ul>
       <li>All features of Nginx-1.0.15 are inherited, i.e. it is 100% compatible with Nginx.</li>
-      <li>Input body filter support. It's quite handy to write Web Application Firewalls by using this mechanism.</li>
-      <li>Logging enhancement. Syslog (local and remote), pipe logging and log sampling are supported.</li>
-      <li>Protecting server in case system load or memory use goes too high.</li>
-      <li>Multiple CSS or JavaScript requests can be combined into one request to reduce downloading time.</li>
-      <li>Proactive health checks of upstream servers can be performed. </li>
+      <li><a href="http://blog.zhuzhaoyuan.com/2012/01/a-mechanism-to-help-write-web-application-firewalls-for-nginx/">Input body filter</a> support. It's quite handy to write Web Application Firewalls by using this mechanism.</li>
+      <li><a href="http://tengine.taobao.org/document/http_log.html">Logging enhancement</a>. Syslog (local and remote), pipe logging and log sampling are supported.</li>
+      <li><a href="http://wiki.nginx.org/HttpLuaModule">Dynamic scripting language (Lua)</a> support, which is very efficient and easy to extend core functionalities.
+      <li>A mechanism to support <a href="http://tengine.taobao.org/document/proc.html">standalone processes</a>.</li>
+      <li><a href="http://tengine.taobao.org/document/http_sysguard.html">Protecting server</a> in case system load or memory use goes too high.</li>
+      <li><a href="https://github.com/taobao/nginx-http-concat">Multiple CSS or JavaScript requests can be combined</a> into one request to reduce downloading time.</li>
+      <li><a href="http://tengine.taobao.org/document/http_upstream_check.html">Proactive health checks of upstream servers</a> can be performed. </li>
       <li>The number of worker processes and CPU affinities can be set automatically.</li>
-      <li>The limit_req module is enhanced with white list support and more conditions are allowed in a single location.</li>
+      <li><a href="http://tengine.taobao.org/document/http_limit_req.html">The limit_req module</a> is enhanced with white list support and more conditions are allowed in a single location.</li>
       <li>Diagnostic information to tell the server where the error happened.</li>
       <li>More user friendly command lines. e.g. showing all compiled-in modules and supported directives.</li>
       <li>Expiration times can be specified for certain MIME types.</li>
@@ -90,6 +92,7 @@
   <div class="one_col">
     <h2>News</h2>
     <ul>
+    <li>[06/28/2012] Our <a href="http://nginx.org/cn/">Chinese translation of Nginx's documentation</a> was accepted by the Nginx team.
     <li>[06/09/2012] We presented <a href="download/taobao_nginx_2012_06.pdf">Nginx Use Cases and Development at Taobao</a> on ECOC.</li>
     <li>[05/25/2012] <a href="download/tengine-1.3.0.tar.gz">Tengine-1.3.0</a> is released (<a href="changelog.html#1_3_0">changes</a>).</li>
     <li>[05/09/2012] <a href="download/tengine-1.2.5.tar.gz">Tengine-1.2.5</a> is released (<a href="changelog.html#1_2_5">changes</a>).</li>
