@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+<div class="dh">模块名</div>
+
+<ul>
+<li>动态加载模块</li>
+</ul>
+
+<div class="dh">描述</div>
+
+<ul>
+<li><p>这个模块主要是用来运行时动态加载模块，而不用每次都要重新编译Tengine.</p></li>
+<li><p>如果你想要编译官方模块为动态模块，你需要在configure的时候加上类似这样的指令(--with-http_xxx_module),./configure --help可以看到更多的细节.</p></li>
+<li><p>如果只想要安装官方模块为动态模块(不安装Nginx)，那么就只需要configure之后，执行 make dso_install命令.</p></li>
+<li><p>如果需要编译第三方模块，可以使用dso_tools工具(详细使用方法请参加dso_tool章节).</p></li>
+<li><p>动态加载模块的个数限制为128个.</p></li>
+<li><p>如果已经加载的动态模块有修改，那么必须重起Tengine才会生效.</p></li>
+<li><p>只支持HTTP模块.</p></li>
+<li><p>模块 在Linux/FreeBSD/MacOS下测试成功.</p></li>
+</ul>
+
+<div class="dh">例子</div>
+
+<pre class="mod_example"><code>worker_processes  1;
+
+dso {
+     load ngx_http_lua_module.so;
+     load ngx_http_memcached_module.so;
+}
+
+events {
+   worker_connections  1024;
+}
+</code></pre>
+
+<div class="dh">指令</div>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>path path</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>path 主要是设置默认的动态模块加载路径。</p>
+
+<p>例子:</p>
+
+<pre class="mod_example"><code>path /home/dso/module/;
+</code></pre>
+
+<p>设置默认的动态模块加载路径为/home/dso/module/.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>load [module_name] [module_path]</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>load命令用于在指定的路径(module_path),将指定的模块(module_name)动态加载到Nginx中。其中module_path和module_name可以只写一个,如果没有module_path参数，那么默认path是 $(modulename).so.如果没有module_name参数，那么默认name就是module_path删除掉".so"后缀.</p>
+
+<p>对于module_path的路径查找，这里是严格按照下面的顺序的</p>
+
+<p>1 module_path指定的是绝对路径。
+2 相对于dso_path设置的相对路径.
+3 相对于默认的加载路径的相对路径(NGX_PREFIX/modules或者说configure时通过--dso-path设置的路径).</p>
+
+<p>例子:</p>
+
+<pre class="mod_example"><code>load ngx_http_empty_gif_module  ngx_http_empty_gif_module.so;
+load ngx_http_test_module;
+load ngx_http_test2_module.so;
+</code></pre>
+
+<p>将会从ngx_http_empty_gif_module.so.加载empty_gif模块。以及从ngx_http_test_module.so加载ngx_http_test_module模块.第三条指令是从ngx_http_test2_module.so加载ngx_http_test2_module模块.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>module_stub module_name</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>这个指令主要是将你需要的动态模块插入到你所需要的位置(可以看conf/module_stubs这个文件),这个命令要很小心使用，因为它将会改变你的模块的运行时顺序(在Nginx中模块都是有严格顺序的).而大多数时候这个命令都是不需要设置的。</p>
+
+<p>例子:</p>
+
+<pre class="mod_example"><code>    module_stub ngx_core_module;
+    module_stub ngx_errlog_module;
+    module_stub ngx_conf_module;
+    module_stub ngx_events_module;
+    module_stub ngx_event_core_module;
+    module_stub ngx_epoll_module;
+    module_stub ngx_openssl_module;
+    module_stub ngx_http_module;
+    module_stub ngx_http_core_module;
+    .......................
+    module_stub ngx_http_addition_filter_module;
+    module_stub ngx_http_my_filter_module;
+</code></pre>
+
+<p>上面这个例子将会插入my_filter模块到addition_filter之前执行。</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>include file_name</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>include命令主要用于指定一个文件，这个文件里面包含了对应模块顺序(module_stub指令),有关于module_stub指令可以看下面的module_stubs部分.</p>
+
+<p>例子:</p>
+
+<pre class="mod_example"><code>include module_stubs
+</code></pre>
+
+<p>将会加载conf/module<em>stubs这个文件，这个文件主要是由(module</em>stub指令组成).</p>
+
+<div class="dh">如何编译动态模块</div>
+
+<br /><br />
+
+<p>如果你想要在安装完Tengine之后，编译官方模块为动态模块，那么你需要按照如下的步骤:</p>
+
+<ul>
+<li><p>在configure的时候打开你想要编译的模块.</p>
+
+<p>$ ./configure --with-http_sub_module=shared</p></li>
+<li><p>编译它.</p>
+
+<p>$ make</p></li>
+<li><p>安装动态模块.</p>
+
+<p>$ make dso_install</p></li>
+</ul>
+
+<p>它将会复制动态库文件到你的动态模块目录，或者你也可以手工拷贝动态模块文件(文件是在objs/modules)到你想要加载的目录.</p>
+
+<br /><br />
+
+<p>你能够使用dso_tool(在Nginx安装目录的sbin下)这个工具来编译第三方模块.</p>
+
+<p>例子:</p>
+
+<pre class="mod_example"><code>./dso_tool --add-module=/home/dso/lua-nginx-module
+</code></pre>
+
+<p>将会编译ngx_lua模块为动态库，然后安装到默认的模块路径.如果你想要安装到指定位置，那么需要指定--dst选项(更多的选项请使用dso_tool -h查看).</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
