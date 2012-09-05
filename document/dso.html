@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+
+<ul>
+<li>Dynamic Module Loading Support (<strong>DSO</strong>)</li>
+</ul>
+
+<div class="dh">Description</div>
+
+<ul>
+<li><p>You can choose which functionalities to include by selecting a set of modules. A module will be compiled as a Dynamic Shared Object (<strong>DSO</strong>) that exists from the main tengine binary. So you don't have to recompile tengine when you want to add or enable a functionality to it.</p></li>
+<li><p>If you want to enable a standard module, you can enable it via configure's option while compiling tengine, for instance, --with-http_example_module or --with-http_example_module=shared. Run <em>./configure --help</em> for more details.</p></li>
+<li><p>The maximum of dynamic loaded modules is limited to 128.</p></li>
+<li><p>For now, only HTTP modules can be dynamic-loaded.</p></li>
+<li><p>This feature is tested only on Linux/FreeBSD/MacOS.</p></li>
+</ul>
+
+<div class="dh">Example</div>
+
+<pre class="mod_example"><code>worker_processes  1;
+
+dso {
+     load ngx_http_lua_module.so;
+     load ngx_http_memcached_module.so;
+}
+
+events {
+   worker_connections  1024;
+}
+</code></pre>
+
+<div class="dh">Directives</div>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>path path</em></p>
+
+<p><strong>Default</strong>: <em>NGX_PREFIX/modules</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>This directive specifies the default path (prefix) of DSO modules.</p>
+
+<p>Example:</p>
+
+<pre class="mod_example"><code>path /home/dso/module;
+</code></pre>
+
+<p>Sets the default path to <em>/home/dso/module</em>.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>load [module_name] [module_path]</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>The <strong>load</strong> directive loads the shared object file and enables the module. <em>module_name</em> is the name of the DSO module, and <em>module_path</em> is the path of the DSO module.</p>
+
+<p>The order in which the module is searched is as follows:</p>
+
+<ul>
+<li>the absolute path.</li>
+<li>relative path to the prefix specified by the 'path' directive.</li>
+<li>relative path to the default path (NGX_PREFIX/modules or path which is specified by the '--dso-path' configure option).</li>
+</ul>
+
+<p>Example:</p>
+
+<pre class="mod_example"><code>load ngx_http_empty_gif_module  ngx_http_empty_gif_module.so;
+load ngx_http_test_module;
+load ngx_http_test2_module.so;
+</code></pre>
+
+<p>It will load the ngx_http_empty_gif_module from ngx_http_empty_gif_module.so, ngx_http_test_module and ngx_http_test2_module from ngx_http_test_module.so and ngx_http_test2_module.so.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>module_stub module_name</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>This directive can insert a module into nginx's module array in order (see conf/module_stubs for more details). Note it will change the module runtime order. This directive does not need to be used in most cases. Don't use it or edit the <em>conf/module_stubs</em> file unless you know what you are doing.</p>
+
+<p>Example:</p>
+
+<pre class="mod_example"><code>    module_stub ngx_core_module;
+    module_stub ngx_errlog_module;
+    module_stub ngx_conf_module;
+    module_stub ngx_events_module;
+    module_stub ngx_event_core_module;
+    module_stub ngx_epoll_module;
+    module_stub ngx_openssl_module;
+    module_stub ngx_http_module;
+    module_stub ngx_http_core_module;
+    .......................
+    module_stub ngx_http_addition_filter_module;
+    module_stub ngx_http_my_filter_module;
+</code></pre>
+
+<p>It will place ngx_http_my_filter_module before ngx_http_addition_filter_module.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>include file_name</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>dso</em></p>
+
+<p>Specifies a file which contains the module stubs (via the <strong>module_stub</strong> directive).</p>
+
+<p>Example:</p>
+
+<pre class="mod_example"><code>include module_stubs;
+</code></pre>
+
+<p>It will load conf/module_stubs and define the loading order of the modules (via the <strong>module_stub</strong> directive).</p>
+
+<div class="dh">How to compile a module</div>
+
+<br /><br />
+
+<p>If you want to enable a standard module after you compiled and installed tengine, you can take these steps as following.</p>
+
+<ul>
+<li><p>enable the standard module you wanted in shared mode, for example:</p>
+
+<p>$ ./configure --with-http_sub_module=shared</p></li>
+<li><p>compile it:</p>
+
+<p>$ make</p></li>
+<li><p>install the shared object (*.so):</p>
+
+<p>$ make dso_install</p></li>
+</ul>
+
+<p>It will copy the *.so files to the destination, or you can copy the files you want (in objs/modules) manually to the modules directory.</p>
+
+<br /><br />
+
+<p>You can use the <strong>dso_tool</strong> located in the directory of nginx binary to compile a third party module.</p>
+
+<p>Example:</p>
+
+<pre class="mod_example"><code>./dso_tool --add-module=/home/dso/lua-nginx-module
+</code></pre>
+
+<p>It will compile the ngx_lua module into a shared object, and install it to the default module path. You can specify the destination directory you want install to by the <strong>--dst</strong> option.</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
