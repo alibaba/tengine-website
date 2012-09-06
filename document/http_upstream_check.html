@@ -106,7 +106,7 @@
 
 <br /><br />
 
-<div class="directive"><p>Syntax: <strong>check</strong> <code>interval=milliseconds [fall=count] [rise=count] [timeout=milliseconds] [default_down=true|false] [type=tcp|ssl_hello|mysql|ajp]</code></p>
+<div class="directive"><p>Syntax: <strong>check</strong> <code>interval=milliseconds [fall=count] [rise=count] [timeout=milliseconds] [default_down=true|false] [type=tcp|ssl_hello|mysql|ajp] [port=check_port]</code></p>
 
 <p>Default: If the parameters are omitted, default values are: <code>interval=30000 fall=5 rise=2 timeout=1000 default_down=true type=tcp</code></p>
 
@@ -130,6 +130,7 @@
 <li><code>mysql</code>: connect to the mysql server, receive the greeting response to diagnose if the upstream server is alive.</li>
 <li><code>ajp</code>: send an AJP Cping packet, receive and parse the AJP Cpong response to diagnose if the upstream server is alive.</li>
 </ul></li>
+<li><code>port</code>: specify the check port in the backend servers. It can be different with the original servers port. Default the port is 0 and it means the same as the original backend server. This option is added after tengine-1.4.0.</li>
 </ul>
 
 <br /><br />
@@ -164,13 +165,79 @@
 
 <br /><br />
 
-<div class="directive"><p>Syntax: <strong>check_status</strong></p>
+<div class="directive"><p>Syntax: <em>*check_status [html|csv|json] *</em></p>
 
-<p>Default: <code>none</code></p>
+<p>Default: <code>check\_status html</code></p>
 
 <p>Context: <code>location</code></p></div>
 
 <p>Display the status of checking servers. This directive should be used in the http block.</p>
+
+<p>You can specify the default display format after Tengine-1.4.0. The formats can be <code>html</code>, <code>csv</code> or <code>json</code>. The default type is <code>html</code>. It also supports to specify the format by the request argument. Suppose your <code>check_status</code> location is '/status', the argument of <code>format</code> can change the display page's format. You can do like this:</p>
+
+<pre class="mod_example"><code>/status?format=html
+/status?format=csv
+/status?format=json
+</code></pre>
+
+<p>At present, you can fetch the list of servers with the same status by the argument of <code>status</code>. For example:</p>
+
+<pre class="mod_example"><code>/status?format=html&amp;status=down
+/status?format=csv&amp;status=up
+</code></pre>
+
+<p>Below it's the sample html page:</p>
+
+<pre class="mod_example"><code>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+&lt;title&gt;Nginx http upstream check status&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Nginx http upstream check status&lt;/h1&gt;
+    &lt;h2&gt;Check upstream server number: 1, generation: 3&lt;/h2&gt;
+    &lt;table style="background-color:white" cellspacing="0"        cellpadding="3" border="1"&gt;
+        &lt;tr bgcolor="#C0C0C0"&gt;
+            &lt;th&gt;Index&lt;/th&gt;
+            &lt;th&gt;Upstream&lt;/th&gt;
+            &lt;th&gt;Name&lt;/th&gt;
+            &lt;th&gt;Status&lt;/th&gt;
+            &lt;th&gt;Rise counts&lt;/th&gt;
+            &lt;th&gt;Fall counts&lt;/th&gt;
+            &lt;th&gt;Check type&lt;/th&gt;
+            &lt;th&gt;Check port&lt;/th&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;0&lt;/td&gt;
+            &lt;td&gt;backend&lt;/td&gt;
+            &lt;td&gt;106.187.48.116:80&lt;/td&gt;
+            &lt;td&gt;up&lt;/td&gt;
+            &lt;td&gt;39&lt;/td&gt;
+            &lt;td&gt;0&lt;/td&gt;
+            &lt;td&gt;http&lt;/td&gt;
+            &lt;td&gt;80&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>Below it's the sample of csv page:</p>
+
+<pre class="mod_example"><code>0,backend,106.187.48.116:80,up,46,0,http,80
+</code></pre>
+
+<p>Below it's the sample of json page:</p>
+
+<pre class="mod_example"><code>{"servers": {
+  "total": 1,
+  "generation": 3,
+  "server": [
+   {"index": 0, "upstream": "backend", "name": "106.187.48.116:80", "status": "up", "rise": 58, "fall": 0, "type": "http", "port": 80}
+  ]
+ }}
+</code></pre>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
