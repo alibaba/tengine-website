@@ -75,11 +75,10 @@
 <li><p>这个模块主要是用来运行时动态加载模块，而不用每次都要重新编译Tengine.</p></li>
 <li><p>如果你想要编译官方模块为动态模块，你需要在configure的时候加上类似这样的指令(--with-http_xxx_module),./configure --help可以看到更多的细节.</p></li>
 <li><p>如果只想要安装官方模块为动态模块(不安装Nginx)，那么就只需要configure之后，执行 make dso_install命令.</p></li>
-<li><p>如果需要编译第三方模块，可以使用dso_tools工具(详细使用方法请参加dso_tool章节).</p></li>
 <li><p>动态加载模块的个数限制为128个.</p></li>
 <li><p>如果已经加载的动态模块有修改，那么必须重起Tengine才会生效.</p></li>
 <li><p>只支持HTTP模块.</p></li>
-<li><p>模块 在Linux/FreeBSD/MacOS下测试成功.</p></li>
+<li><p>模块 在Linux/FreeeBSD/MacOS下测试成功.</p></li>
 </ul>
 
 <div class="dh">例子</div>
