@@ -63,13 +63,13 @@
   <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
   <div class="clear"></div>
   <div class="one_col more_padding font16">
-
+<p>﻿# Name #</p>
 
 <div class="module">ngx_http_upstream_check_module</div>
 
-<p>Add proactive health check for the upstream servers.</p>
+<p>该模块可以为Tengine提供主动式后端服务器健康检查的功能。</p>
 
-<p>This module is not built by default, it should be enabled with the <code>--with-http_upstream_check_module</code> configuration parameter.</p>
+<p>该模块没有默认开启，它可以在配置编译选项的时候开启：<code>./configure --with-http_upstream_check_module</code></p>
 
 <div class="dh">Examples</div>
 
@@ -102,35 +102,35 @@
 }
 </code></pre>
 
-<div class="dh">Directives</div>
+<div class="dh">指令</div>
 
 <br /><br />
 
 <div class="directive"><p>Syntax: <strong>check</strong> <code>interval=milliseconds [fall=count] [rise=count] [timeout=milliseconds] [default_down=true|false] [type=tcp|http|ssl_hello|mysql|ajp] [port=check_port]</code></p>
 
-<p>Default: If the parameters are omitted, default values are: <code>interval=30000 fall=5 rise=2 timeout=1000 default_down=true type=tcp</code></p>
+<p>Default: 如果没有配置参数，默认值是：<code>interval=30000 fall=5 rise=2 timeout=1000 default_down=true type=tcp</code></p>
 
 <p>Context: <code>upstream</code></p></div>
 
-<p>Add health check for the upstream servers.</p>
+<p>该指令可以打开后端服务器的健康检查功能。</p>
 
-<p>The parameters' meanings are:</p>
+<p>指令后面的参数意义是：</p>
 
 <ul>
-<li><code>interval</code>: the check request's interval time.</li>
-<li><code>fall</code>(fall_count): After fall_count failure checks, the server is marked down.</li>
-<li><code>rise</code>(rise_count): After rise_count successful checks, the server is marked up.</li>
-<li><code>timeout</code>: the check request's timeout.</li>
-<li><code>default_down</code>: specify initial state of backend server, default is down.</li>
-<li><code>type</code>: the check protocol type:
+<li><code>interval</code>：向后端发送的健康检查包的间隔。</li>
+<li><code>fall</code>(fall_count): 如果连续失败次数达到fall_count，服务器就被认为是down。</li>
+<li><code>rise</code>(rise_count): 如果连续成功次数达到rise_count，服务器就被认为是up。</li>
+<li><code>timeout</code>: 后端健康请求的超时时间。</li>
+<li><code>default_down</code>: 设定初始时服务器的状态，如果是true，就说明默认是down的，如果是false，就是up的。默认值是true，也就是一开始服务器认为是不可用，要等健康检查包达到一定成功次数以后才会被认为是健康的。</li>
+<li><code>type</code>：健康检查包的类型，现在支持以下多种类型
 <ul>
-<li><code>tcp</code>: a simple TCP socket connect and peek one byte.</li>
-<li><code>ssl_hello</code>: send a client SSL hello packet and receive the server SSL hello packet.</li>
-<li><code>http</code>: send a http request packet, receive and parse the http response to diagnose if the upstream server is alive.</li>
-<li><code>mysql</code>: connect to the mysql server, receive the greeting response to diagnose if the upstream server is alive.</li>
-<li><code>ajp</code>: send an AJP Cping packet, receive and parse the AJP Cpong response to diagnose if the upstream server is alive.</li>
+<li><code>tcp</code>：简单的tcp连接，如果连接成功，就说明后端正常。</li>
+<li><code>ssl_hello</code>：发送一个初始的SSL hello包并接受服务器的SSL hello包。</li>
+<li><code>http</code>：发送HTTP请求，通过后端的回复包的状态来判断后端是否存活。</li>
+<li><code>mysql</code>: 向mysql服务器连接，通过接收服务器的greeting包来判断后端是否存活。</li>
+<li><code>ajp</code>：向后端发送AJP协议的Cping包，通过接收Cpong包来判断后端是否存活。</li>
 </ul></li>
-<li><code>port</code>: specify the check port in the backend servers. It can be different with the original servers port. Default the port is 0 and it means the same as the original backend server. This option is added after tengine-1.4.0.</li>
+<li><code>port</code>: 指定后端服务器的检查端口。你可以指定不同于真实服务的后端服务器的端口，比如后端提供的是443端口的应用，你可以去检查80端口的状态来判断后端健康状况。默认是0，表示跟后端server提供真实服务的端口一样。该选项出现于Tengine-1.4.0。</li>
 </ul>
 
 <br /><br />
@@ -141,7 +141,7 @@
 
 <p>Context: <code>upstream</code></p></div>
 
-<p>If the check type is http, the check function will send this http packet to the upstream server.</p>
+<p>该指令可以配置http健康检查包发送的请求内容。</p>
 
 <br /><br />
 
@@ -151,7 +151,7 @@
 
 <p>Context: <code>upstream</code></p></div>
 
-<p>These status codes indicate the upstream server's http response is OK and the check response is successful.</p>
+<p>该指令指定HTTP回复的成功状态，默认认为2XX和3XX的状态是健康的。</p>
 
 <br /><br />
 
@@ -161,7 +161,7 @@
 
 <p>Context: <code>http</code></p></div>
 
-<p>Default size is one megabytes. If you want to check thousands of servers, the shared memory may be not enough, you can enlarge it with this directive.</p>
+<p>所有的后端服务器健康检查状态都存于共享内存中，该指令可以设置共享内存的大小。默认是1M，如果你有1千台以上的服务器并在配置的时候出现了错误，就可能需要扩大该内存的大小。</p>
 
 <br /><br />
 
@@ -171,22 +171,24 @@
 
 <p>Context: <code>location</code></p></div>
 
-<p>Display the status of checking servers. This directive should be used in the http block.</p>
+<p>显示服务器的健康状态页面。该指令需要在http块中配置。</p>
 
-<p>You can specify the default display format after Tengine-1.4.0. The formats can be <code>html</code>, <code>csv</code> or <code>json</code>. The default type is <code>html</code>. It also supports to specify the format by the request argument. Suppose your <code>check_status</code> location is '/status', the argument of <code>format</code> can change the display page's format. You can do like this:</p>
+<p>在Tengine-1.4.0以后，你可以配置显示页面的格式。支持的格式有: <code>html</code>、<code>csv</code>、 <code>json</code>。默认类型是<code>html</code>。</p>
+
+<p>你也可以通过请求的参数来指定格式，假设‘/status’是你状态页面的URL， <code>format</code>参数改变页面的格式，比如：</p>
 
 <pre class="mod_example"><code>/status?format=html
 /status?format=csv
 /status?format=json
 </code></pre>
 
-<p>At present, you can fetch the list of servers with the same status by the argument of <code>status</code>. For example:</p>
+<p>同时你也可以通过status参数来获取相同服务器状态的列表，比如：</p>
 
 <pre class="mod_example"><code>/status?format=html&amp;status=down
 /status?format=csv&amp;status=up
 </code></pre>
 
-<p>Below it's the sample html page:</p>
+<p>下面是一个HTML状态页面的例子（server number是后端服务器的数量，generation是Nginx reload的次数。Index是服务器的索引，Upstream是在配置中upstream的名称，Name是服务器IP，Status是服务器的状态，Rise是服务器连续检查成功的次数，Fall是连续检查失败的次数，Check type是检查的方式，Check port是后端专门为健康检查设置的端口）：</p>
 
 <pre class="mod_example"><code>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
@@ -223,12 +225,12 @@
 &lt;/html&gt;
 </code></pre>
 
-<p>Below it's the sample of csv page:</p>
+<p>下面是csv格式页面的例子：</p>
 
 <pre class="mod_example"><code>0,backend,106.187.48.116:80,up,46,0,http,80
 </code></pre>
 
-<p>Below it's the sample of json page:</p>
+<p>下面是json格式页面的例子：</p>
 
 <pre class="mod_example"><code>{"servers": {
   "total": 1,
