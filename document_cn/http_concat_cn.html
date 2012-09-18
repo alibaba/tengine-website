@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6614032-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function correctPNG()
+  {
+    var arVersion = navigator.appVersion.split("MSIE");
+    var version = parseFloat(arVersion[1]);
+    if ((version == 5.5 || version == 6) && (document.body.filters))
+    {
+      for(var j=0; j<document.images.length; j++)
+      {
+        var img = document.images[j];
+        var imgName = img.src.toUpperCase();
+        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+        {
+          var imgID = (img.id) ? "id='" + img.id + "' " : "";
+          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
+          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
+          var imgStyle = "display:inline-block;" + img.style.cssText;
+          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
+          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
+          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
+          var strNewHTML = "<span " + imgID + imgClass + imgTitle
+          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
+          img.outerHTML = strNewHTML;
+          j = j - 1;
+        }
+      }
+    }
+  }
+  window.attachEvent("onload", correctPNG);
+  </script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+<div class="dh">concat 模块</div>
+
+<br /><br />
+
+<p>该模块类似于apache中的mod_concat模块，用于合并多个文件在一个响应报文中。</p>
+
+<p>请求参数需要用两个问号（'??'）例如：</p>
+
+<pre class="mod_example"><code>http://example.com/??style1.css,style2.css,foo/style3.css
+</code></pre>
+
+<p>参数中某位置只包含一个‘?’，则'?'后表示文件的版本，例如：</p>
+
+<pre class="mod_example"><code>http://example.com/??style1.css,style2.css,foo/style3.css?v=102234
+</code></pre>
+
+<br /><br />
+
+<pre class="mod_example"><code>location /static/css/ {
+    concat on;
+    concat_max_files 20;
+}
+
+location /static/js/ {
+    concat on;
+    concat_max_files 30;
+}
+</code></pre>
+
+<br /><br />
+
+<p><strong>concat</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>默认:</strong> <code>concat off</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code> </p>
+
+<p>在配置的地方使模块有效（失效）</p>
+
+<p><br/>
+<br/></p>
+
+<p><strong>concat_types</strong> <code>MIME types</code></p>
+
+<p><strong>默认:</strong> <code>concat_types: text/css application/x-javascript</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code></p>
+
+<p>定义哪些<a href="http://en.wikipedia.org/wiki/MIME_type">MIME types</a>是可以被接受</p>
+
+<p><br/>
+<br/></p>
+
+<p><strong>concat_unique</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>默认:</strong> <code>concat_unique on</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code></p>
+
+<p>定义是否只接受在[MIME types]中的相同类型的文件，例如：</p>
+
+<pre class="mod_example"><code>http://example.com/static/??foo.css,bar/foobaz.js
+</code></pre>
+
+<p>如果配置为 'concat_unique on' 那么将返回400，如果配置为'concat_unique off'
+那么将合并两个文件。</p>
+
+<p><br/>
+<br/></p>
+
+<p><strong>concat_max_files</strong> <code>number</code></p>
+
+<p><strong>默认:</strong> <code>concat_max_files 10</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code></p>
+
+<p>定义最大能接受的文件数量。</p>
+
+<p><br/>
+<br/></p>
+
+<p><strong>concat_delimiter</strong> string</p>
+
+<p><strong>默认:</strong>  无 </p>
+
+<p><strong>上下文</strong> 'http, server, location'</p>
+
+<p>定义在文件之间添加分隔符，例如</p>
+
+<pre class="mod_example"><code>http://example.com/??1.js,2.js； 
+如果配置为**concat_delimiter "\n"**响应会在1.js和2.js两个文件之间插入一个换行符('\n')；
+</code></pre>
+
+<p><br/>
+<br/></p>
+
+<p><strong>concat_ignore_file_error</strong> 'on | off'</p>
+
+<p><strong>默认</strong> 'concat_ignore_file_error off'</p>
+
+<p><strong>上下文</strong> 'http, server, location'</p>
+
+<p>定义模块是否忽略文件不存在（404）或者没有权限（403）错误</p>
+
+<br /><br />
+
+<ol>
+<li><p>编译concat模块</p>
+
+<p>configure  [--with-http_concat_module | --with-http_concat_module=shared]</p>
+
+<p>--with-http_concat_module选项，concat模块将被静态编译到tengine中</p>
+
+<p>--with-http_concat_module=shared，concat模块将被编译成动态文件，采用动态模块的方式添加到tengine中</p></li>
+<li><p>编译,安装</p>
+
+<p>make&amp;&amp;make install</p></li>
+<li><p>配置concat的配置项</p></li>
+<li><p>运行</p></li>
+</ol>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
