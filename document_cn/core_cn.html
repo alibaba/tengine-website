@@ -72,17 +72,18 @@ Context: core
     </div>
     <div class="introduce"><p>为worker_processes增加参数auto。当设置成auto，tengine将自动启动与cpu数量相同的worker进程。</p></div>
     <div class="directive">
-Syntax: <b>worker_cpu_affinity</b> [mask1 mask2 mask3 ... | auto]<br/>
+Syntax: <b>worker_cpu_affinity</b> [mask1 mask2 mask3 ... | auto | off ]<br/>
 Default: worker_cpu_affinity auto<br/>
 Context: core
     </div>
-    <div class="introduce"><p>为worker_cpu_affinity增加参数auto。当设置成auto时，tengine将根据worker的数量自动配置cpu绑定位图。绑定的顺序是按CPU编号从大到小。
+    <div class="introduce"><p>为worker_cpu_affinity增加参数auto和off。当设置成auto时，tengine将根据worker的数量自动配置cpu绑定位图。绑定的顺序是按CPU编号从大到小。
 如果worker数量大于cpu数量，则剩余的worker进程将按照CPU编号从大到小的顺序从编号最大的CPU开始再次绑定。例如：某CPU有8核，
 <ul>
 <li>worker数量是4，则自动配置的绑定位图是10000000, 01000000, 00100000, 00010000</li>
 <li>worker数量是8，则自动配置的绑定位图是10000000, 01000000, 00100000, 00010000, 00001000, 00000100, 00000010, 00000001</li>
 <li>worker数量是10，则自动配置的绑定位图是10000000, 01000000, 00100000, 00010000, 00001000, 00000100, 00000010, 00000001, 10000000, 01000000</li>
 </ul>
+当设置成off时，tengine不会进行cpu绑定。
 </p>
 <p>worker_cpu_affinity的error log最多显示64个CPU的绑定情况。</p>
     </div>
