@@ -73,7 +73,7 @@ Context: main
     <div class="introduce"><p>Set the number of worker processes. <p/>
  When set to 'auto', which is also the default behavior, Tengine will create the same number of worker processes as your CPUs.</p></div>
     <div class="directive">
-Syntax: <b>worker_cpu_affinity</b> [mask1 mask2 mask3 ... | auto]<br/>
+Syntax: <b>worker_cpu_affinity</b> [mask1 mask2 mask3 ... | auto | off]<br/>
 Default: worker_cpu_affinity auto<br/>
 Context: main
     </div>
@@ -86,7 +86,8 @@ When set to 'auto', Tengine will automatically bind each worker process to a spe
 10000000 01000000 00100000 00010000 00001000 00000100 00000010 00000001</li>
 <li>When the process number set to 10, the binding bitmap will be:<br/>
 10000000 01000000 00100000 00010000 00001000 00000100 00000010 00000001 10000000 01000000</li>
-</ul>
+</ul><p/>
+When set to 'off', Tengine will disable the CPU affinity.
 </p>
     </div>
     <div class="directive">
