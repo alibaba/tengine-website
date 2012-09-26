@@ -220,8 +220,6 @@ ngx_proc_daytime_exit_process(ngx_cycle_t *cycle)
     pbcf = ngx_proc_get_conf(cycle->conf_ctx, ngx_proc_daytime_module);
 
     ngx_close_socket(pbcf->fd);
-
-    return;
 }
 
 
