@@ -65,6 +65,14 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="1_4_1"></a><h4>Tengine-1.4.1 [2012-10-10]</h4>
+    <li>Feature： 添加jemalloc库的支持 [fanjizhao] </li>
+    <li>Feature： 加入$dollar变量, 它的值就是美元符号 [zhuzhaoyuan]</li>
+    <li>Feature： 为worker_cpu_affinity指令加入off选项 [cfsego]</li>
+    <li>Change： 当工作进程异常退出以后，新进程不会绑定CPU亲缘性 [cfsego]</li>
+    <li>Bugfix:  修正在Mac OS操作系统下，Lua模块与LuaJIT动态编译时出现的错误 [monadbobo]</li>
+    <li>Bugfix:  修正动态编译第三方filter模块时出现的模块执行顺序错误 [monadbobo]</li>
+    </ul>
     <ul><a name="1_4_0"></a><h4>Tengine-1.4.0 [2012-09-05]</h4>
     <li>Feature： 增加动态模块加载支持（DSO），要添加一个模块不再需要重新编译tengine了 [monadbobo]</li>
     <li>Feature： 更新Lua模块到最新的稳定版本 [chaoslawful, agentzh, jinglong]</li>
