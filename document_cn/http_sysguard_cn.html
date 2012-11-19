@@ -87,7 +87,7 @@
     <div class="directive">
 Syntax: <b>sysguard</b> [on | off]<br/>
 Default: sysguard off<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>打开或者关闭这个模块</p></div>
     <div class="directive">
@@ -99,19 +99,19 @@ Context: http, server
     <div class="directive">
 Syntax: <b>sysguard_mem</b> swapratio=ratio% [action=/url]<br/>
 Default: -<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>该指定用于配置根据系统的内存使用状态来限制用户请求，以保护系统。swapratio用于配置当当前交换空间的已使用ratio%时，就将进来的请求跳转到指定的url。如果action没有配置，则直接返回503错误。另外，如果用户自己禁用了交换区间，则配置该指定是不起作用的。</p></div>
     <div class="directive">
 Syntax: <b>sysguard_interval</b> time<br/>
 Default: sysguard_interval 1s<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>该指定用于配置获取系统信息时的缓存时间。默认为1s，则表示在这1s内，只调用一次系统函数来获取系统的当前状况。</p></div>
     <div class="directive">
 Syntax: <b>sysguard_log_level</b> [info | notice | warn | error]<br/>
 Default: sysguard_log_level error<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>该指令用于配置，当保护系统的操作执行时，记录日志时的日志级别。</p></div>
   </div>
