@@ -65,11 +65,11 @@
   <div class="one_col more_padding font16">
     <div class="module">ngx_http_stub_status_module</div>
     <div class="mod_intro"><p>
-增加对每请求的响应时间的统计：在nginx status模块中增加了所有请求的总响应时间(request_time)，单位为ms，可以用来统计一段时间的平均RT(response time)：
+增加对每请求的响应时间的统计：在stub status模块中增加了自Tengine启动以来所有请求的总响应时间(request_time)，单位为ms，可以用来统计一段时间的平均RT(response time)：
 <pre>
     Active connections: 1
     server accepts handled requests request_time
-    1 1 1 0
+     1140 1140 1140 75806
     Reading: 0 Writing: 1 Waiting: 0
 </pre></p>
     </div>
