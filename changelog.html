@@ -65,6 +65,22 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_4_2"></a><h4>Tengine-1.4.2 [22 Nov 2012]</h4>
+      <li>Feature: added the option '--dso-tool-path' to configure script, which can specify the installation path for the dso_tool script. (monadbobo)</li>
+      <li>Feature: added a new variable '$unix_time', whose value is the current number of seconds since unix epoch time. (yaoweibin)</li>
+      <li>Feature: added a new variable '$unix_time', whose value is the current number of seconds since unix epoch time. (yaoweibin)</li>
+      <li>Feature: now the sysguard module can be used in a location block. (lifeibo)</li>
+      <li>Change: merged the changes from Nginx-1.2.4 and Nginx-1.2.5. (zhuzhaoyuan)</li>
+      <li>Change: now checks the error codes of input body filters more carefully to avoid socket leaks. (cfsego) </li>
+      <li>Bugfix: fixed the problem with directive limit_req can't handle 4 arguments. (monadbobo) <br />
+      Thanks to LazyZhu.  </li>
+      <li>Bugfix: fixed a compilation error with the file of sysinfo in Cygwin. (lifeibo) <br />
+      Thanks to Cao Peiran.</li>
+      <li>Bugfix: now the installation script will copy the user_agent module's configuration. (monadbobo) <br />
+      Thanks to Jianbin Xiao.</li>
+      <li>Bugfix: fixed the installation directory error with the DSO module when creating the RPM package. (monadbobo) <br />
+      Thanks to Jianbin Xiao and Ren Xiaolei.</li>
+    </ul>
     <ul><a name="1_4_1"></a><h4>Tengine-1.4.1 [10 Oct 2012]</h4>
       <li>Feature: added jemalloc library support. (fanjizhao)</li>
       <li>Feature: added a new variable '$dollar', whose value is the dollar sign ('$'). (zhuzhaoyuan) </li>
