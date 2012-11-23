@@ -70,17 +70,17 @@
         $make<br />
         $sudo make install<br />
     </div>
-    <div class="introduce"><p></p>By default, it's installed to /usr/local/nginx. You can use the '--prefix' option to define the specific installation directory </div>
+    <div class="introduce"><p></p>By default, it's installed to /usr/local/nginx. You can use the '--prefix' option to define the specific installation directory. </div>
     <div class="module">Configure script options</div>
-    <div class="introduce"><p></p>Most of the options are compatible with Nginx. Here just lists the specific options in Tengine. If you want to know all the options supported in Tengine, you can run this command './configure --help' for help. </div>
+    <div class="introduce"><p></p>Most of the options are compatible with Nginx. Here we just lists the specific options in Tengine. If you want to know all the options supported in Tengine, you can run this command './configure --help' for help. </div>
     <h4><li>--dso-path</li></h4>
-    <div class="introduce"><p></p>sets the installation path for the DSO modules.</div>
+    <div class="introduce"><p></p>sets the installation directory for the DSO modules.</div>
     <h4><li>--dso-tool-path</li></h4>
-    <div class="introduce"><p></p>sets the installation path of the dso_tool script.</div>
+    <div class="introduce"><p></p>sets the installation pathname of the dso_tool script.</div>
     <h4><li>--without-dso</li></h4>
-    <div class="introduce"><p></p>disable the feature of dynamic shared module in Tengine </div>
+    <div class="introduce"><p></p>disable the feature of dynamic shared module in Tengine.</div>
     <h4><li>--with-jemalloc</li></h4>
-    <div class="introduce"><p></p>enable Tengine to link the jemalloc library for memory management</div>
+    <div class="introduce"><p></p>enable Tengine to link the jemalloc library for memory management.</div>
     <h4><li>--with-jemalloc=path</li></h4>
     <div class="introduce"><p></p>sets the path to the source of the jemalloc library.</div>
     <div class="module">Make targets</div>
@@ -88,7 +88,7 @@
     <h4><li>make test</li></h4>
     <div class="introduce"><p></p>run the test cases of Tengine. You need install perl to run this test. </div>
      <h4><li>make dso_install</li></h4>
-    <div class="introduce"><p></p>It will copy the DSO files to the destination directory which is specified by '--dso-path'. By default, it's in the directory named modules under the Tengine installation directory</div>
+    <div class="introduce"><p></p>It will copy the shared module library files to the destination directory which is specified by '--dso-path'. By default, it's in the directory named modules under the Tengine installation directory.</div>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
