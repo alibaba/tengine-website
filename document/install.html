@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -64,31 +64,31 @@
   <div class="clear"></div>
   <div class="one_col more_padding font16">
     <div class="module">Simple example</div>
-    <div class="introduce"><p></p>This is a simple example to compile and install Tengine: </div>
+    <div class="introduce"><p></p>To install Tengine, just follow these three steps: </div>
     <div class="directive">
-        $./configure<br />
-        $make<br />
-        $sudo make install<br />
+        $ ./configure<br />
+        $ make<br />
+        # make install<br />
     </div>
-    <div class="introduce"><p></p>By default, it's installed to /usr/local/nginx. You can use the '--prefix' option to define the specific installation directory. </div>
+    <div class="introduce"><p></p>By default, it will be installed to /usr/local/nginx. You can use the '--prefix' option to specify the root directory. </div>
     <div class="module">Configure script options</div>
-    <div class="introduce"><p></p>Most of the options are compatible with Nginx. Here we just lists the specific options in Tengine. If you want to know all the options supported in Tengine, you can run this command './configure --help' for help. </div>
+    <div class="introduce"><p></p>Most of the options are compatible with Nginx. Here we just list the specific options in Tengine. If you want to know all the options supported by Tengine, you can run './configure --help' for help. </div>
     <h4><li>--dso-path</li></h4>
-    <div class="introduce"><p></p>sets the installation directory for the DSO modules.</div>
+    <div class="introduce"><p></p>Set the installation directory for the DSO modules.</div>
     <h4><li>--dso-tool-path</li></h4>
-    <div class="introduce"><p></p>sets the installation pathname of the dso_tool script.</div>
+    <div class="introduce"><p></p>Set the installation path for the dso_tool script.</div>
     <h4><li>--without-dso</li></h4>
-    <div class="introduce"><p></p>disable the feature of dynamic shared module in Tengine.</div>
+    <div class="introduce"><p></p>Disable the DSO (Dynamic Shared Object) feature.</div>
     <h4><li>--with-jemalloc</li></h4>
-    <div class="introduce"><p></p>enable Tengine to link the jemalloc library for memory management.</div>
+    <div class="introduce"><p></p>Enable Tengine to link the jemalloc library for memory management.</div>
     <h4><li>--with-jemalloc=path</li></h4>
-    <div class="introduce"><p></p>sets the path to the source of the jemalloc library.</div>
+    <div class="introduce"><p></p>Set the path to the source code of the jemalloc library.</div>
     <div class="module">Make targets</div>
-    <div class="introduce"><p></p>Most of the targets are compatible with Nginx. Here just lists the specific targets in Tengine. </div>
+    <div class="introduce"><p></p>Most of the targets are compatible with Nginx. We just list the specific targets in Tengine. </div>
     <h4><li>make test</li></h4>
-    <div class="introduce"><p></p>run the test cases of Tengine. You need install perl to run this test. </div>
+    <div class="introduce"><p></p>Run the test cases of Tengine. You might need to install perl to run the them. </div>
      <h4><li>make dso_install</li></h4>
-    <div class="introduce"><p></p>It will copy the shared module library files to the destination directory which is specified by '--dso-path'. By default, it's in the directory named modules under the Tengine installation directory.</div>
+    <div class="introduce"><p></p>It will copy the shared module library files to the destination directory specified by '--dso-path'. By default, it's in the directory named 'modules' under the Tengine installation directory.</div>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
