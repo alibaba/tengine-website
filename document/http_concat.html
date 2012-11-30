@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+<div class="module">ngx_http_concat_module</div>
+
+<p>The module is inspired by Apache's
+<a href="http://code.google.com/p/modconcat"><code>modconcat</code></a>. It follows the same
+pattern for enabling the concatenation. It uses two <code>?</code>, like this: </p>
+<pre class="mod_example"><code>http://example.com/??style1.css,style2.css,foo/style3.css
+</code></pre>
+
+<p>If a <strong>third</strong> <code>?</code> is present it's treated as <strong>version string</strong>. Like
+this:</p>
+
+<pre class="mod_example"><code>http://example.com/??style1.css,style2.css,foo/style3.css?v=102234
+</code></pre>
+
+<div class="dh">Examples</div>
+<pre class="mod_example">
+location /static/css/ {
+    concat on;
+    concat_max_files 20;
+}
+
+location /static/js/ {
+    concat on;
+    concat_max_files 30;
+}
+</pre>
+<div class="dh">Directives</div>
+<p><strong>concat</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>default:</strong> <code>concat off</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>It enables the concatenation in a given context.</p>
+
+<br/>
+<p><strong>concat_types</strong> <code>MIME types</code></p>
+
+<p><strong>default:</strong> <code>concat_types: text/css application/x-javascript</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>Defines the <a href="http://en.wikipedia.org/wiki/MIME_type">MIME types</a> which
+can be concatenated in a given context.</p>
+<p>
+<br/>
+
+<p><strong>concat_unique</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>default:</strong> <code>concat_unique on</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>Defines if only files of a given MIME type can concatenated or if
+several MIME types can be concatenated. For example if set to <code>off</code>
+then in a given context you can concatenate Javascript and CSS files.</p>
+
+<p>Note that the default value is <code>on</code>, meaning that only files with same
+MIME type are concatenated in a given context. So if you have CSS and
+JS you cannot do something like this:</p>
+
+<pre class="mod_example">http://example.com/static/??foo.css,bar/foobaz.js</pre>
+
+<p>In order to do that you <strong>must</strong> set <code>concat_unique off</code>. This applies
+to any other type of files that you decide to concatenate by adding
+the respective MIME type via <code>concat_types</code>,</p>
+
+<p><br/></p>
+
+<p><strong>concat_max_files</strong> <code>number</code>p</p>
+
+<p><strong>default:</strong> <code>concat_max_files 10</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>Defines the <strong>maximum</strong> number of files that can be concatenated in a
+given context. Note that a given URI cannot be bigger than the page
+size of your platform. On Linux you can get the page size issuing:</p>
+
+<pre class="mod_example"><code>getconf PAGESIZE
+</code></pre>
+
+<p>Usually is 4k. So if you try to concatenate a lot of files together in
+a given context you might hit this barrier. To overcome that OS
+defined limitation you must use
+the <a href="http://wiki.nginx.org/NginxHttpCoreModule#large_client_header_buffers"><code>large_client_header_buffers</code></a>
+directive. Set it to the value you need.</p>
+
+</div>
+<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
