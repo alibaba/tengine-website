@@ -36,11 +36,11 @@ server {
 &nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem swapratio=20% action=/swaplimit;
 
 &nbsp;&nbsp;&nbsp;&nbsp;location /loadlimit {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 500;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
 &nbsp;&nbsp;&nbsp;&nbsp;}
 
 &nbsp;&nbsp;&nbsp;&nbsp;location /swaplimit {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 500;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
 &nbsp;&nbsp;&nbsp;&nbsp;}
 }
 </pre>
