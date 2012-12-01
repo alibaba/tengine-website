@@ -32,8 +32,8 @@ To use this module, you should enable it first: <br/>
 server {
 &nbsp;&nbsp;&nbsp;&nbsp;sysguard on;
 
-&nbsp;&nbsp;&nbsp;&nbsp;sysguard_load load=1.1 action=/loadlimit;
-&nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem swapratio=90% action=/swaplimit;
+&nbsp;&nbsp;&nbsp;&nbsp;sysguard_load load=10.5 action=/loadlimit;
+&nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem swapratio=20% action=/swaplimit;
 
 &nbsp;&nbsp;&nbsp;&nbsp;location /loadlimit {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 500;
