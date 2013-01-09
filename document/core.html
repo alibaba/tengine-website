@@ -56,7 +56,7 @@ Context: http, server, location, if in location
     </div>
     <div class="introduce"><p> This directive can specify the page for the specific HTTP response status.
 <ul>
-<li>In Tengine, it also can support parameter 'default' which can clear the above setting in its parent block.</li>
+<li>Tengine also has a 'default' parameter which can be used to clear the error_page settings in higher level blocks.</li>
 </ul></p>
 <p> For example:
 <pre>
@@ -68,7 +68,7 @@ Context: http, server, location, if in location
         }
     }
 </pre>
-In server block, the 404 response status page will be overridden to be the default 404 page. </p>
+In this server block, the 404 error page will be set to Tengine's default 404 page. </p>
     </div>
     <div class="directive">
 Syntax: <b>request_time_cache</b> [on | off]<br/>
@@ -77,7 +77,7 @@ Context: http, server, location
     </div>
     <div class="introduce">
       <p>
-When set to 'off', Tengine will get a more exact time on $request_time, $request_time_msec, $request_time_usec because it does not use time cache.
+When set to 'off', Tengine will get a more precise time on $request_time, $request_time_msec, $request_time_usec because it does not use time cache.
       </p>
     </div>
     <div class="directive">
@@ -86,8 +86,8 @@ Default: log_empty_request on<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
-        <p>When you specify it 'off', Tengine will not record any access log when the request just open the socket and send nothing.
-        By default, it's on. In above case, it will log a 400 Bad Request to the access log.
+        <p>When you specify it 'off', Tengine will not record any access log when a client issues a connection without any data being sent.
+        By default, it's on. In the above case, it will print a 400 Bad Request message into the access log.
       </p>
     </div>
   </div>
