@@ -114,6 +114,18 @@ Default: syslog_retry_interval 1800<br/>
 Context: core
     </div>
     <div class="introduce"><p>建立连接失败后，下一次重试的时间间隔，单位：秒。</p></div>
+    <div class="directive">
+Syntax: <b>log_escape </b> on | off | ascii<br/>
+Default: log_escape on<br/>
+Context: core, http, server, location
+    </div>
+    <div class="introduce">
+        <ul>
+            <li>'on': access日志里面对特殊字符(除了<a href="http://en.wikipedia.org/wiki/Percent-encoding#Types_of_URI_characters">保留或者非保留字符</a>) 编码。</li>
+            <li>'off': 对所有的特殊字符都不编码。</li>
+            <li>'acsii': 只对不可见字符字符进行编码。</li>
+        </ul>
+    </div>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
