@@ -41,7 +41,9 @@
         }
     }
 </pre>
-注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。</p>
+注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。模块默认没有编译，需要在编译时打开该模块:
+./configure --with-http_sysguard_module
+</p>
     </div>
     <div class="dh">指令</div>
     <div class="directive">
