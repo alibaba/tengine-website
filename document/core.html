@@ -65,7 +65,7 @@ Default: none<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
-        <p>Specify the administrator information, it'll appear in the default error page when you turn on the server_tag directive.</p>
+        <p>Specify the administrator's information, which will appear in a default 4xx/5xx error response when 'server_info' is turned on.</p>
     </div>
     <div class="directive">
 Syntax: <b>server_info</b> on | off <br/>
@@ -73,7 +73,7 @@ Default: server_info on<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
-        <p>Turn on the detail server information or not when it displays the default error_page. It includes the URL, server name and current time.</p>
+        <p>Show up the server information in a default 4xx/5xx error response. The URL accessed by the user, the hostname serving the request, and the time are included.</p>
     </div>
     <div class="directive">
 Syntax: <b>server_tag</b> off | customized_tag <br/>
@@ -81,7 +81,7 @@ Default: none<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
-        <p>Specify the customized tag server header in the HTTP response. 'off' could disable sending the server header. By default, it'll use the nginx's tag.</p>
+        <p>Specify the customized 'Server' header in the HTTP responses, for example, 'Apache/2.2.22', 'IIS 6.0', 'Lighttpd', etc. You could also suppress the 'Server' header by setting it to 'off'.</p>
     </div>
   </div>
 </div>
