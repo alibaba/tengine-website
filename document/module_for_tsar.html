@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">Tengine/Nginx module for tsar</div>
+Support read data from Tengine/Nginx by common socket or unix domain socket.
+
+    <div class="dh">Source file</div>
+    <div class="introduce">
+<p>
+Get source file (<a href="https://github.com/taobao/tsar-mod_nginx">https://github.com/taobao/tsar-mod_nginx</a>)
+</p>
+    </div>
+
+    <div class="dh">Quick start</div>
+    <div class="introduce">
+<p>
+1. Install <a href="http://code.taobao.org/p/tsar/src/">tsar</a>.<br/>
+2. Generate a new module by using <a href="http://code.taobao.org/p/tsar/src/trunk/devel/tsardevel">tsardevel</a>.(see tsar <a href="http://code.taobao.org/p/tsar/wiki/mod/">wiki</a>)<br/>
+<pre class="mod_example">
+tsardevel mod_ngx
+</pre>
+3. Replace mod_ngx.c.
+<pre class="mod_example">
+make
+make install
+</pre>
+4. start tsar.
+<pre class="mod_example">
+tsar --nginx
+</pre>
+</p>
+    </div>
+
+    <div class="dh">Configuration</div>
+    <div class="introduce">
+<p>
+1. Default host is 127.0.0.1 and default port is 80. But we can change both (or one of) the host and port:<br/>
+<b>example:</b>
+<pre class="mod_example">
+export NGX_TSAR_HOST=192.168.0.1
+export NGX_TSAR_PORT=8080
+</pre>
+2. Stub Status module must be included,and add configuration as below:<br/>
+<pre class="mod_example">
+location = /nginx_status {
+    stub_status on;
+}
+</pre>
+3. We can also using unix domain socket, if we set NGX_TSAR_HOST to a filesystem path:<br/>
+<b>example:</b>
+<pre class="mod_example">
+export NGX_TSAR_HOST=/tmp/nginx-tsar.sock
+</pre>
+nginx server(which includes the location /nginx_status) must also listen to the unix domain socket path<br/>
+<pre class="mod_example">
+listen unix:/tmp/nginx-tsar.sock;
+</pre>
+4. The uri and server name sent to the nginx server can alse be changed:<br/>
+<b>example:</b>
+<pre class="mod_example">
+export NGX_TSAR_SERVER_NAME=status.taobao.com
+export NGX_TSAR_URI=/nginx_status
+</pre>
+</p>
+    </div>
+
+</div>
+</div>
+
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
