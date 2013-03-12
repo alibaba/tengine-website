@@ -16,6 +16,7 @@
       <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
       <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
       <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
       <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
     </ul>
   </div>
@@ -40,7 +41,9 @@
         }
     }
 </pre>
-注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。</p>
+注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。模块默认没有编译，需要在编译时打开该模块:
+./configure --with-http_sysguard_module
+</p>
     </div>
     <div class="dh">指令</div>
     <div class="directive">
@@ -75,6 +78,6 @@ Context: http, server, location
     <div class="introduce"><p>该指令用于配置，当保护系统的操作执行时，记录日志时的日志级别。</p></div>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>
