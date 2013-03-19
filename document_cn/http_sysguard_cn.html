@@ -24,14 +24,14 @@
   <div class="clear"></div>
   <div class="one_col more_padding font16">
     <div class="module">ngx_http_sysguard_module</div>
-    <div class="mod_intro"><p>当swap的剩余百分比，load值到设定的值时，就会跳转到action所指定的url。
+    <div class="mod_intro"><p>当swap的剩余百分比，剩下的内存，load值到设定的值时，就会跳转到action所指定的url。
 <pre class="mod_example">
     server {
         sysguard on;
 
         sysguard_load load=10.5 action=/loadlimit;
         sysguard_mem swapratio=20% action=/swaplimit;
-
+        sysguard_mem free=100M action=/freelimit; 
         location /loadlimit {
             return 503;
         }
@@ -39,9 +39,13 @@
         location /swaplimit {
             return 503;
         }
+
+        location /freelimit {
+            return 503;
+        }
     }
 </pre>
-注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。模块默认没有编译，需要在编译时打开该模块:
+注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。模块需要从/proc文件系统中读取内存信息，模块默认没有编译，需要在编译时打开该模块:
 ./configure --with-http_sysguard_module
 </p>
     </div>
@@ -59,11 +63,11 @@ Context: http, server
     </div>
     <div class="introduce"><p>该指令用于配置根据系统的load来限制用户的请求，以保护系统。当系统在一分钟内的load达到number时，将进来的请求转到action所指定的url。如果action没有配置，则直接返回503错误。</p></div>
     <div class="directive">
-Syntax: <b>sysguard_mem</b> swapratio=ratio% [action=/url]<br/>
+Syntax: <b>sysguard_mem</b> [swapratio=ratio%] [free=size] [action=/url]<br/>
 Default: -<br/>
 Context: http, server, location
     </div>
-    <div class="introduce"><p>该指定用于配置根据系统的内存使用状态来限制用户请求，以保护系统。swapratio用于配置当当前交换空间的已使用ratio%时，就将进来的请求跳转到指定的url。如果action没有配置，则直接返回503错误。另外，如果用户自己禁用了交换区间，则配置该指定是不起作用的。</p></div>
+    <div class="introduce"><p>该指定用于配置根据系统的内存使用状态来限制用户请求，以保护系统。swapratio用于配置当当前交换空间的已使用ratio%时，或者剩下的内存少于size时，就将进来的请求跳转到指定的url。如果action没有配置，则直接返回503错误。另外，如果用户自己禁用了交换区间，则配置该指定是不起作用的。free是根据/proc/meminfo的内容来计算的，计算公式是"memfree= free + buffered + cached"</p></div>
     <div class="directive">
 Syntax: <b>sysguard_interval</b> time<br/>
 Default: sysguard_interval 1s<br/>
