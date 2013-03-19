@@ -32,6 +32,7 @@
         sysguard_load load=10.5 action=/loadlimit;
         sysguard_mem swapratio=20% action=/swaplimit;
         sysguard_mem free=100M action=/freelimit; 
+
         location /loadlimit {
             return 503;
         }

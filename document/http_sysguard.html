@@ -67,7 +67,7 @@ Context: http, server, location
     <div class="introduce"><p>Specify the load threshold. <p/>
 When the system load exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL defined.</p></div>
     <div class="directive">
-Syntax: <b>sysguard_mem</b> swapratio=ratio% free=size [action=/url]<br/>
+Syntax: <b>sysguard_mem</b> [swapratio=ratio%] [free=size] [action=/url]<br/>
 Default: none<br/>
 Context: http, server, location
     </div>
