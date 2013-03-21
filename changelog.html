@@ -24,6 +24,24 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_4_4"></a><h4>Tengine-1.4.4 [21 Mar 2013]</h4>
+      <li>Feature: added the session_sticky module by using which one client
+      can be always served by the same upstream server. (dinic) </li>
+      <li>Feature: now the sysguard module can protect the server based on
+      the amount of free memory. (lifeibo) </li>
+      <li>Feature: added support for geoip regional database in geoip module.
+      (jasonlfunk)</li>
+      <li>Feature: log_empty_request can also disable the logs for timeout (408)
+      empty request. (yaoweibin) </li>
+      <li>Change: merged changes between Nginx-1.2.5 and Nginx-1.2.7. (cfsego)</li>
+      <li>Change: CPU affinity is off by default now. (cfsego) </li>
+      <li>Bugfix: fixed a bug that sysguard and upstream_check module didn't
+      compile on Solaris 11. (lifeibo, yaoweibin)</li>
+      <li>Bugfix: fixed a bug with TFS module that it might return bad values.
+      (zhcn381)</li>
+      <li>Bugfix: fixed a bug with TFS module that it might corrupt large files.
+      (zhcn381)</li>
+    </ul>
     <ul><a name="1_4_3"></a><h4>Tengine-1.4.3 [21 Jan 2013]</h4>
       <li>Feature: added the TFS module which provides a RESTful API to Taobao
       File System. (zhcn381, monadbobo) </li>

@@ -25,6 +25,17 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="1_4_4"></a><h4>Tengine-1.4.4 [2013-03-21]</h4>
+    <li>Feature：增加session_sticky模块，可以为客户端和后端服务器提供会话保持功能 [dinic]</li>
+    <li>Feature：sysguard模块增加空闲内存监控功能 [lifeibo] </li>
+    <li>Feature：geoip模块增加对地区数据库的支持 [jasonlfunk] </li>
+    <li>Feature：log_empty_request指令增加对408响应的空请求支持 [yaoweibin] </li>
+    <li>Change：合并Nginx-1.2.5至Nginx-1.2.7的更新 [cfsego] </li>
+    <li>Change：默认关闭CPU亲缘性 [cfsego]</li>
+    <li>Bugfix：修正在Solaris 11上sysguard和upstream_check模块编译出错的问题 [lifeibo, yaoweibin] </li>
+    <li>Bugfix：修正TFS模块返回值可能错误的问题 [zhcn381] </li>
+    <li>Bugfix: 修正TFS模块上传大文件可能出错的问题 [zhcn381] </li>
+    </ul>
     <ul><a name="1_4_3"></a><h4>Tengine-1.4.3 [2013-01-21]</h4>
     <li>Feature：增加TFS模块，可以通过RESTful接口与TFS分布式文件系统通信 [zhcn381, monadbobo] </li>
     <li>Feature：增加$sent_cookie_XXX系列变量，可以获取响应中Set-Cookie头的cookie值 [skoo87] </li>
