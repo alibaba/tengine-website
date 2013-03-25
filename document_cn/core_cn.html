@@ -73,7 +73,7 @@ Context: core
     <div class="introduce"><p>为worker_processes增加参数auto。当设置成auto，tengine将自动启动与cpu数量相同的worker进程。</p></div>
     <div class="directive">
 Syntax: <b>worker_cpu_affinity</b> [mask1 mask2 mask3 ... | auto | off ]<br/>
-Default: worker_cpu_affinity auto<br/>
+Default: worker_cpu_affinity off<br/>
 Context: core
     </div>
     <div class="introduce"><p>为worker_cpu_affinity增加参数auto和off。当设置成auto时，tengine将根据worker的数量自动配置cpu绑定位图。绑定的顺序是按CPU编号从大到小。
