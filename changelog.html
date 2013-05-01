@@ -24,6 +24,19 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_4_5"></a><h4>Tengine-1.4.5 [01 May 2013]</h4>
+      <li>Feature: added the consistent_hash module which dispatches requests
+      to upstream servers based on consistent hashing algorithm of a
+      variable specified. (dinic) </li>
+      <li>Feature: added the "keepalive_timeout" directive to set timeout for
+      the upstream keepalive connections. (jinglong) </li>
+      <li>Feature: now the configure script supports compilation of all modules
+      to be shared or static. (monadbobo) </li>
+      <li>Change: updated the Lua module to 0.7.19. (jinglong) </li>
+      <li>Change: merged the changes of Nginx-1.2.8. (yaoweibin) </li>
+      <li>Bugfix: fixed the compile warnings of syslog and upstream_check
+      modules in GCC-4.4.5. (magicbear) </li>
+    </ul>
     <ul><a name="1_4_4"></a><h4>Tengine-1.4.4 [21 Mar 2013]</h4>
       <li>Feature: added the session_sticky module by using which one client
       can be always served by the same upstream server. (dinic) </li>
