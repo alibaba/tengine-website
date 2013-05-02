@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -57,10 +16,11 @@
       <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
       <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
       <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
       <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
     </ul>
   </div>
-  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
   <div class="clear"></div>
   <div class="one_col more_padding font16">
     <div class="module">Core functionality</div>
@@ -73,7 +33,7 @@ Context: core
     <div class="introduce"><p>为worker_processes增加参数auto。当设置成auto，tengine将自动启动与cpu数量相同的worker进程。</p></div>
     <div class="directive">
 Syntax: <b>worker_cpu_affinity</b> [mask1 mask2 mask3 ... | auto | off ]<br/>
-Default: worker_cpu_affinity auto<br/>
+Default: worker_cpu_affinity off<br/>
 Context: core
     </div>
     <div class="introduce"><p>为worker_cpu_affinity增加参数auto和off。当设置成auto时，tengine将根据worker的数量自动配置cpu绑定位图。绑定的顺序是按CPU编号从大到小。
@@ -88,7 +48,7 @@ Context: core
 <p>worker_cpu_affinity的error log最多显示64个CPU的绑定情况。</p>
     </div>
     <div class="directive">
-Syntax: <b>error_page</b> code ... [=[response]]<br/>
+Syntax: <b>error_page</b> code ... [default] [=[response]]<br/>
 Default: -<br/>
 Context: http, server, location, if in location
     </div>
@@ -121,12 +81,44 @@ Default: request_time_cache on<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
-      <p>设置成'off'时，tengine将不使用时间缓存，$request_time、$request_time_msec和$request_time_usec将会得到更精确的时间。
+      <p>设置成'off'时，Tengine将不使用时间缓存，$request_time、$request_time_msec和$request_time_usec将会得到更精确的时间。
       </p>
     </div>
-
+    <div class="directive">
+Syntax: <b>log_empty_request</b> [on | off]<br/>
+Default: log_empty_request on<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+      <p>设置成'off'时，Tengine将不会记录没有发送任何数据的访问日志。默认情况下，Tengine会在访问日志里面记录一条400状态的日志。
+      </p>
+    </div>
+    <div class="directive">
+Syntax: <b>server_admin</b> admin<br/>
+Default: none<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+        <p>设置网站管理员信息，当打开server_info的时候，显示错误页面时会显示该信息。</p>
+    </div>
+    <div class="directive">
+Syntax: <b>server_info</b> on | off <br/>
+Default: server_info on<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+        <p>当打开server_info的时候，显示错误页面时会显示URL、服务器名称和出错时间。</p>
+    </div>
+    <div class="directive">
+Syntax: <b>server_tag</b> off | customized_tag <br/>
+Default: none<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+        <p>自定义设置HTTP响应的server头，‘off’可以禁止返回server头。如果什么都不设置，就是返回默认Nginx的标识。</p>
+    </div>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>

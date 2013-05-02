@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -74,7 +33,7 @@ Context: main
  When set to 'auto', which is also the default behavior, Tengine will create the same number of worker processes as your CPUs.</p></div>
     <div class="directive">
 Syntax: <b>worker_cpu_affinity</b> [mask1 mask2 mask3 ... | auto | off]<br/>
-Default: worker_cpu_affinity auto<br/>
+Default: worker_cpu_affinity off<br/>
 Context: main
     </div>
     <div class="introduce"><p> Bind worker processes to the sets of CPUs.<p/>
@@ -91,17 +50,72 @@ When set to 'off', Tengine will disable the CPU affinity.
 </p>
     </div>
     <div class="directive">
+Syntax: <b>error_page</b> code ... [default] [=[response]]<br/>
+Default: -<br/>
+Context: http, server, location, if in location
+    </div>
+    <div class="introduce"><p> This directive can specify the page for the specific HTTP response status.
+<ul>
+<li>Tengine also has a 'default' parameter which can be used to clear the error_page settings in higher level blocks.</li>
+</ul></p>
+<p> For example:
+<pre>
+    http {
+        error_page 404 /404.html;
+
+        server {
+            error_page 404 default;
+        }
+    }
+</pre>
+In this server block, the 404 error page will be set to Tengine's default 404 page. </p>
+    </div>
+    <div class="directive">
 Syntax: <b>request_time_cache</b> [on | off]<br/>
 Default: request_time_cache on<br/>
 Context: http, server, location
     </div>
     <div class="introduce">
       <p>
-When set to 'off', tengine will get a more exact time on $request_time, $request_time_msec, $request_time_usec because it does not use time cache.
+When set to 'off', Tengine will get a more precise time on $request_time, $request_time_msec, $request_time_usec because it does not use time cache.
       </p>
+    </div>
+    <div class="directive">
+Syntax: <b>log_empty_request</b> [on | off]<br/>
+Default: log_empty_request on<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+        <p>When you specify it 'off', Tengine will not record any access log when a client issues a connection without any data being sent.
+        By default, it's on. In the above case, it will print a 400 Bad Request message into the access log.
+      </p>
+    </div>
+    <div class="directive">
+Syntax: <b>server_admin</b> admin<br/>
+Default: none<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+        <p>Specify the administrator's information, which will appear in a default 4xx/5xx error response when 'server_info' is turned on.</p>
+    </div>
+    <div class="directive">
+Syntax: <b>server_info</b> on | off <br/>
+Default: server_info on<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+        <p>Show up the server information in a default 4xx/5xx error response. The URL accessed by the user, the hostname serving the request, and the time are included.</p>
+    </div>
+    <div class="directive">
+Syntax: <b>server_tag</b> off | customized_tag <br/>
+Default: none<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce">
+        <p>Specify the customized 'Server' header in the HTTP responses, for example, 'Apache/2.2.22', 'IIS 6.0', 'Lighttpd', etc. You could also suppress the 'Server' header by setting it to 'off'.</p>
     </div>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>

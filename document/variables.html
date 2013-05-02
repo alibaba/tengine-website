@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -64,10 +23,14 @@
   <div class="clear"></div>
   <div class="one_col more_padding font16">
     <div class="module">Variables</div>
+    <div class="directive">$conn_requests</div>
+    <div class="introduce"><p>the sequence number of current request in the keepalive connection</p></div>
+    <div class="directive">$dollar</div>
+    <div class="introduce"><p>The sign of dollar.</p></div>
     <div class="directive">$request_time_msec</div>
-    <div class="introduce"><p>The request processing time, which is in milliseconds.</p></div>
+    <div class="introduce"><p>The request processing time, which is in milliseconds, only used in log_format.</p></div>
     <div class="directive">$request_time_usec</div>
-    <div class="introduce"><p>The request processing time, which is in microseconds</p></div>
+    <div class="introduce"><p>The request processing time, which is in microseconds, only used in log_format.</p></div>
     <div class="directive">$unix_time</div>
     <div class="introduce"><p>The current timestamp, it's the current second since the epoch time of Unix.</p></div>
     <div class="directive">$year</div>
@@ -86,11 +49,13 @@
     <div class="introduce"><p>Current minute, e.g. 35.</p></div>
     <div class="directive">$second</div>
     <div class="introduce"><p>Current second, e.g. 12.</p></div>
+    <div class="directive">$sent_cookie_XXX</div>
+    <div class="introduce"><p>The cookie value of XXX in the Set-Cookie headers</p></div>
     <div class="directive">$host_comment</div>
     <div class="introduce"><p>Host and the timestamp, e.g. <br/>
  “&lt;!-- localhost Thu, 29 Dec 2011 10:10:56 GMT --&gt;”.</p></div>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>

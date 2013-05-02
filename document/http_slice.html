@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+<div class="module">ngx_http_slice_module</div>
+<p>This module can be thought out as a <em>reverse byte-range</em> request
+header. It's main utility is to allow Nginx to slice a big file in
+small pieces (byte-ranges) while permitting to use on-the-fly gzip
+compression.</p>
+
+<p>A typical example is for allowing someone to download a large video
+file while keeping the bandwith usage minimal. This might also be used
+as device for selling a video file by pieces where each link points to
+different zones of the file splitted by file ranges.</p>
+
+<p>Other use would be to use a generic CSS file and use only part of it
+for each section of a site. Granted that byte-range slicing isn't the
+most intuitive for such.</p>
+
+<p>Note also that using arguments is more <strong>useful</strong> than byte-ranges in
+the sense that they can be set in a normal link, while byte ranges
+require a special <a href="https://en.wikipedia.org/wiki/Byte_serving">HTTP header</a>.</p>
+
+<div class="dh">Examples</div>
+<pre class="mod_example">location ^~ /video-dump/ {
+    slice; # enable slicing
+    slice_start_arg s;
+    slice_end_arg e;    
+}
+</pre>
+
+<p>So we would request the first 1k of the file like this:</p>
+
+<pre class="mod_example"><code>http://example.com/video-dump/large_vid.mp4?s=0&amp;e=1024
+</code></pre>
+
+<p>Notice <code>s=0</code>, start at <code>0</code> and <code>e=1024</code>, stop at <code>1024</code> bytes (1k). </p>
+
+<div class="dh">Directives</div>
+<p><strong>slice</strong></p>
+
+<p><strong>context:</strong> <code>location</code></p>
+
+<p>It enables the content slicing in a given location.</p>
+
+<p><br/>
+</p>
+
+<p><strong>slice_arg_begin</strong> <code>string</code></p>
+
+<p><strong>default:</strong> <code>begin</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>Defines the argument that defines the request range of bytes <strong>start</strong>.</p>
+
+<p><br/>
+</p>
+
+<p><strong>slice_arg_end</strong> <code>string</code></p>
+
+<p><strong>default:</strong> <code>end</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>Defines the argument that defines the request range of bytes <strong>end</strong>.</p>
+
+<p><br/>
+</p>
+
+<p><strong>slice_header</strong> <code>string</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>Defines the string to be used as the <strong>header</strong> of each slice being
+served by Nginx.</p>
+
+<p><br/>
+</p>
+
+<p><strong>slice_footer</strong> <code>string</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>Defines the string to be used as the <strong>footer</strong> of each slice being
+served by Nginx.</p>
+
+<p><br/>
+</p>
+
+<p><strong>slice_header_first</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>default:</strong> <code>on</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>If set to <code>off</code> and when requesting the <strong>first</strong> byte of the file do <strong>not
+serve</strong> the header.</p>
+
+<p>This directive is particularly useful to differentiate the <strong>first</strong>
+slice from the remaining slices. The first slice is the one which has
+<strong>no</strong> header.</p>
+
+<p><br/>
+</p>
+
+<p><strong>slice_footer_last</strong> <code>on</code> |  <code>off</code></p>
+
+<p><strong>default:</strong> <code>on</code></p>
+
+<p><strong>context:</strong> <code>http, server, location</code></p>
+
+<p>If set to <code>off</code> and when requesting the <strong>last</strong> byte of the file do <strong>not
+serve</strong> the header.</p>
+
+<p>This directive is particularly useful to differentiate the <strong>last</strong>
+slice from the remaining slices. The last slice is the one which has
+<strong>no</strong> footer.</p>
+
+<br />
+
+<p>Here's some examples that explore all the options.</p>
+
+<h3>Serve a huge DB file while sending headers except on the first slice</h3>
+
+<pre class="mod_example"><code>location ^~ /dbdumps/ {
+    slice; # enable slicing
+    slice_start_arg first;
+    slice_end_arg last;
+    slice_header '-- **db-slice-start**';
+    slice_header_first off;
+}
+</code></pre>
+
+<p>Then a request like this:</p>
+
+<pre class="mod_example"><code>http://example.com/dbdumps/somedb.sql?first=0&amp;last=1048576
+</code></pre>
+
+<p>Send the first 1M and skip the <code>-- **db-slice-start**</code> header.</p>
+
+<h3>Serve a huge DB file while sending headers except on the first slice</h3>
+
+<pre class="mod_example"><code>location ^~ /dbdumps/ {
+    slice; # enable slicing
+    slice_start_arg first;
+    slice_end_arg last;
+    slice_header '-- **db-slice-start**';
+    slice_header_first off;
+    slice_footer '-- **db-slice-end**';
+}
+</code></pre>
+
+<p>This differs from the previous in the sense that it sends a footer.</p>
+
+<h3>Serve a huge DB file while sending headers except on the first slice and send footer except on the last slice</h3>
+
+<pre class="mod_example"><code>location ^~ /dbdumps/ {
+    slice; # enable slicing
+    slice_start_arg first;
+    slice_end_arg last;
+    slice_header '-- **db-slice-start**';
+    slice_header_first off;
+    slice_footer '-- **db-slice-end**';
+    slice_footer_last off; 
+}
+</code></pre>
+
+<p>Then a request like this:</p>
+
+<pre class="mod_example"><code>http://example.com/dbdumps/somedb.sql?first=0&amp;last=1048576
+</code></pre>
+
+<p>Send the first 1M and skip the <code>-- **db-slice-start**</code> header.</p>
+
+<p>If the file is 200MB, we get the last slice with:</p>
+
+<pre class="mod_example"><code>http://example.com/dbdumps/somedb.sql?first=208666624&amp;last=209715200
+</code></pre>
+
+<p>this last slice has no footer.</p>
+
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

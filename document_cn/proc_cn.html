@@ -9,28 +9,28 @@
 
 <body>
 <div id="container">
-  <div id="menu">
+  <div id="menu_cn">
     <ul>
-      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
-      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
-      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
-      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
-      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
-	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
     </ul>
   </div>
-  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
   <div class="clear"></div>
   <div class="one_col more_padding font16">
 
-
 <br /><br />
 
-<p>provides a mechanism to support standalone processes</p>
+<p>提供一种可以通过实现模块来启动独立进程的机制</p>
 
-<p>you can find the sample at <a href="../../examples/ngx_proc_daytime_module">http://tengine.taobao.org/examples/ngx_proc_daytime_module</a></p>
+<p>你可以在<a href="../../examples/ngx_proc_daytime_module">http://tengine.taobao.org/examples/ngx_proc_daytime_module</a>这里找到一个示例模块</p>
 
-<div class="dh">Examples</div>
+<div class="dh">例子</div>
 
 <pre class="mod_example"><code>processes {
     process echo {
@@ -52,9 +52,10 @@
 }
 </code></pre>
 
-<div class="dh">Directives</div>
+<div class="dh">指令</div>
 
 <br /><br />
+
 
 <div class="directive"><p>Syntax: <strong>process</strong> <code>name { }</code></p>
 
@@ -70,7 +71,7 @@
 
 <p>Context: <code>process</code></p></div>
 
-<p>Specify the number of processes which will be forked.</p>
+<p>指定启动的进程数。</p>
 
 <br /><br />
 
@@ -80,7 +81,7 @@
 
 <p>Context: <code>process</code></p></div>
 
-<p>Priority is a value in the range -20 to 20. Lower priorities cause more favorable scheduling.</p>
+<p>指定进程的优先级(-20 - 20 之间)，越低的数值其被调度的优先级越高。</p>
 
 <br /><br />
 
@@ -90,7 +91,7 @@
 
 <p>Context: <code>process</code></p></div>
 
-<p>The directive specifies the time to wait before process starts.</p>
+<p>设置进程启动的延迟时间。</p>
 
 <br /><br />
 
@@ -100,7 +101,7 @@
 
 <p>Context: <code>process</code></p></div>
 
-<p>The directive specifies whether the process will be restarted by nginx when it encounters some errors and exits.</p>
+<p>如果设置了这个指令，进程在异常推出时会被Tengine重新启动。</p>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>

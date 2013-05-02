@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -74,18 +33,20 @@
     <h3>Modules</h3>
       <li><a href="document/core.html">Core functionality</a></li>
       <li><a href="document/dso.html">DSO module</a></li>
+      <li><a href="document/proc.html">Proc module</a></li>
       <li><a href="document/http_backtrace.html">Backtrace module</a></li>
-      <li><a href="https://github.com/taobao/nginx-http-concat">Concat module</a></li>
+      <li><a href="document/http_concat.html">Concat module</a></li>
       <li><a href="document/http_headers.html">Headers module</a></li>
       <li><a href="document/http_footer_filter.html">Footer module</a></li>
-      <li><a href="document/http_limit_req.html">Limit request enhancement</a></li>
+      <li><a href="document/http_limit_req.html">Limit Request enhancement</a></li>
       <li><a href="document/http_log.html">Logging enhancement</a></li>
-      <li><a href="document/proc.html">Proc module</a></li>
-      <li><a href="https://github.com/taobao/nginx-http-slice">Slice module</a></li>      
+      <li><a href="https://github.com/chaoslawful/lua-nginx-module/blob/master/README.markdown">Lua module(v0.5.12)</a></li>
+      <li><a href="document/http_slice.html">Slice module</a></li>      
       <li><a href="document/http_ssl.html">SSL enhancement</a></li>
-      <li><a href="document/http_stub_status.html">Stub status module</a></li>
+      <li><a href="document/http_stub_status.html">Stub Status module</a></li>
       <li><a href="document/http_sysguard.html">Sysguard module</a></li>
-      <li><a href="document/http_upstream_check.html">Upstream check module</a></li>
+      <li><a href="https://github.com/alibaba/nginx-tfs/blob/master/ReadMe.markdown">TFS module</a></li>
+      <li><a href="document/http_upstream_check.html">Upstream Check module</a></li>
       <li><a href="document/http_user_agent.html">User Agent module</a></li>
       <li><a href="document/variables.html">Variables</a></li>
     <p/>
@@ -93,6 +54,6 @@
       <li><a href="http://blog.zhuzhaoyuan.com/2012/01/a-mechanism-to-help-write-web-application-firewalls-for-nginx/">How to write an input body filter module</a>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>

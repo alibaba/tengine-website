@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -57,14 +16,44 @@
       <li><a href="documentation_cn.html"><img src="images/icon-doc.png"/>文档</a></li>
       <li><a href="faq_cn.html"><img src="images/icon-faq.png"/>FAQ</a></li>
       <li><a href="contact_cn.html"><img src="images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="book/">开发教程</a></li>
 	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
     </ul>
   </div>
-  <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
+  <div id="logo"><a href="index_cn.html"><img src="images/logo.png" alt="tengine" /></a></div>
   <div class="clear"></div>
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="1_4_5"></a><h4>Tengine-1.4.5 [2013-05-01]</h4>
+    <li>Feature：增加一致性hash模块，可以为后端服务器提供一致性hash的负载均衡方法 [dinic]</li>
+    <li>Feature：通过keepalive_timeout指令可以设置后端keepalive连接的超时时间 [jinglong]</li>
+    <li>Feature：加入所有模块静态编译或者所有模块动态编译的编译选项 [monadbobo]</li>
+    <li>Change：更新Lua模块至0.7.19 [jinglong]</li>
+    <li>Change：合并Nginx-1.2.8的更新 [yaoweibin]</li>
+    <li>Bugfix：修正syslog和upstream_check模块在GCC-4.4.5上的编译警告 [magicbear]</li>
+    </ul>
+    <ul><a name="1_4_4"></a><h4>Tengine-1.4.4 [2013-03-21]</h4>
+    <li>Feature：增加session_sticky模块，可以为客户端和后端服务器提供会话保持功能 [dinic]</li>
+    <li>Feature：sysguard模块增加空闲内存监控功能 [lifeibo] </li>
+    <li>Feature：geoip模块增加对地区数据库的支持 [jasonlfunk] </li>
+    <li>Feature：log_empty_request指令增加对408响应的空请求支持 [yaoweibin] </li>
+    <li>Change：合并Nginx-1.2.5至Nginx-1.2.7的更新 [cfsego] </li>
+    <li>Change：默认关闭CPU亲缘性 [cfsego]</li>
+    <li>Bugfix：修正在Solaris 11上sysguard和upstream_check模块编译出错的问题 [lifeibo, yaoweibin] </li>
+    <li>Bugfix：修正TFS模块返回值可能错误的问题 [zhcn381] </li>
+    <li>Bugfix: 修正TFS模块上传大文件可能出错的问题 [zhcn381] </li>
+    </ul>
+    <ul><a name="1_4_3"></a><h4>Tengine-1.4.3 [2013-01-21]</h4>
+    <li>Feature：增加TFS模块，可以通过RESTful接口与TFS分布式文件系统通信 [zhcn381, monadbobo] </li>
+    <li>Feature：增加$sent_cookie_XXX系列变量，可以获取响应中Set-Cookie头的cookie值 [skoo87] </li>
+    <li>Feature：syslog指令的发送地址支持域名 [cfsego] </li>
+    <li>Change：upstream块中的server指令增加id属性 [yaoweibin] </li>
+    <li>Bugfix：DSO模块修正reload时可能失败的问题 [monadbobo] </li>
+    <li>Bugfix：修复upstream_check模块当超时时间长于检查时间可能导致段错误的问题 [yaoweibin] </li>
+    <li>Bugfix：修复user_agent模块在请求缺少User-Agent头会段错误的问题 [dinic] </li>
+    <li>Bugfix：修复sysguard模块在Mac OS下面不能工作的问题 [lizi] </li>
+    </ul>
     <ul><a name="1_4_2"></a><h4>Tengine-1.4.2 [2012-11-22]</h4>
     <li>Feature：增加--dso-tool-path配置选项，可以选择dso_tool脚本的安装目录 [monadbobo]</li>
     <li>Feature：增加$unix_time变量，表示当前的时间戳秒数 [yaoweibin]</li>
@@ -189,6 +178,6 @@
     </ul>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>
