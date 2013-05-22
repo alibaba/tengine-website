@@ -48,7 +48,7 @@ server {
 
 <pre class="mod_example"><code>#insert + indirect模式：
 upstream test {
-  session_sticky session_sticky cookie=uid domain=www.xxx.com fallback=on path=/ mode=insert option=indirect;
+  session_sticky cookie=uid domain=www.xxx.com fallback=on path=/ mode=insert option=indirect;
   server  127.0.0.1:8080;
 }
 
