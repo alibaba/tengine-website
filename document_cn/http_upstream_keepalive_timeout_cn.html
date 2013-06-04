@@ -29,7 +29,7 @@
 <pre>
     upstream backend {
         server 127.0.0.1:8080;
-        keepalive;
+        keepalive 32;
         keepalive_timeout 30s; # 设置后端连接的最大idle时间为30s
     }
 </pre></p>
