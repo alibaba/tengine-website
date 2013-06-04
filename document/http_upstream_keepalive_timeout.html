@@ -28,7 +28,7 @@ Enhance the ngx_http_upstream_keepalive_module to support setting keepalive time
 <pre>
     upstream backend {
         server 127.0.0.1:8080;
-        keepalive;
+        keepalive 32;
         keepalive_timeout 30s; # set keepalive_timeout to 30s
     }
 </pre></p>
