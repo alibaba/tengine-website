@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">ngx_http_upstream_keepalive_module connection pool for every single server address in upstream</div>
+    <div class="mod_intro"><p>
+        Nginx only create one connection pool for each upstream. But Tengine added a new parameter (per_server) for the directive - keepalive, it is able to create a different pool for every single server in the upstream.
+<pre>
+    upstream backend {
+        server 127.0.0.1:8080;
+        keepalive 32 per_server;
+    }
+</pre></p>
+    </div>
+ <div class="dh">directive</div>
+    <div class="directive">
+        Syntax: keepalive time <b>per_server</b><br/>
+Default: -<br/>
+Context: upstream
+    </div>
+    <div class="introduce">
+<p>While using the parameter - per_server in directive keepalive, Tengine will ctreate a different pool for every single server in this upstream. The size of each pool is 32 in the example.</p>
+    </div>
+<div class="dh">variable</div>
+    <div class="directive">
+        <b>upstream_cached_connection</b>
+    </div>
+    <div class="introduce">
+<p>keeps the results that whether a connection was got from the connected pool, if so the value is equal to 1, otherwise 0. Several results are separated by commas and colons like in the $upstream_addr variable.</p>
+    </div>
+</div>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
