@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+
+<div class="module">consistent hash module</div>
+
+<div class="dh">Description</div>
+
+<ul>
+<li><p>This module provides consistent hashing algorithm for upstream load-balancing.</p></li>
+<li><p>If one of backend servers is down, the request of this client will be transferred to another server.</p></li>
+<li><p><code>server</code> <em>id</em> field: Id field can be used as server flag. If id field is not set, ip address and port are used to identify server. You can use id field to set server flag mannually. In that case, although ip address or port of a server is changed, id can still identify the server. BTW, it can reduce remapping keys effectively to use id field.</p></li>
+<li><p><code>server</code> <em>weight</em> field: server weight, the number of virtual peers</p></li>
+<li><p>Algorithm: It supposes that 1 server is mapped to m virtual peers, so n servers correspond to n*m virtual peers. All these peers will be mapped to hash ring on average. Every time request comes, it calculates a hash key via configuration parameter, and finds a peer on the hash ring nearest to the location specified by the hash key.</p></li>
+<li><p>It can dispatch requests to backend servers on average according to nginx configuration parameter.</p>
+
+<p><code>consistent_hash $remote_addr</code>: mapping via client ip address</p>
+
+<p><code>consistent_hash $request_uri</code>: mapping via request-uri</p>
+
+<p><code>consistent_hash $args</code>: mapping via url query string</p></li>
+</ul>
+
+<div class="dh">Example</div>
+
+<pre class="mod_example"><code>worker_processes  1;
+
+http {
+    upstream test {
+        consistent_hash $request_uri;
+
+        server 127.0.0.1:9001 id=1001 weight=3;
+        server 127.0.0.1:9002 id=1002 weight=10;
+        server 127.0.0.1:9003 id=1003 weight=20;
+    }
+}
+</code></pre>
+
+<div class="dh">Directives</div>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>consistent_hash variable_name</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>upstream</em></p>
+
+<p>This directive causes requests to be distributed between upstreams based on consistent hashing alogrithm. And it uses nginx variables, specified by variable_name, as input data of hash function.</p>
+
+<div class="dh">Installation</div>
+
+<ul>
+<li><p>This module is built by default, it can be disabled with the <code>--without-http_upstream_consistent_hash_module</code> configuration parameter.</p>
+
+<p>$ ./configure</p></li>
+<li><p>compile</p>
+
+<p>$ make</p></li>
+<li><p>install</p>
+
+<p>$ make install</p></li>
+</ul>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
