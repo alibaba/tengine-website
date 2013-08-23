@@ -31,7 +31,7 @@
 
         sysguard_load load=10.5 action=/loadlimit;
         sysguard_mem swapratio=20% action=/swaplimit;
-        sysguard_mem free=100M action=/freelimit; 
+        sysguard_mem free=100M action=/freelimit;
 
         location /loadlimit {
             return 503;
@@ -58,11 +58,11 @@ Context: http, server, location
     </div>
     <div class="introduce"><p>打开或者关闭这个模块</p></div>
     <div class="directive">
-Syntax: sysguard_load load=number [action=/url]<br/>
+Syntax: sysguard_load load=[ncpu*]number [action=/url]<br/>
 Default: none<br/>
 Context: http, server
     </div>
-    <div class="introduce"><p>该指令用于配置根据系统的load来限制用户的请求，以保护系统。当系统在一分钟内的load达到number时，将进来的请求转到action所指定的url。如果action没有配置，则直接返回503错误。</p></div>
+    <div class="introduce"><p>该指令用于配置根据系统的load来限制用户的请求，以保护系统。当系统在一分钟内的load达到number时，将进来的请求转到action所指定的url。如果action没有配置，则直接返回503错误。load的数值还支持使用ncpu*系数的方式来配置，ncpu表示cpu核数，乘以固定的系数得出期望限制的load值，如: load=ncpu*1.5。</p></div>
     <div class="directive">
 Syntax: <b>sysguard_mem</b> [swapratio=ratio%] [free=size] [action=/url]<br/>
 Default: -<br/>
