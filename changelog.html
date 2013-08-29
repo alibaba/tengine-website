@@ -24,6 +24,20 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_5_1"></a><h4>Tengine-1.5.1 [29 Aug 2013]</h4>
+      <li>Feature: added the directive 'retry_cached_connection' which could
+      disable unconditional retries with a cached backend connection.
+      (yaoweibin)</li>
+      <li>Feature: added the argument of 'ncpu' to 'sysguard_load' directive.
+      (yzprofile)</li>
+      <li>Bugfix: fixed a bug in referer module that regex rules might be
+       invalid with https requests. (lilbedwin)</li>
+      <li>Bugfix: fixed a bug that the trim module might send a zero-size
+       buffer. (taoyuanyuan)</li>
+      <li>Bugfix: fixed a compile error when using the configure option
+       '--without-dso'. (zhuzhaoyuan)</li>
+      <li>Bugfix: fixed two compile warnings. (zzjin, diwayou)</li>
+    </ul>
     <ul><a name="1_5_0"></a><h4>Tengine-1.5.0 [31 Jul 2013]</h4>
       <li>Feature: added ABI compatibility verification for DSO modules.
       (monadbobo) </li>
