@@ -25,6 +25,14 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="1_5_1"></a><h4>Tengine-1.5.1 [2013-08-29]</h4>
+    <li>Feature: 增加retry_cached_connection指令，可以关闭对后端长连接的无条件重试 [yaoweibin]</li>
+    <li>Feature: sysguard模块的sysguard_load指令中加入ncpu参数 [yzprofile]</li>
+    <li>Bugfix：修复referer模块在https协议时正则匹配失效的问题 [lilbedwin]</li>
+    <li>Bugfix：修复trim模块可能产生0长度块的问题 [taoyuanyuan]</li>
+    <li>Bugfix：修复在使用--without-dso选项时出现的编译错误 [zhuzhaoyuan]</li>
+    <li>Bugfix：修复两个编译警告 [zzjin, diwayou]</li>
+    </ul>
     <ul><a name="1_5_0"></a><h4>Tengine-1.5.0 [2013-07-31]</h4>
     <li>Feature: 增加DSO（动态模块加载）兼容性校验机制 [monadbobo]</li>
     <li>Feature: 增加了请求体不缓存到磁盘的机制，HTTP代理和FastCGI模块收到部分请求体即可以转发给后端服务器 [yaoweibin]</li>
