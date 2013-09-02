@@ -65,7 +65,7 @@ Default: none<br/>
 Context: http, server, location
     </div>
     <div class="introduce"><p>Specify the load threshold. <p/>
-When the system load exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL defined.</p></div>
+When the system load exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL defined. This directive also support using ncpu*ratio to instead of the fixed threshold, 'ncpu' means the number of cpu's cores, you can use this directive like this: load=ncpu*1.5</p></div>
     <div class="directive">
 Syntax: <b>sysguard_mem</b> [swapratio=ratio%] [free=size] [action=/url]<br/>
 Default: none<br/>
