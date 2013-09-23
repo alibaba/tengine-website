@@ -231,7 +231,9 @@ ngx_proc_daytime_accept(ngx_event_t *ev)
     ngx_socket_t       s;
     ngx_connection_t  *lc;
 
+    socklen = NGX_SOCKADDRLEN;
     lc = ev->data;
+
     s = accept(lc->fd, (struct sockaddr *) sa, &socklen);
     if (s == -1) {
         return;
