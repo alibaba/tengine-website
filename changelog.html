@@ -24,6 +24,14 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_5_2"></a><h4>Tengine-1.5.2 [22 Nov 2013]</h4>
+      <li>Security: a character following an unescaped space in a request line
+      was handled incorrectly (CVE-2013-4547); the bug had appeared in
+      0.8.41. Thanks to Ivan Fratric of the Google Security Team.</li>
+      <li>Bugfix: fix a bug of 'nodelay' might be ignored in limit_req module.
+      (cfsego)</li>
+      <li>Bugfix: fix a bug in trim module when processing javascript comment.
+      (taoyuanyuan)</li>
     <ul><a name="1_5_1"></a><h4>Tengine-1.5.1 [29 Aug 2013]</h4>
       <li>Feature: added the directive 'retry_cached_connection' which could
       disable unconditional retries with a cached backend connection.
