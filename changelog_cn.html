@@ -17,7 +17,7 @@
       <li><a href="faq_cn.html"><img src="images/icon-faq.png"/>FAQ</a></li>
       <li><a href="contact_cn.html"><img src="images/icon-contact.png"/>联系我们</a></li>
       <li id="book"><a href="book/">开发教程</a></li>
-	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
+         <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
     </ul>
   </div>
   <div id="logo"><a href="index_cn.html"><img src="images/logo.png" alt="tengine" /></a></div>
@@ -25,6 +25,29 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="2_0_0"></a><h4>Tengine-2.0.0 [2014-01-08]</h4>
+    <li>Feature: 增强DSO模块，编译动态模块不再依赖原始编译环境 [monadbobo]</li>
+    <li>Feature: 支持SPDY v3协议，自动检测同一端口的SPDY请求和HTTP请求 [lilbedwin、chobits]</li>
+    <li>Feature: 支持设置proxy、memcached、fastcgi、scgi、uwsgi在后端失败时的重试次数 [supertcy]</li>
+    <li>Feature: tfs模块在RcServer心跳时汇报访问统计 [zhcn381]</li>
+    <li>Feature: if指令支持比较数值大小：'>'、'<'、'>='、'<=' [flygoast]</li>
+    <li>Feature: 健康检查模块支持长连接检查 [lilbedwin]</li>
+    <li>Feature: trim模块支持SSI和ESI的注释 [taoyuanyuan]</li>
+    <li>Feature: expires_by_types指令支持使用通配符，例如'text/*'匹配子类型 [zhcn381]</li>
+    <li>Feature: 增加$base64_decode_变量前缀，支持计算指定变量的base64解压结果 [yzprofile]</li>
+    <li>Feature: 增加$md5_encode_变量前缀，支持计算指定变量的md5哈希 [yzprofile]</li>
+    <li>Feature: 增加$time_http变量，支持按http格式输出当前时间 [flygoast]</li>
+    <li>Feature: 增加$full_request变量，取得原始的请求url，包括协议类型和域名 [yzprofile]</li>
+    <li>Feature: 增加$escape_uri_变量前缀，支持对指定变量进行url转义 [yzprofile]</li>
+    <li>Feature: 增加$raw_uri变量，支持取得不含参数的原始uri [flygoast]</li>
+    <li>Feature: 支持按微秒记录子请求的请求时间 [jinglong]</li>
+    <li>Feature: 增加API，支持对url进行base64编码 [lilbedwin]</li>
+    <li>Change: 合并nginx-1.4.4版本的修改 [cfsego]</li>
+    <li>Change: 修改stub_status模块，不对子请求进行统计 [jinglong]</li>
+    <li>Bugfix: 修正footer模块，不处理含有Content-Encoding头的响应 [yaoweibin]</li>
+    <li>Bugfix: 修正client_body_postpone_size指令设置为0时出现的问题 [yaoweibin]</li>
+    <li>Bugfix: 修正Lua模块编译时出现警告 [diwayou]</li>
+    </ul>
     <ul><a name="1_5_2"></a><h4>Tengine-1.5.2 [2013-11-22]</h4>
     <li>Security: 修复CVE-2013-4547安全漏洞</li>
     <li>Bugfix: 修复limit_req模块中nodelay无效的问题 [cfsego]</li>
@@ -97,8 +120,8 @@
     <li>Feature： 加入$dollar变量, 它的值就是美元符号 [zhuzhaoyuan]</li>
     <li>Feature： 为worker_cpu_affinity指令加入off选项 [cfsego]</li>
     <li>Change： 当工作进程异常退出以后，新进程不会绑定CPU亲缘性 [cfsego]</li>
-    <li>Bugfix:  修正在Mac OS操作系统下，Lua模块与LuaJIT动态编译时出现的错误 [monadbobo]</li>
-    <li>Bugfix:  修正动态编译第三方filter模块时出现的模块执行顺序错误 [monadbobo]</li>
+    <li>Bugfix: 修正在Mac OS操作系统下，Lua模块与LuaJIT动态编译时出现的错误 [monadbobo]</li>
+    <li>Bugfix: 修正动态编译第三方filter模块时出现的模块执行顺序错误 [monadbobo]</li>
     </ul>
     <ul><a name="1_4_0"></a><h4>Tengine-1.4.0 [2012-09-05]</h4>
     <li>Feature： 增加动态模块加载支持（DSO），要添加一个模块不再需要重新编译tengine了 [monadbobo]</li>
