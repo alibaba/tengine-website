@@ -32,7 +32,7 @@
     <ul>
       <li>All features of Nginx-1.4.4 are inherited, i.e., it is 100% compatible with Nginx.</li>
       <li><a href="document/dso.html">Dynamic module loading support (DSO)</a>. You don't have to recompile Tengine when adding new modules to it.</li>
-      <li>SPDY v3 support, and SPDY/HTTP servers can listen on the same port.</li>
+      <li><a href="https://github.com/chobits/tengine/blob/spdy_v3_doc/docs/modules/ngx_http_spdy_module.md">SPDY v3</a> support, and SPDY/HTTP servers can listen on the same port.</li>
       <li>Sends <a href="document/http_core.html">unbuffered upload</a> directly to HTTP and FastCGI backend servers, which saves disk I/Os.</li>
       <li>More load balancing methods, e.g., <a href="document/http_upstream_consistent_hash.html">consistent hashing</a>, <a href="document/http_upstream_session_sticky.html">session persistence</a> and <a href="document/http_upstream_check.html">upstream health check</a>.</li>
       <li><a href="http://blog.zhuzhaoyuan.com/2012/01/a-mechanism-to-help-write-web-application-firewalls-for-nginx/">Input body filter</a> support. It's quite handy to write Web Application Firewalls using this mechanism.</li>
