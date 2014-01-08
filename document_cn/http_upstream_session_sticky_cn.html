@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu_cn">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+<div class="module">ngx_http_upstream_session_sticky_module</div>
+
+<p>该模块是一个负载均衡模块，通过cookie实现客户端与后端服务器的会话保持, 在一定条件下可以保证同一个客户端访问的都是同一个后端服务器。</p>
+
+<div class="dh">Example 1</div>
+
+<pre class="mod_example"><code># 默认配置：cookie=route mode=insert fallback=on
+upstream foo {
+   server 192.168.0.1;
+   server 192.168.0.2;
+   session_sticky;
+}
+
+server {
+    location / {
+        proxy_pass http://foo;
+    }
+}
+</code></pre>
+
+<div class="dh">Example 2</div>
+
+<pre class="mod_example"><code>#insert + indirect模式：
+upstream test {
+  session_sticky cookie=uid domain=www.xxx.com fallback=on path=/ mode=insert option=indirect;
+  server  127.0.0.1:8080;
+}
+
+server {
+  location / {
+    #在insert + indirect模式或者prefix模式下需要配置session_sticky_hide_cookie
+    #这种模式不会将保持会话使用的cookie传给后端服务，让保持会话的cookie对后端透明
+    session_sticky_hide_cookie upstream=test;
+    proxy_pass http://test;
+  }
+}
+</code></pre>
+
+<div class="dh">指令</div>
+
+<br /><br />
+
+<p>语法：<strong>session_sticky</strong> <code>[cookie=name] [domain=your_domain] [path=your_path] [maxage=time] [mode=insert|rewrite|prefix] [option=indirect] [maxidle=time] [maxlife=time] [fallback=on|off] [hash=plain|md5]</code></p>
+
+<p>默认值：<code>session_sticky cookie=route mode=insert fallback=on</code></p>
+
+<p>上下文：<code>upstream</code></p>
+
+<p>说明:</p>
+
+<p>本指令可以打开会话保持的功能，下面是具体的参数：</p>
+
+<ul>
+<li><code>cookie</code>设置用来记录会话的cookie名称</li>
+<li><code>domain</code>设置cookie作用的域名，默认不设置</li>
+<li><code>path</code>设置cookie作用的URL路径，默认不设置</li>
+<li><code>maxage</code>设置cookie的生存期，默认不设置，即为session cookie，浏览器关闭即失效</li>
+<li><p><code>mode</code>设置cookie的模式:</p>
+
+<ul>
+<li><strong>insert</strong>: 在回复中本模块通过Set-Cookie头直接插入相应名称的cookie。</li>
+<li><strong>prefix</strong>: 不会生成新的cookie，但会在响应的cookie值前面加上特定的前缀，当浏览器带着这个有特定标识的cookie再次请求时，模块在传给后端服务前先删除加入的前缀，后端服务拿到的还是原来的cookie值，这些动作对后端透明。如："Cookie: NAME=SRV~VALUE"。</li>
+<li><strong>rewrite</strong>: 使用服务端标识覆盖后端设置的用于session sticky的cookie。如果后端服务在响应头中没有设置该cookie，则认为该请求不需要进行session sticky，使用这种模式，后端服务可以控制哪些请求需要sesstion sticky，哪些请求不需要。</li>
+</ul></li>
+<li><p><code>option</code> 设置用于session sticky的cookie的选项，可设置成indirect或direct。indirect不会将session sticky的cookie传送给后端服务，该cookie对后端应用完全透明。direct则与indirect相反。</p></li>
+<li><code>maxidle</code>设置session cookie的最长空闲的超时时间</li>
+<li><code>maxlife</code>设置session cookie的最长生存期</li>
+<li><code>fallback</code>设置是否重试其他机器，当sticky的后端机器挂了以后，是否需要尝试其他机器</li>
+<li><code>hash</code> 设置cookie中server标识是用明文还是使用md5值，默认使用md5</li>
+</ul>
+
+<br /><br />
+
+<p>语法: <strong>session_sticky_hide_cookie</strong> upstream=name;</p>
+
+<p>默认值: none</p>
+
+<p>上下文： server, location</p>
+
+<p>说明：</p>
+
+<p>配合proxy_pass指令使用。用于在insert+indirect模式和prefix模式下删除请求用于session sticky的cookie，这样就不会将该cookie传递给后端服务。upstream表示需要进行操作的upstream名称。</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

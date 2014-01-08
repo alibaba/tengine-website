@@ -1,0 +1,3 @@
+ngx_addon_name=ngx_proc_daytime_module
+PROCS_MODULES="$PROCS_MODULES ngx_proc_daytime_module"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_proc_daytime_module.c"

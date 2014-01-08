@@ -163,14 +163,18 @@ div#menu li {
 
 div#menu_cn {
   margin-top: 0px;
-  padding-left: 500px;
-  width: 730px;
+  padding-left: 450px;
+  width: 830px;
 }
 
 div#menu_cn a {
   font-size: 18px;
   text-decoration: none;
   color: #333333;
+}
+
+div#menu_cn #book a {
+  color: #f00;
 }
 
 div#menu_cn #lang {

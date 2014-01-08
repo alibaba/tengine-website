@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">ngx_http_upstream_keepalive_module长连接超时设置</div>
+    <div class="mod_intro"><p>
+增加nginx后端长连接的超时支持:
+<pre>
+    upstream backend {
+        server 127.0.0.1:8080;
+        keepalive 32;
+        keepalive_timeout 30s; # 设置后端连接的最大idle时间为30s
+    }
+</pre></p>
+    </div>
+ <div class="dh">指令</div>
+    <div class="directive">
+        Syntax: <b>keepalive_timeout</b> time<br/>
+Default: -<br/>
+Context: upstream
+    </div>
+    <div class="introduce">
+<p>该指令设置后端长连接的最大空闲超时时间，参数的时间单位可以是s（秒），ms（毫秒），m（分钟）。默认时间单位是秒。</p>
+    </div>
+</div>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

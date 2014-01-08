@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">Tengine/Nginx module for tsar</div>
+这是一个tsar模块，它可以从Tengine/Nginx端采集数据.
+
+    <div class="dh">源文件</div>
+    <div class="introduce">
+<p>
+下载源文件 (<a href="https://github.com/taobao/tsar-mod_nginx">https://github.com/taobao/tsar-mod_nginx</a>)
+</p>
+    </div>
+
+    <div class="dh">使用指南</div>
+    <div class="introduce">
+<p>
+1. 安装 <a href="http://code.taobao.org/p/tsar/src/">tsar</a>.<br/>
+2. 使用tsar的模块开发工具<a href="http://code.taobao.org/p/tsar/src/trunk/devel/tsardevel">tsardevel</a>生成一个模块模板.(see tsar <a href="http://code.taobao.org/p/tsar/wiki/mod/">wiki</a>)<br/>
+<pre class="mod_example">
+tsardevel mod_ngx
+</pre>
+3. 替换模板中的mod_ngx.c.
+<pre class="mod_example">
+make
+make install
+</pre>
+4. 启动tsar.
+<pre class="mod_example">
+tsar --nginx
+</pre>
+</p>
+    </div>
+
+    <div class="dh">配置</div>
+    <div class="introduce">
+<p>
+1. 默认采集地址和端口分别为127.0.0.1,80。可以通过环境变量来修改:<br/>
+<b>example:</b>
+<pre class="mod_example">
+export NGX_TSAR_HOST=192.168.0.1
+export NGX_TSAR_PORT=8080
+</pre>
+2. Tengine/Nginx必须编译了stub_status模块，而且必须在配置文件中增加类似如下配置：<br/>
+<pre class="mod_example">
+location = /nginx_status {
+    stub_status on;
+}
+</pre>
+3. 另外我们也可以使用unix域套接字，比如将NGX_TSAR_HOST指定为一个文件路径：<br/>
+<pre class="mod_example">
+export NGX_TSAR_HOST=/tmp/nginx-tsar.sock
+</pre>
+同时，Tengine/Nginx的配置文件中包含location /nginx_status的server也必须是监听在该域套接口路径上<br/>
+<pre class="mod_example">
+listen unix:/tmp/nginx-tsar.sock;
+</pre>
+4. tsar模块发送给Tengine/Nginx的uri和主机名也可以通过如下环境变量设置：<br/>
+<b>example:</b>
+<pre class="mod_example">
+export NGX_TSAR_SERVER_NAME=status.taobao.com
+export NGX_TSAR_URI=/nginx_status
+</pre>
+</p>
+    </div>
+
+</div>
+</div>
+
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

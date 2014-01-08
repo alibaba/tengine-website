@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -73,56 +32,62 @@ To use this module, you should enable it first: <br/>
 server {
 &nbsp;&nbsp;&nbsp;&nbsp;sysguard on;
 
-&nbsp;&nbsp;&nbsp;&nbsp;sysguard_load load=1.1 action=/loadlimit;
-&nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem swapratio=90% action=/swaplimit;
+&nbsp;&nbsp;&nbsp;&nbsp;sysguard_load load=10.5 action=/loadlimit;
+&nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem swapratio=20% action=/swaplimit;
+&nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem free=100M action=/memlimit;
 
 &nbsp;&nbsp;&nbsp;&nbsp;location /loadlimit {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 500;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
 &nbsp;&nbsp;&nbsp;&nbsp;}
 
 &nbsp;&nbsp;&nbsp;&nbsp;location /swaplimit {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 500;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
 &nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;location /memlimit {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
 }
 </pre>
-Note this module requires the sysinfo(2) system call, or getloadavg(3) function in glibc.</p>
+Note this module requires the sysinfo(2) system call, or getloadavg(3) function in glibc. It also requires the /proc file system to get memory information.</p>
     </div>
     <div class="dh">Directive</div>
     <div class="directive">
 Syntax: <b>sysguard</b> [on | off]<br/>
 Default: sysguard off<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>Turn on or off this module.</p></div>
     <div class="directive">
 Syntax: <b>sysguard_load</b> load=number [action=/url]<br/>
 Default: none<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>Specify the load threshold. <p/>
-When the system load exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL defined.</p></div>
+When the system load exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL defined. This directive also support using ncpu*ratio to instead of the fixed threshold, 'ncpu' means the number of cpu's cores, you can use this directive like this: load=ncpu*1.5</p></div>
     <div class="directive">
-Syntax: <b>sysguard_mem</b> swapratio=ratio% [action=/url]<br/>
+Syntax: <b>sysguard_mem</b> [swapratio=ratio%] [free=size] [action=/url]<br/>
 Default: none<br/>
-Context: http, server
+Context: http, server, location
     </div>
-    <div class="introduce"><p>Specify the used swap memory threshold. <p/>
-When the swap memory use ratio exceeds this threshold, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL.</p></div>
+    <div class="introduce"><p>Specify the used swap memory or free memory threshold. <p/>
+When the swap memory use ratio exceeds this threshold or memory free less than the size, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL. Sysguard uses this strategy to calculate memory free: "memfree = free + buffered + cached" </p></div>
     <div class="directive">
 Syntax: <b>sysguard_interval</b> time<br/>
 Default: sysguard_interval 1s<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>Specify the time interval to update your system information. <p/>
 The default value is one second, which means tengine updates the server status once a second.</p></div>
     <div class="directive">
 Syntax: <b>sysguard_log_level</b> [info | notice | warn | error]<br/>
 Default: sysguard_log_level error<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>Specify the log level of sysguard.</p></div>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>

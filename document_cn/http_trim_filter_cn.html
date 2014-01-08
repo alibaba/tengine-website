@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu_cn">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+<div class="dh">trim 模块</div>
+
+<br /><br />
+
+<p>该模块用于删除 html ， 内嵌 javascript 和 css 中的注释以及重复的空白符。</p>
+
+<br /><br />
+
+<pre class="mod_example"><code>location / {
+    trim on;
+    trim_jscss on;
+}
+</code></pre>
+
+<br /><br />
+
+<p><strong>trim</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>默认:</strong> <code>trim off</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code> </p>
+
+<p>在配置的地方使模块有效（失效），删除 html 的注释以及重复的空白符（\n，\r，\t，' ')。 <br />
+例外：对于 <code>pre</code>，<code>textarea</code>，<code>ie注释</code>，<code>script</code>，<code>style</code> 等标签内的内容不作删除操作。 <br />
+<br/></p>
+
+<p><strong>trim_jscss</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>默认:</strong> <code>trim_jscss off</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code> </p>
+
+<p>在配置的地方使模块有效（失效），删除内嵌 javascript 和 css 的注释以及重复的空白符（\n，\r，\t，' ')。 <br />
+例外：对于非javascript代码的<code>script</code>，非css代码的<code>style</code> 等标签内的内容不作删除操作。 <br />
+<br/></p>
+
+<p><strong>trim_types</strong> <code>MIME types</code></p>
+
+<p><strong>默认:</strong> <code>trim_types: text/html</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code></p>
+
+<p>定义哪些<a href="http://en.wikipedia.org/wiki/MIME_type">MIME types</a>类型的响应可以被处理。 <br />
+目前只能处理html格式的页面，js和css只针对于html内嵌的代码，不支持处理单独的js和css页面。 <br />
+如果这样配置 <code>trim_type text/javascript;</code>，js代码将被作为html代码来处理而出错。
+<br/></p>
+
+<br /><br />
+
+<p>添加请求参数http_trim=off，将关闭trim功能，返回原始代码，方便对照调试。 <br />
+格式如下: <br />
+<code>http://www.xxx.com/index.html?http_trim=off</code></p>
+
+<br /><br />
+
+<h3>html</h3>
+
+<h5>空白符</h5>
+
+<ul>
+<li>正文中的 '\r' 直接删除。  </li>
+<li>正文中的 '\n' 替换为 '空格', 然后重复 \t' 和 '空格' 保留第一个。 </li>
+<li>标签中的 '\r'，'\n'，'\t'，'空格' 保留第一个。  </li>
+<li>标签的双引号和单引号内的空白符不做删除。 
+\<div class="no &nbsp; &nbsp; &nbsp;  trim"\></li>
+<li>保留第一行DTD声明的 '\n'。  </li>
+<li><code>pre</code> 和 <code>texterea</code> 标签的内容不做删除。  </li>
+<li><code>script</code> 和 <code>style</code> 标签的内容不做删除。  </li>
+<li>ie条件注释的内容不做删除。 </li>
+</ul>
+
+<h5>注释</h5>
+
+<ul>
+<li>如果是ie条件注释不做操作。
+判断规则：<code>&lt;!--[if &lt;![endif]--&gt;</code>  之间的内容判断为ie条件注释。</li>
+<li>正常html注释直接删除.  <code>&lt;!--  --&gt;</code></li>
+</ul>
+
+<h3>javascript</h3>
+
+<p>借鉴 jsmin 的处理规则 (http://www.crockford.com/javascript/jsmin.html) <br />
+<code>&lt;script type="text/javascript"&gt;</code> 或者 <code>&lt;script&gt;</code> 标签认为是javascript。  </p>
+
+<h5>空白符</h5>
+
+<ul>
+<li>'('，'['，'{'，';'，','，'>'，'=' 后的 '\n'，'\t'，'空格' 直接删除。</li>
+<li>'\r' 直接删除。 </li>
+<li>其他情况 重复的 '\n'，'\t'，'空格' 保留第一个。  </li>
+<li>单引号和双引号内不删除。 <br />
+ 如下不做操作： <br />
+ "hello   &nbsp;   \\"  &nbsp;   world" <br />
+ 'hello  &nbsp;       \'  &nbsp;   world'  </li>
+<li>正则表达式的内容不删除。 <br />
+ 判断规则：'/' 前的非空字符是 ','，'('，'=' 三种的即认为是正则表达式。( 同jsmin的判断) <br />
+ 如下不做操作： <br />
+ var re=/1 &nbsp; &nbsp; &nbsp;2/; <br />
+ data.match(/1  &nbsp;  &nbsp; 2/);  </li>
+</ul>
+
+<h5>注释</h5>
+
+<ul>
+<li>删除单行注释。  <code>//</code>  </li>
+<li>删除多行注释。  <code>/*   */</code> <br />
+注意：javascript也有一种条件注释，不过貌似用得很少，jsmin直接删除的，trim也是直接删除。 <br />
+http://en.wikipedia.org/wiki/Conditional_comment  </li>
+</ul>
+
+<h3>css</h3>
+
+<p>借鉴 YUI Compressor 的处理规则 (http://yui.github.io/yuicompressor/css.html) <br />
+<code>&lt;style type="text/css"&gt;</code> 或者 <code>&lt;style&gt;</code> 标签认为是css.  </p>
+
+<h5>空白符</h5>
+
+<ul>
+<li>';'，'>'，'{'，'}'，':'，',' 后的 '\n'，'\t'，'空格' 直接删除。  </li>
+<li>'\r' 直接删除。 </li>
+<li>其他情况 连续的 '\n'， '\t' 和 '空格'  保留第一个。  </li>
+<li>单引号和双引号内不删除。 <br />
+ 如下不做操作： <br />
+ "hello   &nbsp;  \\\"  &nbsp;    world" <br />
+  'hello  &nbsp;   \'   &nbsp;  &nbsp;   world' </li>
+</ul>
+
+<h5>注释</h5>
+
+<ul>
+<li>child seletor hack的注释不删除。 <br />
+  <code>html&gt;/**/body p{color:blue}</code>  </li>
+<li>IE5 /Mac hack 的注释不删除。 <br />
+ <code>/*\*/.selector{color:khaki}/**/</code>  </li>
+<li>其他情况删除注释。  <code>/*    */</code>  </li>
+</ul>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

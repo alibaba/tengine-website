@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="../style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -57,65 +16,73 @@
       <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
       <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
       <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
       <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
     </ul>
   </div>
-  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
   <div class="clear"></div>
   <div class="one_col more_padding font16">
     <div class="module">ngx_http_sysguard_module</div>
-    <div class="mod_intro"><p>当swap的剩余百分比，load值到设定的值时，就会跳转到action所指定的url。
+    <div class="mod_intro"><p>当swap的剩余百分比，剩下的内存，load值到设定的值时，就会跳转到action所指定的url。
 <pre class="mod_example">
     server {
         sysguard on;
 
-        sysguard_load load=1.1 action=/loadlimit;
-        sysguard_mem swapratio=90% action=/swaplimit;
+        sysguard_load load=10.5 action=/loadlimit;
+        sysguard_mem swapratio=20% action=/swaplimit;
+        sysguard_mem free=100M action=/freelimit;
 
         location /loadlimit {
-            return 500;
+            return 503;
         }
 
         location /swaplimit {
-            return 500;
+            return 503;
+        }
+
+        location /freelimit {
+            return 503;
         }
     }
 </pre>
-注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。</p>
+注意，目前该模块仅对系统支持sysinfo函数时，才支持基于load与内存信息的保护，以及系统支持loadavg函数时支持基于load进行保护。模块需要从/proc文件系统中读取内存信息，模块默认没有编译，需要在编译时打开该模块:
+./configure --with-http_sysguard_module
+</p>
     </div>
     <div class="dh">指令</div>
     <div class="directive">
 Syntax: <b>sysguard</b> [on | off]<br/>
 Default: sysguard off<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>打开或者关闭这个模块</p></div>
     <div class="directive">
-Syntax: sysguard_load load=number [action=/url]<br/>
+Syntax: sysguard_load load=[ncpu*]number [action=/url]<br/>
 Default: none<br/>
 Context: http, server
     </div>
-    <div class="introduce"><p>该指令用于配置根据系统的load来限制用户的请求，以保护系统。当系统在一分钟内的load达到number时，将进来的请求转到action所指定的url。如果action没有配置，则直接返回503错误。</p></div>
+    <div class="introduce"><p>该指令用于配置根据系统的load来限制用户的请求，以保护系统。当系统在一分钟内的load达到number时，将进来的请求转到action所指定的url。如果action没有配置，则直接返回503错误。load的数值还支持使用ncpu*系数的方式来配置，ncpu表示cpu核数，乘以固定的系数得出期望限制的load值，如: load=ncpu*1.5。</p></div>
     <div class="directive">
-Syntax: <b>sysguard_mem</b> swapratio=ratio% [action=/url]<br/>
+Syntax: <b>sysguard_mem</b> [swapratio=ratio%] [free=size] [action=/url]<br/>
 Default: -<br/>
-Context: http, server
+Context: http, server, location
     </div>
-    <div class="introduce"><p>该指定用于配置根据系统的内存使用状态来限制用户请求，以保护系统。swapratio用于配置当当前交换空间的已使用ratio%时，就将进来的请求跳转到指定的url。如果action没有配置，则直接返回503错误。另外，如果用户自己禁用了交换区间，则配置该指定是不起作用的。</p></div>
+    <div class="introduce"><p>该指定用于配置根据系统的内存使用状态来限制用户请求，以保护系统。swapratio用于配置当当前交换空间的已使用ratio%时，或者剩下的内存少于size时，就将进来的请求跳转到指定的url。如果action没有配置，则直接返回503错误。另外，如果用户自己禁用了交换区间，则配置该指定是不起作用的。free是根据/proc/meminfo的内容来计算的，计算公式是"memfree= free + buffered + cached"</p></div>
     <div class="directive">
 Syntax: <b>sysguard_interval</b> time<br/>
 Default: sysguard_interval 1s<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>该指定用于配置获取系统信息时的缓存时间。默认为1s，则表示在这1s内，只调用一次系统函数来获取系统的当前状况。</p></div>
     <div class="directive">
 Syntax: <b>sysguard_log_level</b> [info | notice | warn | error]<br/>
 Default: sysguard_log_level error<br/>
-Context: http, server
+Context: http, server, location
     </div>
     <div class="introduce"><p>该指令用于配置，当保护系统的操作执行时，记录日志时的日志级别。</p></div>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>

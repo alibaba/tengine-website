@@ -1,51 +1,10 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -57,14 +16,90 @@
       <li><a href="documentation_cn.html"><img src="images/icon-doc.png"/>文档</a></li>
       <li><a href="faq_cn.html"><img src="images/icon-faq.png"/>FAQ</a></li>
       <li><a href="contact_cn.html"><img src="images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="book/">开发教程</a></li>
 	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
     </ul>
   </div>
-  <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
+  <div id="logo"><a href="index_cn.html"><img src="images/logo.png" alt="tengine" /></a></div>
   <div class="clear"></div>
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="1_5_2"></a><h4>Tengine-1.5.2 [2013-11-22]</h4>
+    <li>Security: 修复CVE-2013-4547安全漏洞</li>
+    <li>Bugfix: 修复limit_req模块中nodelay无效的问题 [cfsego]</li>
+    <li>Bugfix: 修复trim模块在替换javascript异常的问题 [taoyuanyuan]</li>
+    </ul>
+    <ul><a name="1_5_1"></a><h4>Tengine-1.5.1 [2013-08-29]</h4>
+    <li>Feature: 增加retry_cached_connection指令，可以关闭对后端长连接的无条件重试 [yaoweibin]</li>
+    <li>Feature: sysguard模块的sysguard_load指令中加入ncpu参数 [yzprofile]</li>
+    <li>Bugfix：修复referer模块在https协议时正则匹配失效的问题 [lilbedwin]</li>
+    <li>Bugfix：修复trim模块可能产生0长度块的问题 [taoyuanyuan]</li>
+    <li>Bugfix：修复在使用--without-dso选项时出现的编译错误 [zhuzhaoyuan]</li>
+    <li>Bugfix：修复两个编译警告 [zzjin, diwayou]</li>
+    </ul>
+    <ul><a name="1_5_0"></a><h4>Tengine-1.5.0 [2013-07-31]</h4>
+    <li>Feature: 增加DSO（动态模块加载）兼容性校验机制 [monadbobo]</li>
+    <li>Feature: 增加了请求体不缓存到磁盘的机制，HTTP代理和FastCGI模块收到部分请求体即可以转发给后端服务器 [yaoweibin]</li>
+    <li>Feature: 增加了trim模块，该模块可以自动删除HTML页面中无意义的空白符和注释，减小页面的大小 [taoyuanyuan]</li>
+    <li>Feature: 加入accept filter机制，支持在连接接收以后进行过滤处理 [yzprofile]</li>
+    <li>Feature: 现在server_tag指令可以改变默认错误页面的服务器标识 [zhuzhaoyuan]</li>
+    <li>Bugfix：修复access_log指令中buffer参数失效的问题 [cfsego]</li>
+    <li>Bugfix：修复session_sticky模块在某些情况下没有发出session cookie的问题 [dinic]</li>
+    </ul>
+    <ul><a name="1_4_6"></a><h4>Tengine-1.4.6 [2013-05-14]</h4>
+    <li>Bugifx：合并nginx-1.2.9的更新，修正CVE-2013-2070带来的安全问题。
+    该安全问题在1.4.0以后版本开始出现 [yaoweibin]</li>
+    </ul>
+    <ul><a name="1_4_5"></a><h4>Tengine-1.4.5 [2013-05-01]</h4>
+    <li>Feature：增加一致性hash模块，可以为后端服务器提供一致性hash的负载均衡方法 [dinic]</li>
+    <li>Feature：通过keepalive_timeout指令可以设置后端keepalive连接的超时时间 [jinglong]</li>
+    <li>Feature：加入所有模块静态编译或者所有模块动态编译的编译选项 [monadbobo]</li>
+    <li>Change：更新Lua模块至0.7.19 [jinglong]</li>
+    <li>Change：合并Nginx-1.2.8的更新 [yaoweibin]</li>
+    <li>Bugfix：修正syslog和upstream_check模块在GCC-4.4.5上的编译警告 [magicbear]</li>
+    </ul>
+    <ul><a name="1_4_4"></a><h4>Tengine-1.4.4 [2013-03-21]</h4>
+    <li>Feature：增加session_sticky模块，可以为客户端和后端服务器提供会话保持功能 [dinic]</li>
+    <li>Feature：sysguard模块增加空闲内存监控功能 [lifeibo] </li>
+    <li>Feature：geoip模块增加对地区数据库的支持 [jasonlfunk] </li>
+    <li>Feature：log_empty_request指令增加对408响应的空请求支持 [yaoweibin] </li>
+    <li>Change：合并Nginx-1.2.5至Nginx-1.2.7的更新 [cfsego] </li>
+    <li>Change：默认关闭CPU亲缘性 [cfsego]</li>
+    <li>Bugfix：修正在Solaris 11上sysguard和upstream_check模块编译出错的问题 [lifeibo, yaoweibin] </li>
+    <li>Bugfix：修正TFS模块返回值可能错误的问题 [zhcn381] </li>
+    <li>Bugfix: 修正TFS模块上传大文件可能出错的问题 [zhcn381] </li>
+    </ul>
+    <ul><a name="1_4_3"></a><h4>Tengine-1.4.3 [2013-01-21]</h4>
+    <li>Feature：增加TFS模块，可以通过RESTful接口与TFS分布式文件系统通信 [zhcn381, monadbobo] </li>
+    <li>Feature：增加$sent_cookie_XXX系列变量，可以获取响应中Set-Cookie头的cookie值 [skoo87] </li>
+    <li>Feature：syslog指令的发送地址支持域名 [cfsego] </li>
+    <li>Change：upstream块中的server指令增加id属性 [yaoweibin] </li>
+    <li>Bugfix：DSO模块修正reload时可能失败的问题 [monadbobo] </li>
+    <li>Bugfix：修复upstream_check模块当超时时间长于检查时间可能导致段错误的问题 [yaoweibin] </li>
+    <li>Bugfix：修复user_agent模块在请求缺少User-Agent头会段错误的问题 [dinic] </li>
+    <li>Bugfix：修复sysguard模块在Mac OS下面不能工作的问题 [lizi] </li>
+    </ul>
+    <ul><a name="1_4_2"></a><h4>Tengine-1.4.2 [2012-11-22]</h4>
+    <li>Feature：增加--dso-tool-path配置选项，可以选择dso_tool脚本的安装目录 [monadbobo]</li>
+    <li>Feature：增加$unix_time变量，表示当前的时间戳秒数 [yaoweibin]</li>
+    <li>Feature：Makefile中增加test命令以便运行测试用例 [yaoweibin]</li>
+    <li>Feature：sysguard模块可在location里面配置 [lifeibo]</li>
+    <li>Change：合并Nginx-1.2.4和Nginx-1.2.5的更新 [zhuzhaoyuan]</li>
+    <li>Change：增加对input_filter函数返回值的检查，防止第三方模块调用出错 [cfsego]</li>
+    <li>Bugfix：修复limit_req指令不能使用4个参数的问题，感谢LazyZhu的报告 [monadbobo]</li>
+    <li>Bugfix：修复在cygwin下面编译sysinfo文件出错的问题，感谢Cao Peiran的报告 [lifeibo]</li>
+    <li>Bugfix：修复user-agent模块安装时需要拷贝browsers配置文件的问题，感谢Jianbin Xiao的报告 [monadbobo]</li>
+    <li>Bugfix：修复DSO模块RPM打包安装目录出错的问题，感谢Jianbin Xiao和Ren Xiaolei的报告 [monadbobo]</li>
+    </ul>
+    <ul><a name="1_4_1"></a><h4>Tengine-1.4.1 [2012-10-10]</h4>
+    <li>Feature： 添加jemalloc库的支持 [fanjizhao] </li>
+    <li>Feature： 加入$dollar变量, 它的值就是美元符号 [zhuzhaoyuan]</li>
+    <li>Feature： 为worker_cpu_affinity指令加入off选项 [cfsego]</li>
+    <li>Change： 当工作进程异常退出以后，新进程不会绑定CPU亲缘性 [cfsego]</li>
+    <li>Bugfix:  修正在Mac OS操作系统下，Lua模块与LuaJIT动态编译时出现的错误 [monadbobo]</li>
+    <li>Bugfix:  修正动态编译第三方filter模块时出现的模块执行顺序错误 [monadbobo]</li>
+    </ul>
     <ul><a name="1_4_0"></a><h4>Tengine-1.4.0 [2012-09-05]</h4>
     <li>Feature： 增加动态模块加载支持（DSO），要添加一个模块不再需要重新编译tengine了 [monadbobo]</li>
     <li>Feature： 更新Lua模块到最新的稳定版本 [chaoslawful, agentzh, jinglong]</li>
@@ -169,6 +204,6 @@
     </ul>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>

@@ -4,48 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The Tengine Web Server</title>
   <link rel="stylesheet" type="text/css" href="style.css">
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-6614032-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-  function correctPNG()
-  {
-    var arVersion = navigator.appVersion.split("MSIE");
-    var version = parseFloat(arVersion[1]);
-    if ((version == 5.5 || version == 6) && (document.body.filters))
-    {
-      for(var j=0; j<document.images.length; j++)
-      {
-        var img = document.images[j];
-        var imgName = img.src.toUpperCase();
-        if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
-        {
-          var imgID = (img.id) ? "id='" + img.id + "' " : "";
-          var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-          var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-          var imgStyle = "display:inline-block;" + img.style.cssText;
-          if (img.align == "left") imgStyle = "float:left;" + imgStyle;
-          if (img.align == "right") imgStyle = "float:right;" + imgStyle;
-          if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle;
-          var strNewHTML = "<span " + imgID + imgClass + imgTitle
-          + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-          + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-          + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-          img.outerHTML = strNewHTML;
-          j = j - 1;
-        }
-      }
-    }
-  }
-  window.attachEvent("onload", correctPNG);
-  </script>
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
 </head>
 
 <body>
@@ -65,6 +24,123 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="1_5_2"></a><h4>Tengine-1.5.2 [22 Nov 2013]</h4>
+      <li>Security: a character following an unescaped space in a request line
+      was handled incorrectly (CVE-2013-4547); the bug had appeared in
+      0.8.41. Thanks to Ivan Fratric of the Google Security Team.</li>
+      <li>Bugfix: fix a bug of 'nodelay' might be ignored in limit_req module.
+      (cfsego)</li>
+      <li>Bugfix: fix a bug in trim module when processing javascript comment.
+      (taoyuanyuan)</li>
+    </ul>
+    <ul><a name="1_5_1"></a><h4>Tengine-1.5.1 [29 Aug 2013]</h4>
+      <li>Feature: added the directive 'retry_cached_connection' which could
+      disable unconditional retries with a cached backend connection.
+      (yaoweibin)</li>
+      <li>Feature: added the argument of 'ncpu' to 'sysguard_load' directive.
+      (yzprofile)</li>
+      <li>Bugfix: fixed a bug in referer module that regex rules might be
+       invalid with https requests. (lilbedwin)</li>
+      <li>Bugfix: fixed a bug that the trim module might send a zero-size
+       buffer. (taoyuanyuan)</li>
+      <li>Bugfix: fixed a compile error when using the configure option
+       '--without-dso'. (zhuzhaoyuan)</li>
+      <li>Bugfix: fixed two compile warnings. (zzjin, diwayou)</li>
+    </ul>
+    <ul><a name="1_5_0"></a><h4>Tengine-1.5.0 [31 Jul 2013]</h4>
+      <li>Feature: added ABI compatibility verification for DSO modules.
+      (monadbobo) </li>
+      <li>Feature: added non-buffering request body mechanism. Now the http proxy
+      and fastcgi module can send requests to backend servers when it receives
+      part of a request body. (yaoweibin)</li>
+      <li>Feature: added trim module which can remove unnecessary white spaces and
+      comments to reduce the size of a page. (taoyuanyuan)</li>
+      <li>Feature: added the accept filter mechanism which supports to do some
+      filter processing after accepting a new connection. (yzprofile)</li>
+      <li>Feature: Now the server banner in a default error page can be replaced
+      by the string specified in server_tag. (zhuzhaoyuan)</li>
+      <li>Bugfix: fixed the bug of the 'buffer' argument might be ignored in the
+      'access_log' directive. (cfsego)</li>
+      <li>Bugfix: fixed the session_sticky module didn't issue the session cookie
+      in the direct mode. (dinic)</li>
+    </ul>
+    <ul><a name="1_4_6"></a><h4>Tengine-1.4.6 [14 May 2013]</h4>
+      <li>Bugfix: merged the changes of Nginx-1.2.9 and fixed the security
+      problem CVE-2013-2070. This bug had appeared in 1.4.0. (yaoweibin)</li>
+    </ul>
+    <ul><a name="1_4_5"></a><h4>Tengine-1.4.5 [01 May 2013]</h4>
+      <li>Feature: added the consistent_hash module which dispatches requests
+      to upstream servers based on consistent hashing algorithm of a
+      variable specified. (dinic) </li>
+      <li>Feature: added the "keepalive_timeout" directive to set timeout for
+      the upstream keepalive connections. (jinglong) </li>
+      <li>Feature: now the configure script supports compilation of all modules
+      to be shared or static. (monadbobo) </li>
+      <li>Change: updated the Lua module to 0.7.19. (jinglong) </li>
+      <li>Change: merged the changes of Nginx-1.2.8. (yaoweibin) </li>
+      <li>Bugfix: fixed the compile warnings of syslog and upstream_check
+      modules in GCC-4.4.5. (magicbear) </li>
+    </ul>
+    <ul><a name="1_4_4"></a><h4>Tengine-1.4.4 [21 Mar 2013]</h4>
+      <li>Feature: added the session_sticky module by using which one client
+      can be always served by the same upstream server. (dinic) </li>
+      <li>Feature: now the sysguard module can protect the server based on
+      the amount of free memory. (lifeibo) </li>
+      <li>Feature: added support for geoip regional database in geoip module.
+      (jasonlfunk)</li>
+      <li>Feature: log_empty_request can also disable the logs for timeout (408)
+      empty request. (yaoweibin) </li>
+      <li>Change: merged changes between Nginx-1.2.5 and Nginx-1.2.7. (cfsego)</li>
+      <li>Change: CPU affinity is off by default now. (cfsego) </li>
+      <li>Bugfix: fixed a bug that sysguard and upstream_check module didn't
+      compile on Solaris 11. (lifeibo, yaoweibin)</li>
+      <li>Bugfix: fixed a bug with TFS module that it might return bad values.
+      (zhcn381)</li>
+      <li>Bugfix: fixed a bug with TFS module that it might corrupt large files.
+      (zhcn381)</li>
+    </ul>
+    <ul><a name="1_4_3"></a><h4>Tengine-1.4.3 [21 Jan 2013]</h4>
+      <li>Feature: added the TFS module which provides a RESTful API to Taobao
+      File System. (zhcn381, monadbobo) </li>
+      <li>Feature: added a $sent_cookie_XXX variable which could be used to get
+      the value of cookie XXX from the Set-Cookie headers. (skoo87)</li>
+      <li>Feature: now the syslog logging supports host name and domain name as
+      its destination address. (cfsego) </li>
+      <li>Change: added an attribute 'id' for the server directive in the
+      upstream block. (yaoweibin) </li>
+      <li>Bugfix: fixed a bug of DSO module which might stop Tengine from
+      reloading. (monadbobo) </li>
+      <li>Bugfix: fixed a segmentation fault bug of upstream_check module when
+      the check timeout was larger than the check interval. (yaoweibin) </li>
+      <li> Bugfix: fixed a segmentation fault bug of user_agent module when there
+      was no User-Agent header existed in a request. (dinic) </li>
+      <li> Bugfix: fixed the bug that sysguard module didn't work on Mac OS.
+      (lizi) </li>
+    </ul>
+    <ul><a name="1_4_2"></a><h4>Tengine-1.4.2 [22 Nov 2012]</h4>
+      <li>Feature: added the option '--dso-tool-path' to configure script, which can specify the installation path for the dso_tool script. (monadbobo)</li>
+      <li>Feature: added a new variable '$unix_time', whose value is the current number of seconds since unix epoch time. (yaoweibin)</li>
+      <li>Feature: added the 'make test' target to run test cases. (yaoweibin)</li>
+      <li>Feature: now the sysguard module can be used in a location block. (lifeibo)</li>
+      <li>Change: merged the changes from Nginx-1.2.4 and Nginx-1.2.5. (zhuzhaoyuan)</li>
+      <li>Change: now checks the error codes of input body filters more carefully to avoid socket leaks. (cfsego) </li>
+      <li>Bugfix: fixed the problem with directive limit_req can't handle 4 arguments. (monadbobo) <br />
+      Thanks to LazyZhu.  </li>
+      <li>Bugfix: fixed a compilation error with the file of sysinfo in Cygwin. (lifeibo) <br />
+      Thanks to Cao Peiran.</li>
+      <li>Bugfix: now the installation script will copy the user_agent module's configuration. (monadbobo) <br />
+      Thanks to Jianbin Xiao.</li>
+      <li>Bugfix: fixed the installation directory error with the DSO module when creating the RPM package. (monadbobo) <br />
+      Thanks to Jianbin Xiao and Ren Xiaolei.</li>
+    </ul>
+    <ul><a name="1_4_1"></a><h4>Tengine-1.4.1 [10 Oct 2012]</h4>
+      <li>Feature: added jemalloc library support. (fanjizhao)</li>
+      <li>Feature: added a new variable '$dollar', whose value is the dollar sign ('$'). (zhuzhaoyuan) </li>
+      <li>Feature: added the option 'off' to 'worker_cpu_affinity' directive. (cfsego) </li>
+      <li>Change: disable CPU affinity when a new worker process is forked as an old one exits abnormally. (cfsego) </li>
+      <li>Bugfix: fixed compile error with shared Lua module when using LuaJIT in Mac OS. (monadbobo) </li>
+      <li>Bugfix: fixed the wrong module execution order with the third party shared filter module. (monadbobo) </li>
+    </ul>
     <ul><a name="1_4_0"></a><h4>Tengine-1.4.0 [05 Sep 2012]</h4>
      <li>Feature: added the dynamic module loading support (a.k.a. DSO), so we don't have to recompile tengine when we want to add a new module. (monadbobo)</li>
     <li>Feature: updated the Lua module to the latest stable version. (chaoslawful, agentzh, jinglong)</li>
@@ -189,6 +265,6 @@
     </ul>
   </div>
 </div>
-<div id="copyright">&copy; 2011-2012 Taobao Inc. All rights reserved.</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
 </body>
 </html>
