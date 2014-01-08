@@ -24,6 +24,45 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="2_0_0"></a><h4>Tengine-2.0.0 [08 Jan 2014]</h4>
+      <li>Feature: now DSO module does not need the original source code or
+      compiler options when compiling a new module. (monadbobo)</li>
+      <li>Feature: added support for SPDY v3, and SPDY/HTTP servers can listen on
+      the same port. (lilbedwin、chobits)</li>
+      <li>Feature: added support for setting retries for upstream servers (proxy,
+      memcached, fastcgi, scgi, uwsgi). (supertcy)</li>
+      <li>Feature: now tfs module can report access status to rcs while keepalive.
+      (zhcn381)</li>
+      <li>Feature: now the directive "if" supports ">", "<", ">=", "<=" operators
+      for numeric comparison. (flygoast)</li>
+      <li>Feature: now upstream health check module uses keep-alive connections.
+      (lilbedwin)</li>
+      <li>Feature: now trim module can handle SSI and ESI comments properly.
+      (taoyuanyuan)</li>
+      <li>Feature: now directive "expires_by_types" supports wildcard such as
+      "text/*". (zhcn381)</li>
+      <li>Feature: added variables starting with "$base64_decode_" to encode
+      variables in base64. (yzprofile)</li>
+      <li>Feature: added variables starting with "$md5_encode_" to encode variables
+      in md5. (yzprofile)</li>
+      <li>Feature: added a variable "$time_http" to get the current HTTP time.
+      (flygoast)</li>
+      <li>Feature: added a variable "$full_request" to get the original request
+      URL with scheme and host. (yzprofile)</li>
+      <li>Feature: added variables starting with "$escape_uri_" to escape variables
+      into formal URL syntax. (yzprofile)</li>
+      <li>Feature: added a variable "$raw_uri" to get the original URI without
+      arguments. (flygoast)</li>
+      <li>Feature: added support for logging subrequests in nanoseconds. (jinglong)</li>
+      <li>Feature: added a new API function to encode URL into base64. (lilbedwin)</li>
+      <li>Change: merged changes between nginx-1.2.9 and nginx-1.4.4. (cfsego)</li>
+      <li>Change: now stub_status module does not log subrequests. (jinglong)</li>
+      <li>Bugfix: fixed a bug in footer module when reading a response with
+      a "Content-Encoding" header. (yaoweibin)</li>
+      <li>Bugfix: fixed a bug when "client_body_postpone_size" is set to 0.
+      (yaoweibin)</li>
+      <li>Bugfix: fixed a compilation warning of Lua module. (diwayou)</li>
+    </ul>
     <ul><a name="1_5_2"></a><h4>Tengine-1.5.2 [22 Nov 2013]</h4>
       <li>Security: a character following an unescaped space in a request line
       was handled incorrectly (CVE-2013-4547); the bug had appeared in
