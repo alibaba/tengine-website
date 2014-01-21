@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu_cn">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+
+<p><strong>limit upstream retries</strong></p>
+
+<p>限制每个请求对后端服务器访问的最大尝试次数，支持proxy、memcached、fastcgi、scgi和uwsgi模块。
+可以使用下面的指令开启访问次数进行限制。</p>
+
+<div class="dh">Example</div>
+
+<pre class="mod_example"><code>http {
+    upstream test {
+        server 127.0.0.1:8081;
+        server 127.0.0.2:8081;
+        server 127.0.0.3:8081;
+        server 127.0.0.4:8081;
+    }
+
+    server {
+        proxy_upstream_tries 2;
+        proxy_set_header Host $host;
+
+        location / {
+            proxy_pass test;
+        }
+    }
+}
+</code></pre>
+
+<div class="dh">指令</div>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>fastcgi_upstream_tries</strong> num</p>
+
+<p>Default: -</p>
+
+<p>Context: http, server, locatioon</p></div>
+
+<p>限制fastcgi代理的后端尝试次数。</p>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>proxy_upstream_tries</strong> num</p>
+
+<p>Default: -</p>
+
+<p>Context: http, server, locatioon</p></div>
+
+<p>限制proxy代理的后端尝试次数。</p>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>memcached_upstream_tries</strong> num</p>
+
+<p>Default: -</p>
+
+<p>Context: http, server, locatioon</p></div>
+
+<p>限制memcached代理的后端尝试次数。</p>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>scgi_upstream_tries</strong> num</p>
+
+<p>Default: -</p>
+
+<p>Context: http, server, locatioon</p></div>
+
+<p>限制scgi代理的后端尝试次数。</p>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>uwsgi_upstream_tries</strong> num</p>
+
+<p>Default: -</p>
+
+<p>Context: http, server, locatioon</p></div>
+
+<p>限制uwsgi代理的后端尝试次数。</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
