@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+
+<div class="module">ngx_http_spdy_module</div>
+
+<p>Tengine added SPDY/3 support to this module. The new directives are listed below.</p>
+
+<div class="dh">Directives</div>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>spdy_version</strong> [2|3]</p>
+
+<p>Default: 3</p>
+
+<p>Context: http, server</p></div>
+
+<p>Specify the version of current SPDY protocol.</p>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>spdy_flow_control</strong> on|off</p>
+
+<p>Default: on</p>
+
+<p>Context: http, server</p></div>
+
+<p>Turn on or off with SPDY flow control.</p>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: <strong>spdy_init_recv_window_size</strong> size</p>
+
+<p>Default: 64k</p>
+
+<p>Context: http, server</p></div>
+
+<p>Specify the receiving window size for SPDY. By default, it's 64K. It will send a WINDOW UPDATE frame when it receives half of the window size data every time.</p>
+
+<br /><br />
+
+<div class="directive"><p>Syntax: listen address[:port] [spdy_detect] [ssl]</p>
+
+<p>Default:</p>
+
+<p>Context: listen directive</p></div>
+
+<p>Server can work for SPDY and HTTP on the same port with this directive. Note that the server will examine the first byte of one connection and determine whether the connection is SPDY or HTTP based on what it looks like (0x80 or 0x00 for SPDY).</p>
+
+<p>Server will listen on port 80 for SPDY and HTTP, for example:</p>
+
+<pre class="mod_example"><code>listen 80 spdy_detect;
+</code></pre>
+
+<p>Server will detect whether SPDY or HTTP is used without using a TLS extension (NPN), for example:</p>
+
+<pre class="mod_example"><code>listen 443 ssl spdy_detect;
+</code></pre>
+
+<p>Server can detect whether SPDY or HTTP is used directly, and also it can negotiate with client via NPN, for example:</p>
+
+<pre class="mod_example"><code>listen 443 ssl spdy_detect spdy;
+</code></pre>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
