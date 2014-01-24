@@ -33,7 +33,8 @@
 
 <pre class="mod_example"><code>location / {
     trim on;
-    trim_jscss on;
+    trim_js on;
+    trim_css on;
 }
 </code></pre>
 
@@ -45,18 +46,28 @@
 
 <p><strong>上下文:</strong> <code>http, server, location</code> </p>
 
-<p>在配置的地方使模块有效（失效），删除 html 的注释以及重复的空白符（\n，\r，\t，' ')。 <br />
-例外：对于 <code>pre</code>，<code>textarea</code>，<code>ie注释</code>，<code>script</code>，<code>style</code> 等标签内的内容不作删除操作。 <br />
+<p>使模块有效（失效），删除 html 的注释以及重复的空白符（\n，\r，\t，' '）。 <br />
+例外：对于 <code>pre</code>，<code>textarea</code>，<code>script</code>，<code>style</code> 和 ie/ssi/esi注释 等标签内的内容不作删除操作。 <br />
 <br/></p>
 
-<p><strong>trim_jscss</strong> <code>on</code> | <code>off</code></p>
+<p><strong>trim_js</strong> <code>on</code> | <code>off</code></p>
 
-<p><strong>默认:</strong> <code>trim_jscss off</code></p>
+<p><strong>默认:</strong> <code>trim_js off</code></p>
 
 <p><strong>上下文:</strong> <code>http, server, location</code> </p>
 
-<p>在配置的地方使模块有效（失效），删除内嵌 javascript 和 css 的注释以及重复的空白符（\n，\r，\t，' ')。 <br />
-例外：对于非javascript代码的<code>script</code>，非css代码的<code>style</code> 等标签内的内容不作删除操作。 <br />
+<p>使模块有效（失效），删除 html 内嵌 javascript 的注释以及重复的空白符（\n，\r，\t，' '）。 <br />
+例外：对于非javascript代码的 <code>script</code> 标签内容不作删除操作。 <br />
+<br/></p>
+
+<p><strong>trim_css</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>默认:</strong> <code>trim_css off</code></p>
+
+<p><strong>上下文:</strong> <code>http, server, location</code> </p>
+
+<p>使模块有效（失效），删除 html 内嵌 css 的注释以及重复的空白符（\n，\r，\t，' ')。 <br />
+例外：对于非css代码的 <code>style</code> 标签内容不作删除操作。 <br />
 <br/></p>
 
 <p><strong>trim_types</strong> <code>MIME types</code></p>
@@ -78,28 +89,81 @@
 
 <br /><br />
 
+<p>原始:</p>
+
+<pre class="mod_example"><code>&lt;!DOCTYPE html&gt;
+&lt;textarea  &gt;
+   trim
+        module
+&lt;/textarea  &gt;
+&lt;!--remove all--&gt;
+&lt;!--[if IE]&gt; trim module &lt;![endif]--&gt;
+&lt;!--[if !IE ]&gt;--&gt; trim module  &lt;!--&lt;![endif]--&gt;
+&lt;!--# ssi--&gt;
+&lt;!--esi--&gt;
+&lt;pre    style  =
+    "color:   blue"  &gt;Welcome    to    nginx!&lt;/pre  &gt;
+&lt;script type="text/javascript"&gt;
+/***  muitl comment 
+                   ***/
+//// single comment
+str.replace(/     /,"hello");
+&lt;/script&gt;
+&lt;style   type="text/css"  &gt;
+/*** css comment
+                 ! ***/
+body
+{
+  font-size:  20px ;
+  line-height: 150% ;
+}
+&lt;/style&gt;
+</code></pre>
+
+<p>结果:</p>
+
+<pre class="mod_example"><code>&lt;!DOCTYPE html&gt;
+&lt;textarea&gt;
+   trim  
+        module
+&lt;/textarea&gt;
+&lt;!--[if IE]&gt; trim module &lt;![endif]--&gt;
+&lt;!--[if !IE ]&gt;--&gt; trim module  &lt;!--&lt;![endif]--&gt;
+&lt;!--# ssi--&gt;
+&lt;!--esi--&gt;
+&lt;pre style="color:   blue"&gt;Welcome    to    nginx!&lt;/pre&gt;
+&lt;script type="text/javascript"&gt;str.replace(/     /,"hello");&lt;/script&gt;
+&lt;style type="text/css"&gt;body{font-size:20px;line-height:150%;}&lt;/style&gt;
+</code></pre>
+
+<br /><br />
+
 <h3>html</h3>
 
 <h5>空白符</h5>
 
 <ul>
 <li>正文中的 '\r' 直接删除。  </li>
-<li>正文中的 '\n' 替换为 '空格', 然后重复 \t' 和 '空格' 保留第一个。 </li>
-<li>标签中的 '\r'，'\n'，'\t'，'空格' 保留第一个。  </li>
+<li>正文中的 '\t' 替换为空格，然后重复的空格保留一个。 </li>
+<li>正文中重复的 '\n' 保留一个。  </li>
+<li>标签中的 '\t'，'\n' 替换为空格，重复的空格保留一个，'=' 前后的空格直接删除，'>' 前面的空格直接删除。  </li>
 <li>标签的双引号和单引号内的空白符不做删除。 
 \<div class="no &nbsp; &nbsp; &nbsp;  trim"\></li>
-<li>保留第一行DTD声明的 '\n'。  </li>
 <li><code>pre</code> 和 <code>texterea</code> 标签的内容不做删除。  </li>
+<li>支持 <code>pre</code> 嵌套使用。   </li>
 <li><code>script</code> 和 <code>style</code> 标签的内容不做删除。  </li>
 <li>ie条件注释的内容不做删除。 </li>
+<li>ssi/esi注释的内容不做删除。  </li>
 </ul>
 
 <h5>注释</h5>
 
 <ul>
-<li>如果是ie条件注释不做操作。
+<li>如果是ie条件注释不做删除。 <br />
 判断规则：<code>&lt;!--[if &lt;![endif]--&gt;</code>  之间的内容判断为ie条件注释。</li>
-<li>正常html注释直接删除.  <code>&lt;!--  --&gt;</code></li>
+<li>如果是ssi/esi注释的内容不做删除。 <br />
+判断规则：<code>&lt;!--# --&gt;</code>  <code>&lt;!--esi --&gt;</code>  之间的内容分别判断为ssi和esi注释。</li>
+<li>其他正常html注释直接删除.  <code>&lt;!--  --&gt;</code></li>
 </ul>
 
 <h3>javascript</h3>
@@ -110,9 +174,9 @@
 <h5>空白符</h5>
 
 <ul>
-<li>'('，'['，'{'，';'，','，'>'，'=' 后的 '\n'，'\t'，'空格' 直接删除。</li>
+<li>'('，'['，'{'，';'，','，'>'，'=' 后的 '\n'，'\t'，空格 直接删除。</li>
 <li>'\r' 直接删除。 </li>
-<li>其他情况 重复的 '\n'，'\t'，'空格' 保留第一个。  </li>
+<li>其他情况 重复的 '\n'，'\t'，空格 保留第一个。  </li>
 <li>单引号和双引号内不删除。 <br />
  如下不做操作： <br />
  "hello   &nbsp;   \\"  &nbsp;   world" <br />
@@ -136,14 +200,14 @@ http://en.wikipedia.org/wiki/Conditional_comment  </li>
 <h3>css</h3>
 
 <p>借鉴 YUI Compressor 的处理规则 (http://yui.github.io/yuicompressor/css.html) <br />
-<code>&lt;style type="text/css"&gt;</code> 或者 <code>&lt;style&gt;</code> 标签认为是css.  </p>
+<code>&lt;style type="text/css"&gt;</code> 或者 <code>&lt;style&gt;</code> 标签认为是css。  </p>
 
 <h5>空白符</h5>
 
 <ul>
-<li>';'，'>'，'{'，'}'，':'，',' 后的 '\n'，'\t'，'空格' 直接删除。  </li>
+<li>';'，'>'，'{'，'}'，':'，',' 前后的 '\n'，'\t'，空格 直接删除。  </li>
 <li>'\r' 直接删除。 </li>
-<li>其他情况 连续的 '\n'， '\t' 和 '空格'  保留第一个。  </li>
+<li>其他情况 连续的 '\n'， '\t' 和 空格 保留为一个空格。  </li>
 <li>单引号和双引号内不删除。 <br />
  如下不做操作： <br />
  "hello   &nbsp;  \\\"  &nbsp;    world" <br />
