@@ -9,7 +9,7 @@
 
 <body>
 <div id="container">
-  <div id="menu">
+  <div id="menu_cn">
     <ul>
       <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
       <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
@@ -24,6 +24,7 @@
   <div class="clear"></div>
   <div class="one_col more_padding font16">
 
+
 <div class="module">ngx_http_upstream_check_module</div>
 
 <p>该模块可以为Tengine提供主动式后端服务器健康检查的功能。</p>
@@ -33,7 +34,7 @@
 <div class="dh">Examples</div>
 
 <pre class="mod_example"><code>http {
-    upstream cluster {
+    upstream cluster1 {
         # simple round-robin
         server 192.168.0.1:80;
         server 192.168.0.2:80;
@@ -43,11 +44,26 @@
         check_http_expect_alive http_2xx http_3xx;
     }
 
+    upstream cluster2 {
+        # simple round-robin
+        server 192.168.0.3:80;
+        server 192.168.0.4:80;
+
+        check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+        check_keepalive_requests 100;
+        check_http_send "GET / HTTP/1.1\r\nConnection: keep-alive\r\n\r\n";
+        check_http_expect_alive http_2xx http_3xx;
+    }
+
     server {
         listen 80;
 
-        location / {
-            proxy_pass http://cluster;
+        location /1 {
+            proxy_pass http://cluster1;
+        }
+
+        location /2 {
+            proxy_pass http://cluster2;
         }
 
         location /status {
@@ -56,7 +72,7 @@
             access_log   off;
             allow SOME.IP.ADD.RESS;
             deny all;
-       }
+        }
     }
 }
 </code></pre>
@@ -94,6 +110,16 @@
 
 <br /><br />
 
+<div class="directive"><p>Syntax: <strong>check_keepalive_requests</strong> <code>request_num</code></p>
+
+<p>Default: <code>1</code></p>
+
+<p>Context: <code>upstream</code></p></div>
+
+<p>该指令可以配置一个连接发送的请求数，其默认值为1，表示Tengine完成1次请求后即关闭连接。</p>
+
+<br /><br />
+
 <div class="directive"><p>Syntax: <strong>check_http_send</strong> <code>http_packet</code></p>
 
 <p>Default: <code>"GET / HTTP/1.0\r\n\r\n"</code></p>
@@ -101,6 +127,9 @@
 <p>Context: <code>upstream</code></p></div>
 
 <p>该指令可以配置http健康检查包发送的请求内容。</p>
+
+<p>当采用长连接进行健康检查时，需在该指令中添加keep-alive请求头，如：<code>"GET / HTTP/1.1\r\nConnection: keep-alive\r\n\r\n"</code>。
+同时，请求uri的size不宜过大，确保可以在1个<code>interval</code>内传输完成，否则会被健康检查模块视为后端服务器或网络异常。</p>
 
 <br /><br />
 
