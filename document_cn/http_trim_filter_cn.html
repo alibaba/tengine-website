@@ -48,7 +48,17 @@
 
 <p>使模块有效（失效），删除 html 的注释以及重复的空白符（\n，\r，\t，' '）。 <br />
 例外：对于 <code>pre</code>，<code>textarea</code>，<code>script</code>，<code>style</code> 和 ie/ssi/esi注释 等标签内的内容不作删除操作。 <br />
-<br/></p>
+参数值可以包含变量。 <br />
+例如：</p>
+
+<pre class="mod_example"><code>set $flag "off";
+if ($condition) {
+    set $flag "on";
+}
+trim $flag;
+</code></pre>
+
+<p><br/></p>
 
 <p><strong>trim_js</strong> <code>on</code> | <code>off</code></p>
 
@@ -58,6 +68,7 @@
 
 <p>使模块有效（失效），删除 html 内嵌 javascript 的注释以及重复的空白符（\n，\r，\t，' '）。 <br />
 例外：对于非javascript代码的 <code>script</code> 标签内容不作删除操作。 <br />
+参数值可以包含变量。 
 <br/></p>
 
 <p><strong>trim_css</strong> <code>on</code> | <code>off</code></p>
@@ -68,6 +79,7 @@
 
 <p>使模块有效（失效），删除 html 内嵌 css 的注释以及重复的空白符（\n，\r，\t，' ')。 <br />
 例外：对于非css代码的 <code>style</code> 标签内容不作删除操作。 <br />
+参数值可以包含变量。 
 <br/></p>
 
 <p><strong>trim_types</strong> <code>MIME types</code></p>
