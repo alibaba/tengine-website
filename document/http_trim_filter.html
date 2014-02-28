@@ -47,7 +47,17 @@ HTML with a state machine.</p>
 
 <p>Enable or disable trim module for pure HTML. <br />
 This module will retain some contents unchanged, in case that they are enclosed by the tag <code>pre</code>,<code>textarea</code>,<code>script</code> and <code>style</code>,as well as IE/SSI/ESI comments. <br />
-<br/></p>
+Parameter value can contain variables. <br />
+Example:  </p>
+
+<pre class="mod_example"><code>set $flag "off";
+if ($condition) {
+    set $flag "on";
+}
+trim $flag;
+</code></pre>
+
+<p><br/></p>
 
 <p><strong>trim_js</strong> <code>on</code> | <code>off</code></p>
 
@@ -56,6 +66,7 @@ This module will retain some contents unchanged, in case that they are enclosed 
 <p><strong>Context:</strong> <code>http, server, location</code> </p>
 
 <p>Enable or disable trim module for inline javascript. <br />
+Parameter value can contain variables too. <br />
 <br/></p>
 
 <p><strong>trim_css</strong> <code>on</code> | <code>off</code></p>
@@ -65,6 +76,7 @@ This module will retain some contents unchanged, in case that they are enclosed 
 <p><strong>Context:</strong> <code>http, server, location</code> </p>
 
 <p>Enable or disable trim module for inline css. <br />
+Parameter value can contain variables too. <br />
 <br/></p>
 
 <p><strong>trim_types</strong> <code>MIME types</code></p>
@@ -129,6 +141,74 @@ body
 &lt;script type="text/javascript"&gt;str.replace(/     /,"hello");&lt;/script&gt;
 &lt;style type="text/css"&gt;body{font-size:20px;line-height:150%;}&lt;/style&gt;
 </code></pre>
+
+<br /><br />
+
+<h3>Html</h3>
+
+<h5>Whitespace</h5>
+
+<ul>
+<li>Remove '\r'.</li>
+<li>Replace '\t' with space.</li>
+<li>Replace multiple spaces with a single space.</li>
+<li>Replace multiple '\n' with a single '\n'.</li>
+<li>Replace multiple '\n' and '\t' in tag with a single space.</li>
+<li>Do not trim quoted strings in tag.</li>
+<li>Do not trim the contents enclosed by the tag <code>pre</code>,<code>textarea</code>,<code>script</code> and <code>style</code>.</li>
+</ul>
+
+<h5>Comment</h5>
+
+<ul>
+<li>Remove html comment(<code>&lt;!-- --&gt;</code>).</li>
+<li>Do not trim IE/SSI/ESI comments. <br />
+IE comment: <code>&lt;!--[if  &lt;![endif]--&gt;</code> <br />
+SSI comment: <code>&lt;!--#  --&gt;</code> <br />
+ESI comment: <code>&lt;!--esi  --&gt;</code>  </li>
+</ul>
+
+<h3>Javascript</h3>
+
+<p>Contents enclosed by <code>&lt;script type="text/javascript"&gt;</code> or <code>&lt;script&gt;</code> will be identified as javascript.</p>
+
+<h5>Whitespace</h5>
+
+<ul>
+<li>Remove '\r'.</li>
+<li>Remove '\t','\n' and space that behind '(',',','=',':','[','!','&amp;','|','?',';','>','~','*','{'.</li>
+<li>Replace multiple spaces with a single space.</li>
+<li>Do not trim quoted strings and regular expression literals.</li>
+</ul>
+
+<h5>Comment</h5>
+
+<ul>
+<li>Remove single comment. <code>//</code></li>
+<li>Remove multi comment. <code>/*  */</code></li>
+</ul>
+
+<h3>Css</h3>
+
+<p>Contents enclosed by <code>&lt;style type="text/css"&gt;</code> or <code>&lt;style&gt;</code> will be identified as css.</p>
+
+<h5>Whiltespace</h5>
+
+<ul>
+<li>Remove '\r'.</li>
+<li>Remove '\t','\n' and space that around ';','>','{','}',':',','.</li>
+<li>Replace multiple '\n' and spaces with a single space.</li>
+<li>Do not trim quoted strings.</li>
+</ul>
+
+<h5>Comment</h5>
+
+<ul>
+<li>Remove css comment(<code>/* */</code>).</li>
+<li>Do not remove child seletor and IE5 /Mac hack comments. <br />
+Child seletor hack: <code>html&gt;/**/body p{color:blue}</code> <br />
+IE5 /Mac hack: <code>/*\*/.selector{color:khaki}/**/</code>  </li>
+</ul>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
