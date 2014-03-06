@@ -31,12 +31,12 @@
       to variables. (taoyuanyuan)</li>
       <li>Feature: resolver can be configured automatically from /etc/resolv.conf.
       (lifeibo, yaoweibin)</li>
-      <li>Feature: added variables starting with "$ascii_" to get any octet.
-      (yzprofile)</li>
+      <li>Feature: added variables starting with "$ascii_", which can represent
+      arbitrary ASCII characters (yzprofile)</li>
       <li>Feature: added a new directive "image_filter_crop_offset". (lax)</li>
       <li>Change: merged changes between nginx-1.4.4 and nginx-1.4.6. (chobits, cfsego)</li>
-      <li>Bugfix: upstream health check will not fail on error when using keep-alive
-      connections. (lilbedwin)</li>
+      <li>Bugfix: upstream health check module failed occasionally when using
+      keep-alive connections. (lilbedwin)</li>
       <li>Bugfix: nginx crashed when upstream rejected nginx WebSocket connection. (Hao Chen)</li>
       <li>Bugfix: reduce nginx memory consumption when processing large files. (cfsego)</li>
       <li>Bugfix: disabled redirects to named locations if URI is not set.</li> 
