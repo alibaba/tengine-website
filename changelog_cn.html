@@ -25,6 +25,18 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="2_0_1"></a><h4>Tengine-2.0.1 [2014-03-06]</h4>
+    <li>Feature: 请求体不缓存的机制支持chunked输入 [yaoweibin]</li>
+    <li>Feature: trim模块支持更多规则，支持根据变量启用 [taoyuanyuan]</li>
+    <li>Feature: 利用/etc/resolv.conf自动配置resolver [lifeibo, yaoweibin]</li>
+    <li>Feature: 增加$ascii_变量前缀，可以生成任意ASCII字符 [yzprofile]</li>
+    <li>Feature: 增加"image_filter_crop_offset"指令 [lax]</li>
+    <li>Change: 合并截至nginx-1.4.6版本的所有修改 [chobits, cfsego]</li>
+    <li>Bugfix: 修正使用长连接进行健康检查时报错的问题 [lilbedwin]</li>
+    <li>Bugfix: 修正使用WebSocket时nginx崩溃的问题 [Hao Chen]</li>
+    <li>Bugfix: 减少nginx处理大文件时的内存消耗 [cfsego]</li>
+    <li>Bugfix: 在未设置URI时，禁用跳转到named locations的重定向</li>
+    </ul>
     <ul><a name="2_0_0"></a><h4>Tengine-2.0.0 [2014-01-08]</h4>
     <li>Feature: 增强DSO模块，编译动态模块不再依赖原始编译环境 [monadbobo]</li>
     <li>Feature: 支持SPDY v3协议，自动检测同一端口的SPDY请求和HTTP请求 [lilbedwin、chobits]</li>

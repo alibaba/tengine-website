@@ -16,7 +16,7 @@
       <li><a href="documentation.html"><img src="images/icon-doc.png"/>Documentation</a></li>
       <li><a href="#"><img src="images/icon-faq.png"/>FAQ</a></li>
       <li><a href="contact.html"><img src="images/icon-contact.png"/>Contact</a></li>
-	    <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
+      <li id="lang"><a href="index_cn.html">中文</a> | <a href="index.html">English</a></li>
     </ul>
   </div>
   <div id="logo"><a href="index.html"><img src="images/logo.png" alt="tengine" /></a></div>
@@ -24,6 +24,23 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="2_0_1"></a><h4>Tengine-2.0.1 [06 Mar 2014]</h4>
+      <li>Feature: now non-buffering request body mechanism supports chunked
+      input. (yaoweibin)</li>
+      <li>Feature: trim module added more rules, and now can be enabled according
+      to variables. (taoyuanyuan)</li>
+      <li>Feature: resolver can be configured automatically from /etc/resolv.conf.
+      (lifeibo, yaoweibin)</li>
+      <li>Feature: added variables starting with "$ascii_" to get any octet.
+      (yzprofile)</li>
+      <li>Feature: added a new directive "image_filter_crop_offset". (lax)</li>
+      <li>Change: merged changes between nginx-1.4.4 and nginx-1.4.6. (chobits, cfsego)</li>
+      <li>Bugfix: upstream health check will not fail on error when using keep-alive
+      connections. (lilbedwin)</li>
+      <li>Bugfix: nginx crashed when upstream rejected nginx WebSocket connection. (Hao Chen)</li>
+      <li>Bugfix: reduce nginx memory consumption when processing large files. (cfsego)</li>
+      <li>Bugfix: disabled redirects to named locations if URI is not set.</li> 
+    </ul>
     <ul><a name="2_0_0"></a><h4>Tengine-2.0.0 [08 Jan 2014]</h4>
       <li>Feature: now DSO module does not need the original source code or
       compiler options when compiling a new module. (monadbobo)</li>
