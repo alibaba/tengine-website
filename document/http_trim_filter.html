@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+<div class="dh">Ngx_http_trim_filter module</div>
+
+<p>The ngx_http_trim_filter module is a filter that modifies a response by removing unnecessary whitespaces 
+(spaces, tabs, newlines) and comments from HTML (including inline javascript and css). Trim module parses 
+HTML with a state machine.</p>
+
+<br /><br />
+
+<pre class="mod_example"><code>location / {
+    trim on;
+    trim_js on;
+    trim_css on;
+}
+</code></pre>
+
+<br /><br />
+
+<p><strong>trim</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>Default:</strong> <code>trim off</code></p>
+
+<p><strong>Context:</strong> <code>http, server, location</code> </p>
+
+<p>Enable or disable trim module for pure HTML. <br />
+This module will retain some contents unchanged, in case that they are enclosed by the tag <code>pre</code>,<code>textarea</code>,<code>script</code> and <code>style</code>,as well as IE/SSI/ESI comments. <br />
+Parameter value can contain variables. <br />
+Example:  </p>
+
+<pre class="mod_example"><code>set $flag "off";
+if ($condition) {
+    set $flag "on";
+}
+trim $flag;
+</code></pre>
+
+<p><br/></p>
+
+<p><strong>trim_js</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>Default:</strong> <code>trim_js off</code></p>
+
+<p><strong>Context:</strong> <code>http, server, location</code> </p>
+
+<p>Enable or disable trim module for inline javascript. <br />
+Parameter value can contain variables too. <br />
+<br/></p>
+
+<p><strong>trim_css</strong> <code>on</code> | <code>off</code></p>
+
+<p><strong>Default:</strong> <code>trim_css off</code></p>
+
+<p><strong>Context:</strong> <code>http, server, location</code> </p>
+
+<p>Enable or disable trim module for inline css. <br />
+Parameter value can contain variables too. <br />
+<br/></p>
+
+<p><strong>trim_types</strong> <code>MIME types</code></p>
+
+<p><strong>Default:</strong> <code>trim_types: text/html</code></p>
+
+<p><strong>Context:</strong> <code>http, server, location</code></p>
+
+<p>Enable trim module for the specified MIME types in addition to "text/html". Responses with the “text/html” type are always processed. <br />
+<br/></p>
+
+<br /><br />
+
+<p>Trim module will be disabled if incoming request has <code>http_trim=off</code> parameter in url. <br />
+e.g.  <code>http://www.xxx.com/index.html?http_trim=off</code>  </p>
+
+<br /><br />
+
+<p>original:</p>
+
+<pre class="mod_example"><code>&lt;!DOCTYPE html&gt;
+&lt;textarea  &gt;
+   trim
+        module
+&lt;/textarea  &gt;
+&lt;!--remove all--&gt;
+&lt;!--[if IE]&gt; trim module &lt;![endif]--&gt;
+&lt;!--[if !IE ]&gt;--&gt; trim module  &lt;!--&lt;![endif]--&gt;
+&lt;!--# ssi--&gt;
+&lt;!--esi--&gt;
+&lt;pre    style  =
+    "color:   blue"  &gt;Welcome    to    nginx!&lt;/pre  &gt;
+&lt;script type="text/javascript"&gt;
+/***  muitl comment 
+                   ***/
+//// single comment
+str.replace(/     /,"hello");
+&lt;/script&gt;
+&lt;style   type="text/css"  &gt;
+/*** css comment
+                 ! ***/
+body
+{
+  font-size:  20px ;
+  line-height: 150% ;
+}
+&lt;/style&gt;
+</code></pre>
+
+<p>result:</p>
+
+<pre class="mod_example"><code>&lt;!DOCTYPE html&gt;
+&lt;textarea&gt;
+   trim  
+        module
+&lt;/textarea&gt;
+&lt;!--[if IE]&gt; trim module &lt;![endif]--&gt;
+&lt;!--[if !IE ]&gt;--&gt; trim module  &lt;!--&lt;![endif]--&gt;
+&lt;!--# ssi--&gt;
+&lt;!--esi--&gt;
+&lt;pre style="color:   blue"&gt;Welcome    to    nginx!&lt;/pre&gt;
+&lt;script type="text/javascript"&gt;str.replace(/     /,"hello");&lt;/script&gt;
+&lt;style type="text/css"&gt;body{font-size:20px;line-height:150%;}&lt;/style&gt;
+</code></pre>
+
+<br /><br />
+
+<h3>Html</h3>
+
+<h5>Whitespace</h5>
+
+<ul>
+<li>Remove '\r'.</li>
+<li>Replace '\t' with space.</li>
+<li>Replace multiple spaces with a single space.</li>
+<li>Replace multiple '\n' with a single '\n'.</li>
+<li>Replace multiple '\n' and '\t' in tag with a single space.</li>
+<li>Do not trim quoted strings in tag.</li>
+<li>Do not trim the contents enclosed by the tag <code>pre</code>,<code>textarea</code>,<code>script</code> and <code>style</code>.</li>
+</ul>
+
+<h5>Comment</h5>
+
+<ul>
+<li>Remove html comment(<code>&lt;!-- --&gt;</code>).</li>
+<li>Do not trim IE/SSI/ESI comments. <br />
+IE comment: <code>&lt;!--[if  &lt;![endif]--&gt;</code> <br />
+SSI comment: <code>&lt;!--#  --&gt;</code> <br />
+ESI comment: <code>&lt;!--esi  --&gt;</code>  </li>
+</ul>
+
+<h3>Javascript</h3>
+
+<p>Contents enclosed by <code>&lt;script type="text/javascript"&gt;</code> or <code>&lt;script&gt;</code> will be identified as javascript.</p>
+
+<h5>Whitespace</h5>
+
+<ul>
+<li>Remove '\r'.</li>
+<li>Remove '\t','\n' and space that behind '(',',','=',':','[','!','&amp;','|','?',';','>','~','*','{'.</li>
+<li>Replace multiple spaces with a single space.</li>
+<li>Do not trim quoted strings and regular expression literals.</li>
+</ul>
+
+<h5>Comment</h5>
+
+<ul>
+<li>Remove single comment. <code>//</code></li>
+<li>Remove multi comment. <code>/*  */</code></li>
+</ul>
+
+<h3>Css</h3>
+
+<p>Contents enclosed by <code>&lt;style type="text/css"&gt;</code> or <code>&lt;style&gt;</code> will be identified as css.</p>
+
+<h5>Whiltespace</h5>
+
+<ul>
+<li>Remove '\r'.</li>
+<li>Remove '\t','\n' and space that around ';','>','{','}',':',','.</li>
+<li>Replace multiple '\n' and spaces with a single space.</li>
+<li>Do not trim quoted strings.</li>
+</ul>
+
+<h5>Comment</h5>
+
+<ul>
+<li>Remove css comment(<code>/* */</code>).</li>
+<li>Do not remove child seletor and IE5 /Mac hack comments. <br />
+Child seletor hack: <code>html&gt;/**/body p{color:blue}</code> <br />
+IE5 /Mac hack: <code>/*\*/.selector{color:khaki}/**/</code>  </li>
+</ul>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2013 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
