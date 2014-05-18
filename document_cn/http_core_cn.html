@@ -75,6 +75,16 @@
 
 <p>用法跟<code>proxy_request_buffering</code>指令一样。</p>
   </div>
+
+<div class="directive"><p>Syntax: <strong>resolver</strong> <code>address ... [valid=time] [ipv6=on|off];</code></p>
+
+<p>Default: <code>--</code></p>
+
+<p>Context: <code>http, server, location</code></p></div>
+
+<p>当没有配置该指令时，nginx会自动读取/etc/resolv.conf配置文件里面的nameserver作为DNS服务器。</p>
+  </div>
+
 </div>
 <div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>
 </body>
