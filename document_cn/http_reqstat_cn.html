@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu_cn">
+    <ul>
+      <li><a href="../download_cn.html"><img src="../images/icon-down.png"/>下载</a></li>
+      <li><a href="../source_cn.html"><img src="../images/icon_code.png"/>源码</a></li>
+      <li><a href="../documentation_cn.html"><img src="../images/icon-doc.png"/>文档</a></li>
+      <li><a href="../faq_cn.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact_cn.html"><img src="../images/icon-contact.png"/>联系我们</a></li>
+      <li id="book"><a href="../book/">开发教程</a></li>
+      <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+<div class="dh">模块名</div>
+
+<ul>
+<li>ngx<em>http</em>reqstat_module，监控模块</li>
+</ul>
+
+<div class="dh">描述</div>
+
+<ul>
+<li><p>这个模块计算定义的变量，根据变量值分别统计Tengine的运行状况。</p></li>
+<li><p>可以监视的运行状况有：连接数、请求数、各种响应码范围的请求数、输入输出流量、rt、upstream访问。</p></li>
+<li><p>可以指定获取所有监控结果或者一部分监控结果。</p></li>
+</ul>
+
+<div class="dh">编译</div>
+
+<p>默认编入Tengine，可通过--without-http<em>reqstat</em>module不编译此模块，或通过--with-http<em>reqstat</em>module=shared编译为so模块。</p>
+
+<div class="dh">例子</div>
+
+<pre class="mod_example"><code>http {
+    req_status_zone server "$host,$server_addr:$server_port" 10M;
+
+    server {
+        location /us {
+            req_status_show;
+        }
+
+        req_status server;
+    }
+}
+</code></pre>
+
+<ul>
+<li><p>以上例，通过访问/us得到统计结果</p>
+
+<ul>
+<li><p>每行对应一个server</p></li>
+<li><p>每行的格式</p>
+
+<pre class="mod_example"><code>kv,bytes_in_total,bytes_out_total,conn_total,req_total,2xx,3xx,4xx,5xx,other,rt_total
+</code></pre>
+
+<ul>
+<li>kv                计算得到的req<em>status</em>zone指令定义变量的值</li>
+<li>bytes<em>in</em>total    从客户端接收流量总和</li>
+<li>bytes<em>out</em>total   发送到客户端流量总和</li>
+<li>conn_total        处理过的连接总数</li>
+<li>req_total         处理过的总请求数</li>
+<li>2xx               2xx请求的总数</li>
+<li>3xx               3xx请求的总数</li>
+<li>4xx               4xx请求的总数</li>
+<li>5xx               5xx请求的总数</li>
+<li>other             其他请求的总数</li>
+<li>rt_total          rt的总数</li>
+<li>upstream_req      需要访问upstream的请求总数</li>
+<li>upstream_rt       访问upstream的总rt</li>
+<li>upstream_tries    upstram总访问次数</li>
+</ul></li>
+</ul></li>
+<li><p>tsar可解析输出结果，具体见https://github.com/alibaba/tsar</p></li>
+</ul>
+
+<div class="dh">指令</div>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status_zone zone_name value size</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>创建统计使用的共享内存。zone_name是共享内存的名称，value用于定义key，支持变量。size是共享内存的大小。</p>
+
+<p>例子：</p>
+
+<pre class="mod_example"><code>req_status_zone server "$host,$server_addr:$server_port" 10M;
+
+创建名为“server”的共享内存，大小10M，使用“$host,$server_addr:$server_port”计算key。
+</code></pre>
+
+<ul>
+<li>注意，如果希望用tsar来监控的话，key的定义中请不要使用逗号。</li>
+</ul>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status zone_name1 [zone_name2 [zone_name3]]</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main、srv、loc</em></p>
+
+<p>开启统计，可以指定同时统计多个目标，每一个zone_name对应一个目标。</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status_show [zone_name1 [zone_name2 [...]]]</em></p>
+
+<p><strong>Default</strong>: <em>所有建立的共享内存目标</em></p>
+
+<p><strong>Context</strong>: <em>loc</em></p>
+
+<p>按格式返回统计结果。可指定返回部分目标的统计结果。</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

@@ -25,6 +25,16 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="2_0_3"></a><h4>Tengine-2.0.3 [2014-05-30]</h4>
+    <li>Feature: 支持按指定关键字(域名，url等)收集Tengine运行状态 [cfsego]</li>
+    <li>Feature: 支持debian、ubuntu打包 [betetrpm, szepeviktor]</li>
+    <li>Change: 合并nginx-1.4.7的修改 [chobits]</li>
+    <li>Change: 使用红黑树优化upstream配置解析和查找 [SarahWang]</li>
+    <li>Change: 更新版权信息</li>
+    <li>Bugfix: 修复session-sticky模块相关问题 [dinic]</li>
+    <li>Bugfix: 修复DSO编译和安装模块的问题 [cfsego]</li>
+    <li>Bugfix: 修复spdy相关问题 [chobits]</li>
+    </ul>
     <ul><a name="2_0_2"></a><h4>Tengine-2.0.2 [2014-03-28]</h4>
     <li>Bugfix: 在读事件处理完后继续发送SPDY数据 [chobits]</li>
     <li>Bugfix: CVE-2014-0133以及CVE-2014-0088 [chobits]</li>
