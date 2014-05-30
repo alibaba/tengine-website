@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+
+<ul>
+<li>ngx<em>http</em>reqstat_module</li>
+</ul>
+
+<div class="dh">Description</div>
+
+<p>This module will help monitor running status of Tengine.</p>
+
+<ul>
+<li><p>It can provide running status information of Tengine.</p></li>
+<li><p>The information is divided into different zones, and each zone is independent.</p></li>
+<li><p>The status information is about connections, requests, response status codes, input and output flows,
+rt, and upstreams.</p></li>
+<li><p>It shows all the results by default, and can be set to show part of them by specifying zones.</p></li>
+</ul>
+
+<div class="dh">Compilation</div>
+
+<p>The module is compiled into Tengine by default. It can be disabled with '--without-http<em>reqstat</em>module'
+configuration parameter, or it can be compiled as a '.so' with '--with-http<em>reqstat</em>module=shared'.</p>
+
+<div class="dh">Example</div>
+
+<pre class="mod_example"><code>http {
+    req_status_zone server "$host,$server_addr:$server_port" 10M;
+
+    server {
+        location /us {
+            req_status_show;
+        }
+
+        req_status server;
+    }
+}
+</code></pre>
+
+<ul>
+<li><p>when you call '/us', you will get the results like this:</p>
+
+<pre class="mod_example"><code>    www.taobao.com,127.0.0.1:80,162,6242,1,1,1,0,0,0,0,10,1,10,1
+</code></pre>
+
+<ul>
+<li><p>Each line shows the status infomation of a "$host,$server<em>addr:$server</em>port".</p></li>
+<li><p>Line format:</p>
+
+<pre class="mod_example"><code>kv,bytes_in_total,bytes_out_total,conn_total,req_total,2xx,3xx,4xx,5xx,other,rt_total,upstream_req,upstream_rt,upstream_tries
+</code></pre>
+
+<ul>
+<li><strong>kv</strong>                value of the variable defined by the directive 'req<em>status</em>zone'</li>
+<li><strong>bytes<em>in</em>total</strong>    total number of bytes received from client</li>
+<li><strong>bytes<em>out</em>total</strong>   total number of bytes sent to client</li>
+<li><strong>conn_total</strong>        total number of accepted connections</li>
+<li><strong>req_total</strong>         total number of processed requests</li>
+<li><strong>2xx</strong>               total number of 2xx requests</li>
+<li><strong>3xx</strong>               total number of 3xx requests</li>
+<li><strong>4xx</strong>               total number of 4xx requests</li>
+<li><strong>5xx</strong>               total number of 5xx requests</li>
+<li><strong>other</strong>             total number of other requests</li>
+<li><strong>rt_total</strong>          accumulation or rt</li>
+<li><strong>upstream_req</strong>      total number of requests calling for upstream</li>
+<li><strong>upstream_rt</strong>       accumulation or upstream rt</li>
+<li><strong>upstream_tries</strong>    total number of times calling for upstream</li>
+</ul></li>
+</ul></li>
+<li><p>tsar can parse the result and monitor, see also https://github.com/alibaba/tsar</p></li>
+</ul>
+
+<div class="dh">Directives</div>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status_zone zone_name value size</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>create shared memory for this module. 'zone_name' is the name of memory block.
+'value' defines the key, in which variables can be used.
+'size' defines the size of shared memory.</p>
+
+<p>Example:</p>
+
+<pre class="mod_example"><code>req_status_zone server "$host,$server_addr:$server_port" 10M;
+
+the memory is 10MB, the key is "$host,$server_addr:$server_port", and the name is "server".
+</code></pre>
+
+<ul>
+<li>Notice, if you want to use tsar to monitor, you should not use comma in the key.</li>
+</ul>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status zone_name1 [zone_name2 [zone_name3]]</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main、srv、loc</em></p>
+
+<p>Enable monitoring. You can specify multiple zones to monitor.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status_show [zone_name1 [zone_name2 [...]]]</em></p>
+
+<p><strong>Default</strong>: <em>all the targets defined by 'req_status_zone'</em></p>
+
+<p><strong>Context</strong>: <em>loc</em></p>
+
+<p>Display the status information. You can specify zones to display.</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

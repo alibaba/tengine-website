@@ -24,6 +24,16 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="2_0_3"></a><h4>Tengine-2.0.3 [30 May 2014]</h4>
+      <li>Feature: added support for collecting the running status of Tengine according to specific key (domain, url, etc). (cfsego)</li>
+      <li>Feature: added support for generating package of debian/ubuntu format(*.deb). (betetrpm, szepeviktmr)</li>
+      <li>Change: merged changes between nginx-1.4.6 and nginx-1.4.7. (chobits)</li>
+      <li>Change: optimized the parsing and searching strategy of upstream by using rbtree. (SarahWang)</li>
+      <li>Change: updated the copyright.</li>
+      <li>Bugfix: fixed bugs of session-sticky module. (dinic)</li>
+      <li>Bugfix: fixed compiling and installing issues of DSO modules. (cfsego)</li>
+      <li>Bugfix: fixed bugs of SPDY protocol. (chobits)</li>
+    </ul>
     <ul><a name="2_0_2"></a><h4>Tengine-2.0.2 [28 Mar 2014]</h4>
       <li>Bugfix: send output queue after processing of read event in SPDY. (chobits)</li>
       <li>Bugfix: CVE-2014-0133 and CVE-2014-0088. (chobits)</li> 

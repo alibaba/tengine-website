@@ -25,12 +25,12 @@
   <div class="one_col"><h2>简介</h2>Tengine是由淘宝网发起的Web服务器项目。它在<a href="http://nginx.org/">Nginx</a>的基础上，针对大访问量网站的需求，添加了很多高级功能和特性。Tengine的性能和稳定性已经在大型的网站如<a href="http://www.taobao.com/">淘宝网</a>，<a href="http://www.tmall.com">天猫商城</a>等得到了很好的检验。它的最终目标是打造一个高效、稳定、安全、易用的Web平台。<br/><br/>
     从2011年12月开始，Tengine成为一个开源项目，Tengine团队在积极地开发和维护着它。Tengine团队的核心成员来自于<a href="http://www.taobao.com/">淘宝</a>、<a href="http://www.sogou.com/">搜狗</a>等互联网企业。Tengine是社区合作的成果，我们欢迎大家<a href="source_cn.html">参与其中</a>，贡献自己的力量。</div>
   <div class="one_col" style="padding-bottom: 0">
-    <a href="download/tengine-2.0.1.tar.gz"><img src="images/download.png" onmouseover="this.src='images/download_a.png'" onmouseout="this.src='images/download.png'" /></a>
+    <a href="download/tengine-2.0.3.tar.gz"><img src="images/download.png" onmouseover="this.src='images/download_a.png'" onmouseout="this.src='images/download.png'" /></a>
   </div>
   <div class="left_col">
     <h2>特性</h2>
     <ul>
-    <li>继承Nginx-1.4.6的所有特性，100%兼容Nginx的配置；</li>
+    <li>继承Nginx-1.4.7的所有特性，100%兼容Nginx的配置；</li>
     <li><a href="document_cn/dso_cn.html">动态模块加载（DSO）</a>支持。加入一个模块不再需要重新编译整个Tengine；</li>
     <li>支持<a href="document_cn/ngx_http_spdy_module_cn.html">SPDY v3协议</a>，自动检测同一端口的SPDY请求和HTTP请求；</li>
     <li><a href="document_cn/http_core_cn.html">流式上传</a>到HTTP后端服务器或FastCGI服务器，大量减少机器的I/O压力；</li>
@@ -39,6 +39,7 @@
     <li>支持设置proxy、memcached、fastcgi、scgi、uwsgi<a href="document_cn/ngx_limit_upstream_tries_cn.html">在后端失败时的重试次数</a></li>
     <li><a href="http://wiki.nginx.org/HttpLuaModule">动态脚本语言Lua</a>支持。扩展功能非常高效简单；</li>
     <li><a href="document_cn/http_log_cn.html">支持管道（pipe）和syslog（本地和远端）形式的日志以及日志抽样</a>；</li>
+    <li>支持按指定关键字(域名，url等)<a href="document_cn/http_reqstat_cn.html">收集Tengine运行状态</a>；</li>
     <li><a href="document_cn/http_concat_cn.html">组合多个CSS、JavaScript文件的访问请求变成一个请求</a>；</li>
     <li><a href="document_cn/http_trim_filter_cn.html">自动去除空白字符和注释</a>从而减小页面的体积</li>
     <li>自动根据CPU数目设置进程个数和绑定CPU亲缘性；</li>
@@ -55,6 +56,7 @@
     <h2>动态</h2>
     <ul>
     <ul>
+    <li>[2014-05-30] <a href="download/tengine-2.0.3.tar.gz">Tengine-2.0.3</a> 开发版正式发布（<a href="changelog_cn.html#2_0_3">变更列表</a>）
     <li>[2014-03-28] <a href="download/tengine-2.0.2.tar.gz">Tengine-2.0.2</a> 开发版正式发布（<a href="changelog_cn.html#2_0_2">变更列表</a>）
     <li>[2014-03-06] <a href="download/tengine-2.0.1.tar.gz">Tengine-2.0.1</a> 开发版正式发布（<a href="changelog_cn.html#2_0_1">变更列表</a>）
     <li>[2014-01-08] <a href="download/tengine-2.0.0.tar.gz">Tengine-2.0.0</a> 开发版正式发布（<a href="changelog_cn.html#2_0_0">变更列表</a>）
