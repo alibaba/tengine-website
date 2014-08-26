@@ -117,6 +117,16 @@ Context: http, server, location
     <div class="introduce">
         <p>自定义设置HTTP响应的server头，‘off’可以禁止返回server头。如果什么都不设置，就是返回默认Nginx的标识。</p>
     </div>
+    <div class="directive">
+Syntax: <b>reuse_port</b> on |  off<br/>
+Default: reuse_port off<br/>
+Context: events
+    </div>
+    <div class="introduce">
+        <p>当打开reuse_port的时候，支持SO_REUSEPORT套接字参数，Linux从3.9开始支持。</p>
+        <p>使用该指令，cpu更加均衡，新建连接的能力加强，但是负作用是reload和upgrade会有少量的失败。</p>
+        <a href="../download/reuseport.pdf">测试报告</a>
+    </div>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>
