@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index_cn.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+    <div class="module">ngx_http_upstream_dynamic_module</div>
+    <div class="mod_intro"><p>This module provides the functionality to resolve domain names into IP addresses in an upstream at run-time.
+<div class="dh">Examples</div>
+<pre class="mod_example">
+    upstream backend {
+        dynamic_resolve fallback=stale fail_timeout=30s;
+
+        server a.com;
+        server b.com;
+    }
+
+    server {
+        ...
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+</pre>
+</p>
+    </div>
+    <div class="dh">Directive</div>
+    <div class="directive">
+Syntax: <b>dynamic_resolve</b> [fallback=stale|next|shutdown] [fail_timeout=time]<br/>
+Default: -<br/>
+Context: upstream.
+    </div>
+    <div class="introduce"><p>Enable dynamic DNS resolving functionality in an upstream.<p/>
+        The 'fallback' parameter specifies what action to take if a domain name can not be resolved into an IP address:
+        <ul>
+            <li> stale, use the original IP addresses resolved when tengine starts.
+            <li> next, go to next availiable server in the upstream.
+            <li> shutdown, finalize current request.
+        </ul>
+        <p/>
+        The 'fail_timeout' parameter specifies how long time tengine considers the DNS server as unavailiable if a DNS query fails for a server in the upstream. In this period of time, all requests comming will follow what 'fallback' specifies.
+    </p></div>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>
+</body>
+</html>

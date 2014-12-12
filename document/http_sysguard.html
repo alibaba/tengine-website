@@ -24,7 +24,7 @@
   <div class="one_col more_padding font16">
     <div class="module">ngx_http_sysguard_module</div>
     <div class="mod_intro">
-	<p>This module can be used to protect your server in case system load or memory use goes too high.<p/>
+	<p>This module can be used to protect your server in case system load, memory use goes too high or requests are responded too slow.<p/>
 To use this module, you should enable it first: <br/>
 ./configure --with-http_sysguard_module
 <div class="dh">Examples</div>
@@ -35,6 +35,7 @@ server {
 &nbsp;&nbsp;&nbsp;&nbsp;sysguard_load load=10.5 action=/loadlimit;
 &nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem swapratio=20% action=/swaplimit;
 &nbsp;&nbsp;&nbsp;&nbsp;sysguard_mem free=100M action=/memlimit;
+&nbsp;&nbsp;&nbsp;&nbsp;sysguard_rt rt=0.01 period=5s action=/rtlimit;
 
 &nbsp;&nbsp;&nbsp;&nbsp;location /loadlimit {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
@@ -45,6 +46,10 @@ server {
 &nbsp;&nbsp;&nbsp;&nbsp;}
 
 &nbsp;&nbsp;&nbsp;&nbsp;location /memlimit {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;location /rtlimit {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 503;
 &nbsp;&nbsp;&nbsp;&nbsp;}
 
@@ -73,6 +78,19 @@ Context: http, server, location
     </div>
     <div class="introduce"><p>Specify the used swap memory or free memory threshold. <p/>
 When the swap memory use ratio exceeds this threshold or memory free less than the size, all subsequent requests will be redirected to the URL specified by the 'action' parameter. Tengine will return 503 if there's no 'action' URL. Sysguard uses this strategy to calculate memory free: "memfree = free + buffered + cached" </p></div>
+    <div class="directive">
+Syntax: <b>sysguard_rt</b> [rt=second] [period=time] [action=/url]<br/>
+Default: none<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce"><p>Specify the response time threshold. <p/>
+Parameter rt is used to set a threshold of the average response time, in second. Parameter period is used to specifiy the period of the statistics cycle. If the average response time of the system exceeds the threshold specified by the user, the incoming request will be redirected to a specified url which is defined by parameter 'action'. If no 'action' is presented, the request will be responsed with 503 error directly. </p></div>
+    <div class="directive">
+Syntax: <b>sysguard_mode</b> [and | or]<br/>
+Default: sysguard_mode or<br/>
+Context: http, server, location
+    </div>
+    <div class="introduce"><p>If there are more than one type of monitor, this directive is used to specified the relations among all the monitors which are: 'and' for all matching and 'or' for any matching.</p></div>
     <div class="directive">
 Syntax: <b>sysguard_interval</b> time<br/>
 Default: sysguard_interval 1s<br/>
