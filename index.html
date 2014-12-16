@@ -30,11 +30,12 @@
   <div class="one_col">
     <h2>Features</h2>
     <ul>
-      <li>All features of Nginx-1.4.7 are inherited, i.e., it is 100% compatible with Nginx.</li>
+      <li>All features of Nginx-1.6.2 are inherited, i.e., it is compatible with Nginx.</li>
       <li><a href="document/dso.html">Dynamic module loading support (DSO)</a>. You don't have to recompile Tengine when adding new modules to it.</li>
+      <li><a href="document_cn/core_cn.html">support the SO_REUSEPORT option</a>，and the ability of connection setup is three times higher than the official nginx.</li>
       <li><a href="document/ngx_http_spdy_module.html">SPDY v3</a> support, and SPDY/HTTP servers can listen on the same port.</li>
       <li>Sends <a href="document/http_core.html">unbuffered upload</a> directly to HTTP and FastCGI backend servers, which saves disk I/Os.</li>
-      <li>More load balancing methods, e.g., <a href="document/http_upstream_consistent_hash.html">consistent hashing</a>, <a href="document/http_upstream_session_sticky.html">session persistence</a> and <a href="document/http_upstream_check.html">upstream health check</a>.</li>
+      <li>More load balancing methods, e.g., <a href="document/http_upstream_consistent_hash.html">consistent hashing</a>, <a href="document/http_upstream_session_sticky.html">session persistence</a>, <a href="document/http_upstream_check.html">upstream health check</a>, and <a href="document/http_upstream_dynamic.html">resolving upstream domain names on the fly</a>.</li>
       <li><a href="http://blog.zhuzhaoyuan.com/2012/01/a-mechanism-to-help-write-web-application-firewalls-for-nginx/">Input body filter</a> support. It's quite handy to write Web Application Firewalls using this mechanism.</li>
       <li><a href="http://wiki.nginx.org/HttpLuaModule">Dynamic scripting language (Lua)</a> support, which is very efficient and makes it easy to extend core functionalities.</li>
       <li><a href="document/http_log.html">Logging enhancements</a>. Syslog (local and remote), pipe logging and log sampling are supported.</li>
@@ -57,6 +58,7 @@
   <div class="one_col">
     <h2>News</h2>
     <ul>
+    <li>[16/12/2014] <a href="download/tengine-2.1.0.tar.gz">Tengine-2.1.0</a> development version released (<a href="changelog.html#2_1_0">changes</a>).</li>
     <li>[30/05/2014] <a href="download/tengine-2.0.3.tar.gz">Tengine-2.0.3</a> development version released (<a href="changelog.html#2_0_3">changes</a>).</li>
     <li>[28/03/2014] <a href="download/tengine-2.0.2.tar.gz">Tengine-2.0.2</a> development version released (<a href="changelog.html#2_0_2">changes</a>).</li>
     <li>[06/03/2014] <a href="download/tengine-2.0.1.tar.gz">Tengine-2.0.1</a> development version released (<a href="changelog.html#2_0_1">changes</a>).</li>

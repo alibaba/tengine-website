@@ -24,6 +24,29 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
+    <ul><a name="2_1_0"></a><h4>Tengine-2.1.0 [16 Dec 2014]</h4>
+      <li>Feature: added support for collecting the running status of Tengine according to specific key (domain, url, etc). (cfsego)</li>
+      <li>Feature: support the SO_REUSEPORT option, to improve performance on multicore systems. (monadbobo)</li>
+      <li>Feature: support for resolving upstream domain names on the fly. (InfoHunter)</li>
+      <li>Feature: support for rewriting to named locations. (yzprofile)</li>
+      <li>Feature: added two parameters 'crop_keepx' and 'crop_keepy' to the directive 'image_filter'. (Lax)</li>
+      <li>Feature: support for saving SSL sessions in consistent_hash module and session_sticky module. (dinic)</li>
+      <li>Feature: support for compiling Tengine automatically in travis-ci.org. (Jamyn)</li>
+      <li>Feature: support for FastCGI health check. (yzprofile)</li>
+      <li>Feature: enhanced sysguard module. (InfoHunter)</li>
+      <li>Feature: added a variable '$normalized_request', to get normalized request URIs. (yunkai)</li>
+      <li>Feature: added wildcard support for 'include' directive in 'dso' block. (monadbobo)</li>
+      <li>Feature: added the 'gzip_clear_etag' directive. (taoyuanyuan)</li> 
+      <li>Feature: added the 'unprintable' parameter to the 'log_escape' directive. (skoo87)</li>
+      <li>Change: merged changes from nginx-1.6.2. (cfsego, taoyuanyuan, chobits)</li>
+      <li>Change: now the order of servers in an upstream are random when initialized. (taoyuanyuan)</li>
+      <li>Change: slab allocator free pages defragmentation. (chobits)</li>
+      <li>Bugfix: SPDY/3 dropped the "delayed" flag when finalizing connection. (chobits)</li>
+      <li>Bugfix: fixed SPDY/3 connection leak. (chobits)</li>
+      <li>Bugfix: now don't truncate value of key to 255 bytes in limit_req module. (chobits)</li>
+      <li>Bugfix: failed to parse /etc/resolv.conf with IPv6 addresses. (lifeibo)</li>
+      <li>Bugfix: upstream rbtree bugfix. (taoyuanyuan)</li>
+    </ul>
     <ul><a name="2_0_3"></a><h4>Tengine-2.0.3 [30 May 2014]</h4>
       <li>Feature: added support for collecting the running status of Tengine according to specific key (domain, url, etc). (cfsego)</li>
       <li>Feature: added support for generating package of debian/ubuntu format(*.deb). (betetrpm, szepeviktmr)</li>

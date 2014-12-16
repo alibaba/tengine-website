@@ -25,6 +25,28 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="2_1_0"></a><h4>Tengine-2.1.0 [2014-12-16]</h4>
+    <li>Feature: 支持SO_REUSEPORT选项，以提升CPU负载均衡性和性能 [monadbobo]</li>
+    <li>Feature: 支持动态解析upstream中出现的域名 [InfoHunter]</li>
+    <li>Feature: rewrite指令支持重定向到命名location [yzprofile]</li>
+    <li>Feature: image_filter指令支持crop_keepx和crop_keepy参数 [Lax]</li>
+    <li>Feature: consistent_hash模块和session_sticky模块支持SSL会话保持 [dinic]</li>
+    <li>Feature: 支持travis-ci.org自动编译 [Jamyn]</li>
+    <li>Feature: 健康检查模块支持FASTCGI检查 [yzprofile]</li>
+    <li>Feature: 增强sysguard模块的功能 [InfoHunter]</li>
+    <li>Feature: 新增变量$normalized_request得到规范化的请求 [yunkai]</li>
+    <li>Feature: dso的include指令支持通配符 [monadbobo]</li>
+    <li>Feature: 新增gzip_clear_etag指令 [taoyuanyuan]</li>
+    <li>Feature: 为log_escape指令添加unprintable参数 [skoo87]</li>
+    <li>Change: 合并nginx-1.6.2版本的修改 [cfsego, taoyuanyuan, chobits]</li>
+    <li>Change: round robin负载均衡算法随机选择某个源站作为循环起点 [taoyuanyuan]</li>
+    <li>Change: 对共享内存中的碎片进行优化 [chobits]</li>
+    <li>Bugfix: SPDY/3关闭连接时去掉drop标志 [chobits]</li>
+    <li>Bugfix: 修复SPDY/3出现连接泄漏的问题 [chobits]</li>
+    <li>Bugfix: 修复limit_req模块将长度超过255个字符的key截断的问题 [chobits]</li>
+    <li>Bugfix: 解析/etc/resolv.conf中的IPv6地址出错 [lifeibo]</li>
+    <li>Bugfix: 通过红黑树查找到错误的upstream [taoyuanyuan]</li>
+    </ul>
     <ul><a name="2_0_3"></a><h4>Tengine-2.0.3 [2014-05-30]</h4>
     <li>Feature: 支持按指定关键字(域名，url等)收集Tengine运行状态 [cfsego]</li>
     <li>Feature: 支持debian、ubuntu打包 [betetrpm, szepeviktor]</li>
