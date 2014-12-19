@@ -114,6 +114,16 @@ Context: http, server, location
     <div class="introduce">
         <p>Specify the customized 'Server' header in the HTTP responses, for example, 'Apache/2.2.22', 'IIS 6.0', 'Lighttpd', etc. You could also suppress the 'Server' header by setting it to 'off'.</p>
     </div>
+    <div class="directive">
+Syntax: <b>reuse_port</b> on |  off<br/>
+Default: reuse_port off<br/>
+Context: events
+    </div>
+    <div class="introduce">
+        <p>turn on support for SO_REUSEPORT socket option. This option is supported since Linux 3.9.</p>
+        <a href="benchmark.html">benchmark</a>
+        <!-- <a href="../download/reuseport.pdf">benchmark</a> -->
+    </div>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>
