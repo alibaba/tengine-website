@@ -32,10 +32,10 @@
     <ul>
     <li>继承Nginx-1.6.2的所有特性，兼容Nginx的配置；</li>
     <li><a href="document_cn/dso_cn.html">动态模块加载（DSO）</a>支持。加入一个模块不再需要重新编译整个Tengine；</li>
-    <li><a href="document_cn/core_cn.html">支持SO_REUSEPORT选项</a>，建连性能提升为标准配置的三倍；</li>
+    <li><a href="document_cn/core_cn.html">支持SO_REUSEPORT选项</a>，建连性能提升为<a href="http://tengine.taobao.org/document_cn/benchmark_cn.html">官方nginx的三倍；</a></li>
     <li>支持<a href="document_cn/ngx_http_spdy_module_cn.html">SPDY v3协议</a>，自动检测同一端口的SPDY请求和HTTP请求；</li>
     <li><a href="document_cn/http_core_cn.html">流式上传</a>到HTTP后端服务器或FastCGI服务器，大量减少机器的I/O压力；</li>
-    <li>更加强大的负载均衡能力，包括<a href="document_cn/http_upstream_consistent_hash_cn.html">一致性hash模块</a>、<a href="document_cn/http_upstream_session_sticky_cn.html">会话保持模块</a>，<a href="document_cn/http_upstream_check_cn.html">还可以对后端的服务器进行主动健康检查</a>，根据服务器状态自动上线下线，以及<a href="document_cn/http_upstream_dynamic_cn.html>动态解析upstream中出现的域名</a>；</li>
+    <li>更加强大的负载均衡能力，包括<a href="document_cn/http_upstream_consistent_hash_cn.html">一致性hash模块</a>、<a href="document_cn/http_upstream_session_sticky_cn.html">会话保持模块</a>，<a href="document_cn/http_upstream_check_cn.html">还可以对后端的服务器进行主动健康检查</a>，根据服务器状态自动上线下线，以及<a href="document_cn/http_upstream_dynamic_cn.html">动态解析upstream中出现的域名</a>；</li>
     <li><a href="http://blog.zhuzhaoyuan.com/2012/01/a-mechanism-to-help-write-web-application-firewalls-for-nginx/">输入过滤器机制</a>支持。通过使用这种机制Web应用防火墙的编写更为方便；</li>
     <li>支持设置proxy、memcached、fastcgi、scgi、uwsgi<a href="document_cn/ngx_limit_upstream_tries_cn.html">在后端失败时的重试次数</a></li>
     <li><a href="http://wiki.nginx.org/HttpLuaModule">动态脚本语言Lua</a>支持。扩展功能非常高效简单；</li>
@@ -49,7 +49,7 @@
     <li><a href="document_cn/http_limit_req_cn.html">更强大的防攻击（访问速度限制）模块</a>；</li>
     <li><a href="document_cn/commandline_cn.html">更方便的命令行参数，如列出编译的模块列表、支持的指令等</a>；</li>
     <li>可以根据访问文件类型设置过期时间；</li>
-    <li>...</li>
+    <li>……</li>
     </ul>
   </div>
   <div class="clear"></div>
