@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The Tengine Web Server</title>
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script type="text/javascript" src="/js/??ga.js,correctpng.js?v=1"></script>
+</head>
+
+<body>
+<div id="container">
+  <div id="menu">
+    <ul>
+      <li><a href="../download.html"><img src="../images/icon-down.png"/>Download</a></li>
+      <li><a href="../source.html"><img src="../images/icon_code.png"/>Source</a></li>
+      <li><a href="../documentation.html"><img src="../images/icon-doc.png"/>Documentation</a></li>
+      <li><a href="../faq.html"><img src="../images/icon-faq.png"/>FAQ</a></li>
+      <li><a href="../contact.html"><img src="../images/icon-contact.png"/>Contact</a></li>
+	    <li id="lang"><a href="../index_cn.html">中文</a> | <a href="../index.html">English</a></li>
+    </ul>
+  </div>
+  <div id="logo"><a href="../index.html"><img src="../images/logo.png" alt="tengine" /></a></div>
+  <div class="clear"></div>
+  <div class="one_col more_padding font16">
+
+
+<ul>
+<li>ngx<em>http</em>dyups_module</li>
+</ul>
+
+<div class="dh">Description</div>
+
+<p>This module can be used to update your upstream-list without reloadding Nginx.</p>
+
+<p>TODO:</p>
+
+<p>It can not work with common <code>nginx_upstream_check_module</code>.</p>
+
+<div class="dh">Compilation</div>
+
+<p>The module is not compiled into Tengine by default. It can be enabled with '--with-http<em>dyups</em>module'
+configuration parameter, and enabled lua support with '--with-http<em>dyups</em>lua_api'.
+But it can not be compiled as a '.so'.</p>
+
+<div class="dh">Example</div>
+
+<p>file: conf/nginx.conf</p>
+
+<pre class="mod_example"><code>daemon off;
+error_log logs/error.log debug;
+
+events {
+}
+
+http {
+
+    dyups_upstream_conf  conf/upstream.conf;
+
+    include conf/upstream.conf;
+
+    server {
+        listen   8080;
+
+        location / {
+            proxy_pass http://$host;
+        }
+    }
+
+    server {
+        listen 8088;
+        location / {
+            echo 8088;
+        }
+    }
+
+    server {
+        listen 8089;
+        location / {
+            echo 8089;
+        }
+    }
+
+    server {
+        listen 8081;
+        location / {
+            dyups_interface;
+        }
+    }
+}
+</code></pre>
+
+<p>file: conf/upstream.conf</p>
+
+<pre class="mod_example"><code>upstream host1 {
+    server 127.0.0.1:8088;
+}
+
+upstream host2 {
+    server 127.0.0.1:8089;
+}
+</code></pre>
+
+<div class="dh">Directives</div>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>dyups_interface</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>loc</em></p>
+
+<p>This directive set the interface location where you can add or delete the upstream list. See the section of Interface for detail.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>dyups_read_msg_timeout time</em></p>
+
+<p><strong>Default</strong>: <em>1s</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>This directive set the interval of workers readding the commands from share memory.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>dyups_shm_zone_size size</em></p>
+
+<p><strong>Default</strong>: <em>2M</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>This directive set the size of share memory which used to store the commands.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>dyups_upstream_conf path</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>This directive set the path of file which you dumped all of upstreams' configs, it will be loaded in <code>init process</code> after process respwan to restore upstreams.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>dyups_trylock on | off</em> </p>
+
+<p><strong>Default</strong>: <em>off</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>You will get a better prefomance but it maybe not stable, and you will get a '409' when the update request conflicts with others.</p>
+
+<div class="dh">restful interface</div>
+
+<br /><br />
+
+<ul>
+<li><code>/detail</code>         get all upstreams and their servers</li>
+<li><code>/list</code>           get the list of upstreams</li>
+<li><code>/upstream/name</code>  find the upstream by it's name</li>
+</ul>
+
+<br /><br />
+
+<ul>
+<li><code>/upstream/name</code>  update one upstream</li>
+<li><code>body</code> commands;</li>
+<li><code>body</code> server ip:port;</li>
+</ul>
+
+<br /><br />
+
+<ul>
+<li><code>/upstream/name</code>  delete one upstream</li>
+</ul>
+
+<p>Call the interface, when you get the return code is <code>HTTP_INTERNAL_SERVER_ERROR 500</code>, you need to reload nginx to make the Nginx work at a good state.</p>
+
+<p>If you got <code>HTTP_CONFLICT 409</code>, you need resend the same commands again latter.</p>
+
+<p>The /list and /detail interface will return <code>HTTP_NO_CONTENT 204</code> when there is no upstream.</p>
+
+<p>Other code means you should modify your commands and call the interface again.</p>
+
+<p><code>ATTENEION</code>: You also need a <code>third-party</code> to generate the new config and dump it to Nginx'conf directory.</p>
+
+<br /><br />
+
+<p>```bash
+» curl -H "host: dyhost" 127.0.0.1:8080
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body bgcolor="white">
+<center><div class="dh">502 Bad Gateway</div></center>
+<hr><center>nginx/1.3.13</center>
+</body>
+</html></p>
+
+<p>» curl -d "server 127.0.0.1:8089;server 127.0.0.1:8088;" 127.0.0.1:8081/upstream/dyhost
+success</p>
+
+<p>» curl -H "host: dyhost" 127.0.0.1:8080
+8089</p>
+
+<p>» curl -H "host: dyhost" 127.0.0.1:8080
+8088</p>
+
+<p>» curl 127.0.0.1:8081/detail
+host1
+server 127.0.0.1:8088</p>
+
+<p>host2
+server 127.0.0.1:8089</p>
+
+<p>dyhost
+server 127.0.0.1:8089
+server 127.0.0.1:8088</p>
+
+<p>» curl -i -X DELETE 127.0.0.1:8081/upstream/dyhost
+success</p>
+
+<p>» curl 127.0.0.1:8081/detail
+host1
+server 127.0.0.1:8088</p>
+
+<p>host2
+server 127.0.0.1:8089
+```</p>
+
+<div class="dh">API</div>
+
+<p><code>c
+extern ngx_flag_t ngx_http_dyups_api_enable;
+ngx_int_t ngx_dyups_update_upstream(ngx_str_t *name, ngx_buf_t *buf,
+    ngx_str_t *rv);
+ngx_int_t ngx_dyups_delete_upstream(ngx_str_t *name, ngx_str_t *rv);
+</code></p>
+
+<br /><br />
+
+<p>NOTICE:
+    you should add the directive <code>dyups_interface</code> into your config file to active this feature</p>
+
+<p>```lua
+content<em>by</em>lua '
+    local dyups = require "ngx.dyups"</p>
+
+<pre class="mod_example"><code>local status, rv = dyups.update("test", [[server 127.0.0.1:8088;]]);
+ngx.print(status, rv)
+if status ~= 200 then
+    ngx.print(status, rv)
+    return
+end
+ngx.print("update success")
+
+status, rv = dyups.delete("test")
+if status ~= 200 then
+    ngx.print(status, rv)
+    return
+end
+ngx.print("delete success")
+</code></pre>
+
+<p>';</p>
+
+<p>```</p>
+  </div>
+</div>
+<div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>
+</body>
+</html>
