@@ -36,8 +36,10 @@
 <li><p>It can provide running status information of Tengine.</p></li>
 <li><p>The information is divided into different zones, and each zone is independent.</p></li>
 <li><p>The status information is about connections, requests, response status codes, input and output flows,
-rt, and upstreams.</p></li>
+rt, upstreams, and so on.</p></li>
 <li><p>It shows all the results by default, and can be set to show part of them by specifying zones.</p></li>
+<li><p>It support for user-defined status by using nginx variables. The maximum of all the status is 50.</p></li>
+<li><p>It recycles out-of-date running status information.</p></li>
 </ul>
 
 <div class="dh">Compilation</div>
@@ -70,11 +72,11 @@ configuration parameter, or it can be compiled as a '.so' with '--with-http<em>r
 <li><p>Each line shows the status infomation of a "$host,$server<em>addr:$server</em>port".</p></li>
 <li><p>Line format:</p>
 
-<pre class="mod_example"><code>kv,bytes_in_total,bytes_out_total,conn_total,req_total,2xx,3xx,4xx,5xx,other,rt_total,upstream_req,upstream_rt,upstream_tries
+<pre class="mod_example"><code>kv,bytes_in_total,bytes_out_total,conn_total,req_total,2xx,3xx,4xx,5xx,other,rt_total,upstream_req,upstream_rt,upstream_tries,200,206,302,304,403,404,416,499,500,502,503,504,508,detail_other,ups_4xx,ups_5xx
 </code></pre>
 
 <ul>
-<li><strong>kv</strong>                value of the variable defined by the directive 'req<em>status</em>zone'</li>
+<li><strong>kv</strong>                value of the variable defined by the directive 'req<em>status</em>zone'. The maximun key length is configurable, 104B by default, and overlength will be cut off</li>
 <li><strong>bytes<em>in</em>total</strong>    total number of bytes received from client</li>
 <li><strong>bytes<em>out</em>total</strong>   total number of bytes sent to client</li>
 <li><strong>conn_total</strong>        total number of accepted connections</li>
@@ -88,7 +90,24 @@ configuration parameter, or it can be compiled as a '.so' with '--with-http<em>r
 <li><strong>upstream_req</strong>      total number of requests calling for upstream</li>
 <li><strong>upstream_rt</strong>       accumulation or upstream rt</li>
 <li><strong>upstream_tries</strong>    total number of times calling for upstream</li>
+<li><strong>200</strong>               total number of 200 requests</li>
+<li><strong>206</strong>               total number of 206 requests</li>
+<li><strong>302</strong>               total number of 302 requests</li>
+<li><strong>304</strong>               total number of 304 requests</li>
+<li><strong>403</strong>               total number of 403 requests</li>
+<li><strong>404</strong>               total number of 404 requests</li>
+<li><strong>416</strong>               total number of 416 requests</li>
+<li><strong>499</strong>               total number of 499 requests</li>
+<li><strong>500</strong>               total number of 500 requests</li>
+<li><strong>502</strong>               total number of 502 requests</li>
+<li><strong>503</strong>               total number of 503 requests</li>
+<li><strong>504</strong>               total number of 504 requests</li>
+<li><strong>508</strong>               total number of 508 requests</li>
+<li><strong>detail_other</strong>      total number of requests of other status codes </li>
+<li><strong>ups_4xx</strong>           total number of requests of upstream 4xx</li>
+<li><strong>ups_5xx</strong>           total number of requests of upstream 5xx</li>
 </ul></li>
+<li><p>some fields will be removed in future, because user-defined status has been supported.</p></li>
 </ul></li>
 <li><p>tsar can parse the result and monitor, see also https://github.com/alibaba/tsar</p></li>
 </ul>
@@ -137,6 +156,38 @@ the memory is 10MB, the key is "$host,$server_addr:$server_port", and the name i
 <p><strong>Context</strong>: <em>loc</em></p>
 
 <p>Display the status information. You can specify zones to display.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status_zone_add_indecator zone_name $var1 [$var2 [...]]</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>Add user-defined status by using nginx variables. The status will be appended at the end of each line on display.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status_zone_key_length zone_name length</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>Define the maximun length of key for a zone. The default is 104.</p>
+
+<br /><br />
+
+<p><strong>Syntax</strong>: <em>req_status_zone_recycle zone_name times seconds</em></p>
+
+<p><strong>Default</strong>: <em>none</em></p>
+
+<p><strong>Context</strong>: <em>main</em></p>
+
+<p>Define the recycle threshold for a zone. Recycle will be switched on when the shared memory is exhausted, and will only take effect on imformation whose visit frequency is lower than the setting.
+The setting frequency is defined by 'times' and 'seconds', and it is 10r/min by default.
+     req<em>status</em>zone<em>recycle demo</em>zone 10 60;</p>
   </div>
 </div>
 <div id="copyright">&copy; 2011-2014 Taobao Inc. All rights reserved.</div>

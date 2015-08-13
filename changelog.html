@@ -24,12 +24,27 @@
   <div id="changelog" class="one_col more_padding">
     <h2>ChangeLog</h2>
     <div class="hr"></div>
-    <ul><a name="2_1_0"></a><h4>Tengine-2.1.0 [19 Dec 2014]</h4>
-      <li>Feature: added support for collecting the running status of Tengine according to specific key (domain, url, etc). (cfsego)</li>
-      <li>Feature: support the SO_REUSEPORT option, to improve performance on multicore systems. (monadbobo)</li>
-      <li>Feature: support for resolving upstream domain names on the fly. (InfoHunter)</li>
-      <li>Feature: support for rewriting to named locations. (yzprofile)</li>
-      <li>Feature: added two parameters 'crop_keepx' and 'crop_keepy' to the directive 'image_filter'. (Lax)</li>
+    <ul><a name="2_1_1"></a><h4>Tengine-2.1.1 [12 Aug 2014]</h4>
+      <li>Feature: support for dynamic upstream update. (yzprofile)</li>
+      <li>Feature: enchanced ngx_http_reqstat_module. (cfsego)</li>
+      <li>Feature: added ssl_verify_client_exception directive. (InfoHunter)</li>
+      <li>Change: Reduced memory usage while parsing configuration. (ilexshen)</li>
+      <li>Change: added $trim_bytes and $trim_original_bytes. (taoyuanyuan)</li>
+      <li>Change: upgrade debian package to 2.1.1. (PeterDaveHello)</li>
+      <li>Change: support for auto compile for ngx_http_spdy_module. (chobits)</li>
+      <li>Change: updated SPDY/3.1. (chobits)</li>
+      <li>Change: disabled 'proxy_request_buffering' for SPDY. (chobits)</li>
+      <li>Change: added configue options to support set linker. (tanguofu)</li>
+      <li>Bugfix: fixed Backport bug of SPDY. (nginx official, ym)</li>
+      <li>Bugfix: fixed compile error with SL. (ym)</li>
+      <li>Bugfix: fixed bug of reuseport. (mnadbobo)</li>
+    </ul>
+    <ul><a name="2_1_0"></a><h4>Tengine-2.1. [19 Dec 2014]</h4>
+      <li>Feature: added support for collectng the running status of Tengine according to specific key (domain, url, etc). (cfsego)</li>
+      <li>Feature: support the SO_REUSEPORT ption, to improve performance on multicore systems. (monadbobo)</li>
+      <li>Feature: support for resolving upsream domain names on the fly. (InfoHunter)</li>
+      <li>Feature: support for rewriting to amed locations. (yzprofile)</li>
+      <li>Feature: added two parameters 'cro_keepx' and 'crop_keepy' to the directive 'image_filter'. (Lax)</li>
       <li>Feature: support for saving SSL sessions in consistent_hash module and session_sticky module. (dinic)</li>
       <li>Feature: support for compiling Tengine automatically in travis-ci.org. (Jamyn)</li>
       <li>Feature: support for FastCGI health check. (yzprofile)</li>
