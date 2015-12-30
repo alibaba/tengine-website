@@ -25,6 +25,15 @@
   <div id="changelog" class="one_col more_padding">
     <h2>变更列表</h2>
     <div class="hr"></div>
+    <ul><a name="2_1_2"></a><h4>Tengine-2.1.2 [2015-12-31]</h4>
+    <li>Feature: ngx_http_reqstat_module模块可以跟踪记录请求的内部重定向 [cfsego]</li>
+    <li>Feature: 支持HTTP/2，支持向后兼容SPDY v3 [PeterDaveHello, cfsego]</li>
+    <li>Feature: ngx_debug_pool模块协助分析内存状况 [chobits]</li>
+    <li>Feature: 支持$upstream_cookie变量</li>
+    <li>Bugfix: 修复ngx_http_dyups_module模块对相同后端服务器合并的问题 [FqqCS, taoyuanyuan]</li>
+    <li>Bugfix: 修复不能编译lua-upstream-nginx-module模块的问题 [cfsego]</li>
+    <li>Bugfix: 修复ngx_http_concat_module模块对javascript无效的问题 [IYism]</li>
+    </ul>
     <ul><a name="2_1_1"></a><h4>Tengine-2.1.1 [2015-08-12]</h4>
     <li>Feature: 支持动态upstream更新 [yzprofile]</li>
     <li>Feature: 增强ngx_http_reqstat_module模块 [cfsego]</li>

@@ -33,6 +33,16 @@
 
 <br /><br />
 
+<div class="directive"><p>Syntax: <strong>listen</strong> 443 <code>ssl http2 spdy</code></p>
+
+<p>Default: -</p>
+
+<p>Context: <code>server</code></p></div>
+
+<p>通过ALPN或者NPN检查客户端是否支持HTTP v2和SPDY v3协议，并按以下顺序选择处理SSL负载的协议：HTTP v2、SPDY v3、HTTP v1.x。</p>
+
+<br /><br />
+
 <div class="directive"><p>Syntax: <strong>client_body_buffers</strong> <code>number size</code></p>
 
 <p>Default: 16 4k/8k</p>

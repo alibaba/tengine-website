@@ -25,7 +25,7 @@
   <div class="one_col"><h2>简介</h2>Tengine是由淘宝网发起的Web服务器项目。它在<a href="http://nginx.org/">Nginx</a>的基础上，针对大访问量网站的需求，添加了很多高级功能和特性。Tengine的性能和稳定性已经在大型的网站如<a href="http://www.taobao.com/">淘宝网</a>，<a href="http://www.tmall.com">天猫商城</a>等得到了很好的检验。它的最终目标是打造一个高效、稳定、安全、易用的Web平台。<br/><br/>
     从2011年12月开始，Tengine成为一个开源项目，Tengine团队在积极地开发和维护着它。Tengine团队的核心成员来自于<a href="http://www.taobao.com/">淘宝</a>、<a href="http://www.sogou.com/">搜狗</a>等互联网企业。Tengine是社区合作的成果，我们欢迎大家<a href="source_cn.html">参与其中</a>，贡献自己的力量。</div>
   <div class="one_col" style="padding-bottom: 0">
-    <a href="download/tengine-2.1.1.tar.gz"><img src="images/download.png" onmouseover="this.src='images/download_a.png'" onmouseout="this.src='images/download.png'" /></a>
+    <a href="download/tengine-2.1.2.tar.gz"><img src="images/download.png" onmouseover="this.src='images/download_a.png'" onmouseout="this.src='images/download.png'" /></a>
   </div>
   <div class="left_col">
     <h2>特性</h2>
@@ -33,7 +33,7 @@
     <li>继承Nginx-1.6.2的所有特性，兼容Nginx的配置；</li>
     <li><a href="document_cn/dso_cn.html">动态模块加载（DSO）</a>支持。加入一个模块不再需要重新编译整个Tengine；</li>
     <li><a href="document_cn/core_cn.html">支持SO_REUSEPORT选项</a>，建连性能提升为<a href="http://tengine.taobao.org/document_cn/benchmark_cn.html">官方nginx的三倍；</a></li>
-    <li>支持<a href="document_cn/ngx_http_spdy_module_cn.html">SPDY v3协议</a>，自动检测同一端口的SPDY请求和HTTP请求；</li>
+    <li>同时支持<a href="http://nginx.org/en/docs/http/ngx_http_v2_module.html" target="_blank">HTTP v2协议</a>和<a href="http://nginx.org/en/docs/http/ngx_http_spdy_module.html" target="_blank">SPDY v3协议</a>，<a href="document_cn/http_core_cn.html">可同时使用两种协议</a>；</li>
     <li><a href="document_cn/http_core_cn.html">流式上传</a>到HTTP后端服务器或FastCGI服务器，大量减少机器的I/O压力；</li>
     <li>更加强大的负载均衡能力，包括<a href="document_cn/http_upstream_consistent_hash_cn.html">一致性hash模块</a>、<a href="document_cn/http_upstream_session_sticky_cn.html">会话保持模块</a>，<a href="document_cn/http_upstream_check_cn.html">还可以对后端的服务器进行主动健康检查</a>，根据服务器状态自动上线下线，以及<a href="document_cn/http_upstream_dynamic_cn.html">动态解析upstream中出现的域名</a>；</li>
     <li><a href="http://blog.zhuzhaoyuan.com/2012/01/a-mechanism-to-help-write-web-application-firewalls-for-nginx/">输入过滤器机制</a>支持。通过使用这种机制Web应用防火墙的编写更为方便；</li>
@@ -57,6 +57,7 @@
     <h2>动态</h2>
     <ul>
     <ul>
+    <li>[2015-12-31] <a href="download/tengine-2.1.2.tar.gz">Tengine-2.1.2</a> 稳定版正式发布 (<a href="changelog_cn.html#2_1_2">变更列表</a>)
     <li>[2015-08-12] <a href="download/tengine-2.1.1.tar.gz">Tengine-2.1.1</a> 稳定版正式发布 (<a href="changelog_cn.html#2_1_1">变更列表</a>)
     <li>[2014-12-19] <a href="download/tengine-2.1.0.tar.gz">Tengine-2.1.0</a> 开发版正式发布 (<a href="changelog_cn.html#2_1_0">变更列表</a>)
     <li>[2014-05-30] <a href="download/tengine-2.0.3.tar.gz">Tengine-2.0.3</a> 开发版正式发布（<a href="changelog_cn.html#2_0_3">变更列表</a>）
