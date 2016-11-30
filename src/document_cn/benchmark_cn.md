@@ -1,6 +1,6 @@
-## Tengine & Nginx性能测试
+# Tengine & Nginx性能测试
 
-### 背景
+## 背景
 
 我们在Tengine中实现了SO_REUSEPORT [1]的支持。为了查看其效果，我们进行了一个简单的测试。我们在同一个局域网中部署了一共四台同等配置的服务器，其中一台同时部署Tengine和Nginx，分别监听不同的端口，另外三台部署ab，三个ab同时压测，从总并发100逐步递增到1000，分别压测Tengine和Nginx，访问空gif图片。
 
@@ -14,7 +14,7 @@
   ab -r -n 10000000 -c 100 http://ip:81/empty.gif
 ```
 
-### 测试环境
+## 测试环境
 ``
 ```
   Intel(R)Xeon(R)E5-2650v2@2.60GHz 32core
@@ -24,7 +24,7 @@
   128GB Memroy
 ```
 
-### 软件
+## 软件
 
 ```
   Nginx/1.6.2
@@ -32,7 +32,7 @@
   ApacheBench/2.3
 ```
 
-### 系统配置
+## 系统配置
 
 ```
   net.ipv4.tcp_mem = 3097431 4129911 6194862
@@ -54,7 +54,7 @@
   Max open  files         65535               65535               files
 ```
 
-### 服务器配置
+## 服务器配置
 
 Nginx/1.6.2 配置文件：
 
@@ -148,7 +148,7 @@ Tengine和Nginx只有reuse_port和accept_mutex两处配置不同。
 
       Tengine的worker_cpu_affinity等同于Nginx的相应配置。
 
-### 测试结果
+## 测试结果
 
 [![status](images/reuseport.png)](images/reuseport.png)
 

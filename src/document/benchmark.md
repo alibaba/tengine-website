@@ -1,7 +1,7 @@
-## Tengine & Nginx Benchmark
+# Tengine & Nginx Benchmark
 
 
-### Background
+## Background
 
 We've implemented the support of SO_REUSEPORT [1] in Tengine. To see the performance improvement,
 we did a very simple benchmark with four Linux boxes. Three boxes were employed as clients, and the other
@@ -20,7 +20,7 @@ We ran three test cases with concurrency from 100 to 1000. The test cases were:
 ab -r -n 10000000 -c 100 http://ip:81/empty.gif
 ```
 
-### Hardware & Software
+## Hardware & Software
 
 ```
 CPU: Intel(R)Xeon(R)E5-2650v2@2.60GHz 32core
@@ -34,7 +34,7 @@ ApacheBench-2.3
 ```
 
 
-### System configuration
+## System configuration
 
 ```
 net.ipv4.tcp_mem = 3097431 4129911 6194862
@@ -56,7 +56,7 @@ Limit                 Soft Limit          Hard Limit            Units
 Max open  files         65535               65535               files
 ```
 
-### Web server configuration
+## Web server configuration
 
 Nginx configuration file:
 
@@ -149,7 +149,7 @@ As you can see, the configuration files of Tengine and Nginx are generally the s
 'worker_cpu_affinity', and 'accept_mutex' directives. Also note that
 it is more convenient to set CPU affinity in Tengine as it supports 'worker_cpu_affinity auto'.
 
-### Conclusion
+## Conclusion
 
 [![status](images/reuseport.png)](images/reuseport.png)
 

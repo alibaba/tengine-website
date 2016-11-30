@@ -1,6 +1,6 @@
-## Core functionality
+# Core functionality
 
-### Directives
+## Directives
 
 ```
 Syntax: **worker_processes** [num | auto]

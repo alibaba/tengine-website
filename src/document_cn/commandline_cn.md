@@ -1,6 +1,6 @@
-## 命令行参数
+# 命令行参数
 
-#### '-m' 选项
+### '-m' 选项
 
 显示所有编译的模块，自1.4.0以来，Tengine支持动态模块，static表示静态编译，shared表示动态编译(后面接的是动态模块的版本)。下面是例子：
 
@@ -62,7 +62,7 @@ loaded modules:
     ngx_http_not_modified_filter_module (static)
 ```
     
-#### '-l' 选项
+### '-l' 选项
 
 显示所有支持的指令：
 
@@ -130,7 +130,7 @@ memcached_next_upstream
 [snip]
 ```
 
-#### '-d' 选项
+### '-d' 选项
 
 输出配置文件的内容，包括'include'的内容：
 
