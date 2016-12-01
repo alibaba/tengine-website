@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="cn" dir="ltr" class="no-js" data-env="dev-env">
+
+<head>
+
+  <meta charset="utf-8"/>
+
+  <meta name="renderer" content="webkit"/>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  
+
+  
+
+  <meta name="author" content="Designed by 阿里云UED AX"/>
+
+  
+  <meta name="robots" content="index, follow"/>
+
+  <link rel="dns-prefetch" href="//" />
+  <link rel="dns-prefetch" href="//" />
+
+  <link rel="shortcut icon" href="///favicon.ico?v=s&t=20150120-2R" />
+
+  
+
+  <title>  Dynamic Module Loading Support (**DSO**) - The Tengine Web Server</title>
+
+  
+    <meta name="description" content="Description
+You can choose which functionalities to include by selecting a set of modules. A module will be compiled as a Dynamic Shared Object (DSO) that exists from the main tengine binary. So you d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="  Dynamic Module Loading Support (**DSO**)">
+<meta property="og:url" content="http://tengine.taobao.org/document/dso.html">
+<meta property="og:site_name" content="The Tengine Web Server">
+<meta property="og:description" content="Description
+You can choose which functionalities to include by selecting a set of modules. A module will be compiled as a Dynamic Shared Object (DSO) that exists from the main tengine binary. So you d">
+<meta property="og:updated_time" content="2016-12-01T14:34:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="  Dynamic Module Loading Support (**DSO**)">
+<meta name="twitter:description" content="Description
+You can choose which functionalities to include by selecting a set of modules. A module will be compiled as a Dynamic Shared Object (DSO) that exists from the main tengine binary. So you d">
+
+    
+      <link rel="alternate" href="/atom.xml" title="The Tengine Web Server" type="application/atom+xml">
+    
+  
+
+
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+</head>
+
+
+<body class="page-is-loading">
+
+  <div class="fluid-container global-header">
+    <div class="container">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    
+                    <li role="presentation"><a href="/download.html">下载</a></li>
+                    
+                    <li role="presentation"><a href="/source.html">源码</a></li>
+                    
+                    <li role="presentation"><a href="/documentation.html">文档</a></li>
+                    
+                    <li role="presentation"><a href="/faq.html">FAQ</a></li>
+                    
+                    <li role="presentation"><a href="/contact.html">联系我们</a></li>
+                    
+                    <li role="presentation"><a href="http://tengine.taobao.org/book/">教程</a></li>
+                    
+                    <li role="presentation" class="hide"><a href="#"><i class="fa fa-bars" aria-hidden="true"></i></a></li>
+                </ul>
+            </nav>
+            <h1 class="text-muted site-logo"><a href="/" id="logo">The Tengine Web Server</a></h1>
+        </div>
+    </div>
+</div>
+
+  <div class="outer">
+    <section id="main"><div class="fluid-container">
+    <div class="container">
+
+        <article id="post-document/dso" class="article article-type-post" itemscope itemprop="blogPost">
+            <div class="article-inner">
+                
+                <header class="article-header">
+                    
+  
+    <h1 class="article-title" itemprop="name">
+        Dynamic Module Loading Support (**DSO**)
+    </h1>
+  
+
+                </header>
+                
+                <div class="article-entry" itemprop="articleBody">
+                    
+                    <h2 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h2><ul>
+<li><p>You can choose which functionalities to include by selecting a set of modules. A module will be compiled as a Dynamic Shared Object (<strong>DSO</strong>) that exists from the main tengine binary. So you don’t have to recompile tengine when you want to add or enable a functionality to it.</p>
+</li>
+<li><p>If you want to enable a standard module, you can enable it via configure’s option while compiling tengine, for instance, –with-http_example_module or –with-http_example<em>module=shared. Run </em>./configure –help_ for more details.</p>
+</li>
+<li><p>The maximum of dynamically loaded modules is limited to 128.</p>
+</li>
+<li><p>For now, only HTTP modules can be dynamically loaded.</p>
+</li>
+<li><p>This feature is tested only on Linux/FreeBSD/MacOS.</p>
+</li>
+</ul>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">worker_processes  1;</div><div class="line"></div><div class="line">dso &#123;</div><div class="line">     load ngx_http_lua_module.so;</div><div class="line">     load ngx_http_memcached_module.so;</div><div class="line">&#125;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">   worker_connections  1024;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Directives"><a href="#Directives" class="headerlink" title="Directives"></a>Directives</h2><p><strong>Syntax</strong>: <em>path path</em></p>
+<p><strong>Default</strong>: _NGX<em>PREFIX/modules</em></p>
+<p><strong>Context</strong>: <em>dso</em></p>
+<p>This directive specifies the default path (prefix) of DSO modules.</p>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">path /home/dso/module;</div></pre></td></tr></table></figure>
+<p>Sets the default path to <em>/home/dso/module</em>.</p>
+<p><strong>Syntax</strong>: _load [module_name] [module<em>path]</em></p>
+<p><strong>Default</strong>: <em>none</em></p>
+<p><strong>Context</strong>: <em>dso</em></p>
+<p>The <strong>load</strong> directive loads the shared object file and enables the module. _module<em>name</em> is the name of the DSO module, and _module<em>path</em> is the path of the DSO module.</p>
+<p>The order in which the module is searched is as follows:</p>
+<ul>
+<li>the absolute path.</li>
+<li>relative path to the prefix specified by the ‘path’ directive.</li>
+<li>relative path to the default path (NGX_PREFIX/modules or path which is specified by the ‘–dso-path’ configure option).</li>
+</ul>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">load ngx_http_empty_gif_module  ngx_http_empty_gif_module.so;</div><div class="line">load ngx_http_test_module;</div><div class="line">load ngx_http_test2_module.so;</div></pre></td></tr></table></figure>
+<p>It will load the ngx_http_empty_gif_module from ngx_http_empty_gif_module.so, ngx_http_test_module and ngx_http_test2_module from ngx_http_test_module.so and ngx_http_test2_module.so.</p>
+<p><strong>Syntax</strong>: _module_stub module<em>name</em></p>
+<p><strong>Default</strong>: <em>none</em></p>
+<p><strong>Context</strong>: <em>dso</em></p>
+<p>This directive can insert a module into nginx’s module array in order (see conf/module_stubs for more details). Note it will change the module runtime order. This directive does not need to be used in most cases. Don’t use it or edit the _conf/module<em>stubs</em> file unless you know what you are doing.</p>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">module_stub ngx_core_module;</div><div class="line">module_stub ngx_errlog_module;</div><div class="line">module_stub ngx_conf_module;</div><div class="line">module_stub ngx_events_module;</div><div class="line">module_stub ngx_event_core_module;</div><div class="line">module_stub ngx_epoll_module;</div><div class="line">module_stub ngx_openssl_module;</div><div class="line">module_stub ngx_http_module;</div><div class="line">module_stub ngx_http_core_module;</div><div class="line">.......................</div><div class="line">module_stub ngx_http_addition_filter_module;</div><div class="line">module_stub ngx_http_my_filter_module;</div></pre></td></tr></table></figure>
+<p>It will place ngx_http_my_filter_module before ngx_http_addition_filter_module.</p>
+<p><strong>Syntax</strong>: _include file<em>name</em></p>
+<p><strong>Default</strong>: <em>none</em></p>
+<p><strong>Context</strong>: <em>dso</em></p>
+<p>Specifies a file which contains the module stubs (via the <strong>module_stub</strong> directive).</p>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">include module_stubs;</div></pre></td></tr></table></figure>
+<p>It will load conf/module_stubs and define the loading order of the modules (via the <strong>module_stub</strong> directive).</p>
+<h2 id="How-to-compile-a-module"><a href="#How-to-compile-a-module" class="headerlink" title="How to compile a module"></a>How to compile a module</h2><p>If you want to enable a standard module after you compiled and installed tengine, you can take these steps as following.</p>
+<ul>
+<li>enable the standard module you wanted in shared mode, for example:<br>$ ./configure –with-http_sub_module=shared</li>
+<li>compile it:<br>$ make</li>
+<li>install the shared object (*.so):<br>$ make dso_install</li>
+</ul>
+<p>It will copy the *.so files to the destination, or you can copy the files you want (in objs/modules) manually to the modules directory.</p>
+<p>You can use the <strong>dso_tool</strong> located in the directory of nginx binary to compile a third party module.</p>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./dso_tool --add-module=/home/dso/lua-nginx-module</div></pre></td></tr></table></figure>
+<p>It will compile the ngx_lua module into a shared object, and install it to the default module path. You can specify the destination directory you want install to by the <strong>–dst</strong> option.</p>
+
+                    
+                </div>
+
+            </div>
+        </article>
+
+    </div>
+</div>
+
+</section>
+  </div>
+  <div class="fluid-container global-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="footer-logo"></div>
+      </div>
+      <div class="col-lg-6 clearfix">
+        <select name="" id="" class="lang-switch pull-right">
+          <option value="cn" selected>China</option>
+          <option value="en">World</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <span class="footer-text copyright">
+          &copy; 2011-2016 Alibaba Inc. All rights reserved.
+        </span>
+        <span class="footer-text design-by">Designed by 阿里云UED AX</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/particles.min.js"></script>
+<script src="/js/jquery.scrollTo-1.4.2-min.js"></script>
+<script src="/js/jquery.localscroll-1.2.7-min.js"></script>
+<script src="/js/jquery.parallax-1.1.3.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+</body>
+</html>

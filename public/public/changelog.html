@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="cn" dir="ltr" class="no-js" data-env="dev-env">
+
+<head>
+
+  <meta charset="utf-8"/>
+
+  <meta name="renderer" content="webkit"/>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  
+
+  
+
+  <meta name="author" content="Designed by 阿里云UED AX"/>
+
+  
+  <meta name="robots" content="index, follow"/>
+
+  <link rel="dns-prefetch" href="//" />
+  <link rel="dns-prefetch" href="//" />
+
+  <link rel="shortcut icon" href="///favicon.ico?v=s&t=20150120-2R" />
+
+  
+
+  <title>ChangeLog - The Tengine Web Server</title>
+
+  
+    <meta name="description" content="Tengine-2.1.2 [31 Dec 2015]*   Feature: ngx_http_reqstat_module now will trace requests if they are redirected internally by ‘rewrite’ or ‘error_page’. (cfsego)
+Feature: porting HTTP/2 from nginx v1.9">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ChangeLog">
+<meta property="og:url" content="http://tengine.taobao.org/changelog.html">
+<meta property="og:site_name" content="The Tengine Web Server">
+<meta property="og:description" content="Tengine-2.1.2 [31 Dec 2015]*   Feature: ngx_http_reqstat_module now will trace requests if they are redirected internally by ‘rewrite’ or ‘error_page’. (cfsego)
+Feature: porting HTTP/2 from nginx v1.9">
+<meta property="og:updated_time" content="2016-12-01T14:34:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ChangeLog">
+<meta name="twitter:description" content="Tengine-2.1.2 [31 Dec 2015]*   Feature: ngx_http_reqstat_module now will trace requests if they are redirected internally by ‘rewrite’ or ‘error_page’. (cfsego)
+Feature: porting HTTP/2 from nginx v1.9">
+
+    
+      <link rel="alternate" href="/atom.xml" title="The Tengine Web Server" type="application/atom+xml">
+    
+  
+
+
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+</head>
+
+
+<body class="page-is-loading">
+
+  <div class="fluid-container global-header">
+    <div class="container">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    
+                    <li role="presentation"><a href="/download.html">下载</a></li>
+                    
+                    <li role="presentation"><a href="/source.html">源码</a></li>
+                    
+                    <li role="presentation"><a href="/documentation.html">文档</a></li>
+                    
+                    <li role="presentation"><a href="/faq.html">FAQ</a></li>
+                    
+                    <li role="presentation"><a href="/contact.html">联系我们</a></li>
+                    
+                    <li role="presentation"><a href="http://tengine.taobao.org/book/">教程</a></li>
+                    
+                    <li role="presentation" class="hide"><a href="#"><i class="fa fa-bars" aria-hidden="true"></i></a></li>
+                </ul>
+            </nav>
+            <h1 class="text-muted site-logo"><a href="/" id="logo">The Tengine Web Server</a></h1>
+        </div>
+    </div>
+</div>
+
+  <div class="outer">
+    <section id="main"><div class="fluid-container">
+    <div class="container">
+
+        <article id="post-changelog" class="article article-type-post" itemscope itemprop="blogPost">
+            <div class="article-inner">
+                
+                <header class="article-header">
+                    
+  
+    <h1 class="article-title" itemprop="name">
+      ChangeLog
+    </h1>
+  
+
+                </header>
+                
+                <div class="article-entry" itemprop="articleBody">
+                    
+                    <h4 id="Tengine-2-1-2-31-Dec-2015-Feature-ngx-http-reqstat-module-now-will-trace-requests-if-they-are-redirected-internally-by-‘rewrite’-or-‘error-page’-cfsego"><a href="#Tengine-2-1-2-31-Dec-2015-Feature-ngx-http-reqstat-module-now-will-trace-requests-if-they-are-redirected-internally-by-‘rewrite’-or-‘error-page’-cfsego" class="headerlink" title="Tengine-2.1.2 [31 Dec 2015]*   Feature: ngx_http_reqstat_module now will trace requests if they are redirected internally by ‘rewrite’ or ‘error_page’. (cfsego)"></a>Tengine-2.1.2 [31 Dec 2015]*   Feature: ngx_http_reqstat_module now will trace requests if they are redirected internally by ‘rewrite’ or ‘error_page’. (cfsego)</h4><ul>
+<li>Feature: porting HTTP/2 from nginx v1.9.7, and support for SPDY v3 fallback. (PeterDaveHello, cfsego)</li>
+<li>Feature: added ngx_debug_pool module to check nginx memory. (chobits)</li>
+<li>Feature: porting $upstream_cookie from nginx.</li>
+<li>Bugfix: fixed merging the duplicate peers for ngx_http_dyups_module.  (FqqCS, taoyuanyuan)</li>
+<li>Bugfix: lua-upstream-nginx-module cann’t compile successfully. (cfsego)</li>
+<li>Bugfix: fixed ngx_http_concat_module that took no effect on javascript. (IYism)</li>
+</ul>
+<h4 id="Tengine-2-1-1-12-Aug-2015-Feature-support-for-dynamic-upstream-update-yzprofile"><a href="#Tengine-2-1-1-12-Aug-2015-Feature-support-for-dynamic-upstream-update-yzprofile" class="headerlink" title="Tengine-2.1.1 [12 Aug 2015]*   Feature: support for dynamic upstream update. (yzprofile)"></a>Tengine-2.1.1 [12 Aug 2015]*   Feature: support for dynamic upstream update. (yzprofile)</h4><ul>
+<li>Feature: enchanced ngx_http_reqstat_module. (cfsego)</li>
+<li>Feature: added ssl_verify_client_exception directive. (InfoHunter)</li>
+<li>Change: Reduced memory usage while parsing configuration. (ilexshen)</li>
+<li>Change: added $trim_bytes and $trim_original_bytes. (taoyuanyuan)</li>
+<li>Change: upgrade debian package to 2.1.1. (PeterDaveHello)</li>
+<li>Change: support for auto compile for ngx_http_spdy_module. (chobits)</li>
+<li>Change: updated SPDY/3.1. (chobits)</li>
+<li>Change: disabled ‘proxy_request_buffering’ for SPDY. (chobits)</li>
+<li>Change: added configue options to support set linker. (tanguofu)</li>
+<li>Bugfix: fixed Backport bug of SPDY. (nginx official, ym)</li>
+<li>Bugfix: fixed compile error with SL. (ym)</li>
+<li>Bugfix: fixed bug of reuseport. (mnadbobo)</li>
+</ul>
+<h4 id="Tengine-2-1-19-Dec-2014-Feature-added-support-for-collectng-the-running-status-of-Tengine-according-to-specific-key-domain-url-etc-cfsego"><a href="#Tengine-2-1-19-Dec-2014-Feature-added-support-for-collectng-the-running-status-of-Tengine-according-to-specific-key-domain-url-etc-cfsego" class="headerlink" title="Tengine-2.1. [19 Dec 2014]*   Feature: added support for collectng the running status of Tengine according to specific key (domain, url, etc). (cfsego)"></a>Tengine-2.1. [19 Dec 2014]*   Feature: added support for collectng the running status of Tengine according to specific key (domain, url, etc). (cfsego)</h4><ul>
+<li>Feature: support the SO_REUSEPORT ption, to improve performance on multicore systems. (monadbobo)</li>
+<li>Feature: support for resolving upsream domain names on the fly. (InfoHunter)</li>
+<li>Feature: support for rewriting to amed locations. (yzprofile)</li>
+<li>Feature: added two parameters ‘cro_keepx’ and ‘crop_keepy’ to the directive ‘image_filter’. (Lax)</li>
+<li>Feature: support for saving SSL sessions in consistent_hash module and session_sticky module. (dinic)</li>
+<li>Feature: support for compiling Tengine automatically in travis-ci.org. (Jamyn)</li>
+<li>Feature: support for FastCGI health check. (yzprofile)</li>
+<li>Feature: enhanced sysguard module. (InfoHunter)</li>
+<li>Feature: added a variable ‘$normalized_request’, to get normalized request URIs. (yunkai)</li>
+<li>Feature: added wildcard support for ‘include’ directive in ‘dso’ block. (monadbobo)</li>
+<li>Feature: added the ‘gzip_clear_etag’ directive. (taoyuanyuan)</li>
+<li>Feature: added the ‘unprintable’ parameter to the ‘log_escape’ directive. (skoo87)</li>
+<li>Change: merged changes from nginx-1.6.2. (cfsego, taoyuanyuan, chobits)</li>
+<li>Change: now the order of servers in an upstream are random when initialized. (taoyuanyuan)</li>
+<li>Change: slab allocator free pages defragmentation. (chobits)</li>
+<li>Bugfix: SPDY/3 dropped the “delayed” flag when finalizing connection. (chobits)</li>
+<li>Bugfix: fixed SPDY/3 connection leak. (chobits)</li>
+<li>Bugfix: now don’t truncate value of key to 255 bytes in limit_req module. (chobits)</li>
+<li>Bugfix: failed to parse /etc/resolv.conf with IPv6 addresses. (lifeibo)</li>
+<li>Bugfix: upstream rbtree bugfix. (taoyuanyuan)</li>
+</ul>
+<h4 id="Tengine-2-0-3-30-May-2014-Feature-added-support-for-collecting-the-running-status-of-Tengine-according-to-specific-key-domain-url-etc-cfsego"><a href="#Tengine-2-0-3-30-May-2014-Feature-added-support-for-collecting-the-running-status-of-Tengine-according-to-specific-key-domain-url-etc-cfsego" class="headerlink" title="Tengine-2.0.3 [30 May 2014]*   Feature: added support for collecting the running status of Tengine according to specific key (domain, url, etc). (cfsego)"></a>Tengine-2.0.3 [30 May 2014]*   Feature: added support for collecting the running status of Tengine according to specific key (domain, url, etc). (cfsego)</h4><ul>
+<li>Feature: added support for generating package of debian/ubuntu format(*.deb). (betetrpm, szepeviktmr)</li>
+<li>Change: merged changes between nginx-1.4.6 and nginx-1.4.7. (chobits)</li>
+<li>Change: optimized the parsing and searching strategy of upstream by using rbtree. (SarahWang)</li>
+<li>Change: updated the copyright.</li>
+<li>Bugfix: fixed bugs of session-sticky module. (dinic)</li>
+<li>Bugfix: fixed compiling and installing issues of DSO modules. (cfsego)</li>
+<li>Bugfix: fixed bugs of SPDY protocol. (chobits)</li>
+</ul>
+<h4 id="Tengine-2-0-2-28-Mar-2014-Bugfix-send-output-queue-after-processing-of-read-event-in-SPDY-chobits"><a href="#Tengine-2-0-2-28-Mar-2014-Bugfix-send-output-queue-after-processing-of-read-event-in-SPDY-chobits" class="headerlink" title="Tengine-2.0.2 [28 Mar 2014]*   Bugfix: send output queue after processing of read event in SPDY. (chobits)"></a>Tengine-2.0.2 [28 Mar 2014]*   Bugfix: send output queue after processing of read event in SPDY. (chobits)</h4><ul>
+<li>Bugfix: CVE-2014-0133 and CVE-2014-0088. (chobits)</li>
+</ul>
+<h4 id="Tengine-2-0-1-06-Mar-2014-Feature-now-non-buffering-request-body-mechanism-supports-chunked"><a href="#Tengine-2-0-1-06-Mar-2014-Feature-now-non-buffering-request-body-mechanism-supports-chunked" class="headerlink" title="Tengine-2.0.1 [06 Mar 2014]*   Feature: now non-buffering request body mechanism supports chunked"></a>Tengine-2.0.1 [06 Mar 2014]*   Feature: now non-buffering request body mechanism supports chunked</h4><pre><code>input. (yaoweibin)
+</code></pre><ul>
+<li>Feature: trim module added more rules, and now can be enabled according<br>  to variables. (taoyuanyuan)</li>
+<li>Feature: resolver can be configured automatically from /etc/resolv.conf.<br>  (lifeibo, yaoweibin)</li>
+<li>Feature: added variables starting with “$ascii_”, which can represent<br>  arbitrary ASCII characters (yzprofile)</li>
+<li>Feature: added a new directive “image_filter_crop_offset”. (lax)</li>
+<li>Change: merged changes between nginx-1.4.4 and nginx-1.4.6. (chobits, cfsego)</li>
+<li>Bugfix: upstream health check module failed occasionally when using<br>  keep-alive connections. (lilbedwin)</li>
+<li>Bugfix: nginx crashed when upstream rejected nginx WebSocket connection. (Hao Chen)</li>
+<li>Bugfix: reduce nginx memory consumption when processing large files. (cfsego)</li>
+<li>Bugfix: disabled redirects to named locations if URI is not set.</li>
+</ul>
+<h4 id="Tengine-2-0-0-08-Jan-2014-Feature-now-DSO-module-does-not-need-the-original-source-code-or"><a href="#Tengine-2-0-0-08-Jan-2014-Feature-now-DSO-module-does-not-need-the-original-source-code-or" class="headerlink" title="Tengine-2.0.0 [08 Jan 2014]*   Feature: now DSO module does not need the original source code or"></a>Tengine-2.0.0 [08 Jan 2014]*   Feature: now DSO module does not need the original source code or</h4><pre><code>compiler options when compiling a new module. (monadbobo)
+</code></pre><ul>
+<li>Feature: added support for SPDY v3, and SPDY/HTTP servers can listen on<br>  the same port. (lilbedwin、chobits)</li>
+<li>Feature: added support for setting retries for upstream servers (proxy,<br>  memcached, fastcgi, scgi, uwsgi). (supertcy)</li>
+<li>Feature: now tfs module can report access status to rcs while keepalive.<br>  (zhcn381)</li>
+<li>Feature: now the directive “if” supports “&gt;”, “&lt;”, “&gt;=”, “&lt;=” operators<br>  for numeric comparison. (flygoast)</li>
+<li>Feature: now upstream health check module uses keep-alive connections.<br>  (lilbedwin)</li>
+<li>Feature: now trim module can handle SSI and ESI comments properly.<br>  (taoyuanyuan)</li>
+<li>Feature: now directive “expires_by_types” supports wildcard such as<br>  “text/*”. (zhcn381)</li>
+<li>Feature: added variables starting with “$base64<em>decode</em>“ to encode<br>  variables in base64. (yzprofile)</li>
+<li>Feature: added variables starting with “$md5<em>encode</em>“ to encode variables<br>  in md5. (yzprofile)</li>
+<li>Feature: added a variable “$time_http” to get the current HTTP time.<br>  (flygoast)</li>
+<li>Feature: added a variable “$full_request” to get the original request<br>  URL with scheme and host. (yzprofile)</li>
+<li>Feature: added variables starting with “$escape<em>uri</em>“ to escape variables<br>  into formal URL syntax. (yzprofile)</li>
+<li>Feature: added a variable “$raw_uri” to get the original URI without<br>  arguments. (flygoast)</li>
+<li>Feature: added support for logging subrequests in nanoseconds. (jinglong)</li>
+<li>Feature: added a new API function to encode URL into base64. (lilbedwin)</li>
+<li>Change: merged changes between nginx-1.2.9 and nginx-1.4.4. (cfsego)</li>
+<li>Change: now stub_status module does not log subrequests. (jinglong)</li>
+<li>Bugfix: fixed a bug in footer module when reading a response with<br>  a “Content-Encoding” header. (yaoweibin)</li>
+<li>Bugfix: fixed a bug when “client_body_postpone_size” is set to 0.<br>  (yaoweibin)</li>
+<li>Bugfix: fixed a compilation warning of Lua module. (diwayou)</li>
+</ul>
+<h4 id="Tengine-1-5-2-22-Nov-2013-Security-a-character-following-an-unescaped-space-in-a-request-line"><a href="#Tengine-1-5-2-22-Nov-2013-Security-a-character-following-an-unescaped-space-in-a-request-line" class="headerlink" title="Tengine-1.5.2 [22 Nov 2013]*   Security: a character following an unescaped space in a request line"></a>Tengine-1.5.2 [22 Nov 2013]*   Security: a character following an unescaped space in a request line</h4><pre><code>was handled incorrectly (CVE-2013-4547); the bug had appeared in
+0.8.41. Thanks to Ivan Fratric of the Google Security Team.
+</code></pre><ul>
+<li>Bugfix: fix a bug of ‘nodelay’ might be ignored in limit_req module.<br>  (cfsego)</li>
+<li>Bugfix: fix a bug in trim module when processing javascript comment.<br>  (taoyuanyuan)</li>
+</ul>
+<h4 id="Tengine-1-5-1-29-Aug-2013-Feature-added-the-directive-‘retry-cached-connection’-which-could"><a href="#Tengine-1-5-1-29-Aug-2013-Feature-added-the-directive-‘retry-cached-connection’-which-could" class="headerlink" title="Tengine-1.5.1 [29 Aug 2013]*   Feature: added the directive ‘retry_cached_connection’ which could"></a>Tengine-1.5.1 [29 Aug 2013]*   Feature: added the directive ‘retry_cached_connection’ which could</h4><pre><code>disable unconditional retries with a cached backend connection.
+(yaoweibin)
+</code></pre><ul>
+<li>Feature: added the argument of ‘ncpu’ to ‘sysguard_load’ directive.<br>  (yzprofile)</li>
+<li>Bugfix: fixed a bug in referer module that regex rules might be<br>   invalid with https requests. (lilbedwin)</li>
+<li>Bugfix: fixed a bug that the trim module might send a zero-size<br>   buffer. (taoyuanyuan)</li>
+<li>Bugfix: fixed a compile error when using the configure option<br>   ‘–without-dso’. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed two compile warnings. (zzjin, diwayou)</li>
+</ul>
+<h4 id="Tengine-1-5-0-31-Jul-2013-Feature-added-ABI-compatibility-verification-for-DSO-modules"><a href="#Tengine-1-5-0-31-Jul-2013-Feature-added-ABI-compatibility-verification-for-DSO-modules" class="headerlink" title="Tengine-1.5.0 [31 Jul 2013]*   Feature: added ABI compatibility verification for DSO modules."></a>Tengine-1.5.0 [31 Jul 2013]*   Feature: added ABI compatibility verification for DSO modules.</h4><pre><code>(monadbobo)*   Feature: added non-buffering request body mechanism. Now the http proxy
+and fastcgi module can send requests to backend servers when it receives
+part of a request body. (yaoweibin)
+</code></pre><ul>
+<li>Feature: added trim module which can remove unnecessary white spaces and<br>  comments to reduce the size of a page. (taoyuanyuan)</li>
+<li>Feature: added the accept filter mechanism which supports to do some<br>  filter processing after accepting a new connection. (yzprofile)</li>
+<li>Feature: Now the server banner in a default error page can be replaced<br>  by the string specified in server_tag. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed the bug of the ‘buffer’ argument might be ignored in the<br>  ‘access_log’ directive. (cfsego)</li>
+<li>Bugfix: fixed the session_sticky module didn’t issue the session cookie<br>  in the direct mode. (dinic)</li>
+</ul>
+<h4 id="Tengine-1-4-6-14-May-2013-Bugfix-merged-the-changes-of-Nginx-1-2-9-and-fixed-the-security"><a href="#Tengine-1-4-6-14-May-2013-Bugfix-merged-the-changes-of-Nginx-1-2-9-and-fixed-the-security" class="headerlink" title="Tengine-1.4.6 [14 May 2013]*   Bugfix: merged the changes of Nginx-1.2.9 and fixed the security"></a>Tengine-1.4.6 [14 May 2013]*   Bugfix: merged the changes of Nginx-1.2.9 and fixed the security</h4><pre><code>problem CVE-2013-2070. This bug had appeared in 1.4.0. (yaoweibin)
+</code></pre><h4 id="Tengine-1-4-5-01-May-2013-Feature-added-the-consistent-hash-module-which-dispatches-requests"><a href="#Tengine-1-4-5-01-May-2013-Feature-added-the-consistent-hash-module-which-dispatches-requests" class="headerlink" title="Tengine-1.4.5 [01 May 2013]*   Feature: added the consistent_hash module which dispatches requests"></a>Tengine-1.4.5 [01 May 2013]*   Feature: added the consistent_hash module which dispatches requests</h4><pre><code>to upstream servers based on consistent hashing algorithm of a
+variable specified. (dinic)*   Feature: added the &quot;keepalive_timeout&quot; directive to set timeout for
+the upstream keepalive connections. (jinglong)*   Feature: now the configure script supports compilation of all modules
+to be shared or static. (monadbobo)*   Change: updated the Lua module to 0.7.19. (jinglong)*   Change: merged the changes of Nginx-1.2.8. (yaoweibin)*   Bugfix: fixed the compile warnings of syslog and upstream_check
+modules in GCC-4.4.5. (magicbear)
+</code></pre><h4 id="Tengine-1-4-4-21-Mar-2013-Feature-added-the-session-sticky-module-by-using-which-one-client"><a href="#Tengine-1-4-4-21-Mar-2013-Feature-added-the-session-sticky-module-by-using-which-one-client" class="headerlink" title="Tengine-1.4.4 [21 Mar 2013]*   Feature: added the session_sticky module by using which one client"></a>Tengine-1.4.4 [21 Mar 2013]*   Feature: added the session_sticky module by using which one client</h4><pre><code>can be always served by the same upstream server. (dinic)*   Feature: now the sysguard module can protect the server based on
+the amount of free memory. (lifeibo)*   Feature: added support for geoip regional database in geoip module.
+(jasonlfunk)
+</code></pre><ul>
+<li>Feature: log_empty_request can also disable the logs for timeout (408)<br>  empty request. (yaoweibin)*   Change: merged changes between Nginx-1.2.5 and Nginx-1.2.7. (cfsego)</li>
+<li>Change: CPU affinity is off by default now. (cfsego)*   Bugfix: fixed a bug that sysguard and upstream_check module didn’t<br>  compile on Solaris 11. (lifeibo, yaoweibin)</li>
+<li>Bugfix: fixed a bug with TFS module that it might return bad values.<br>  (zhcn381)</li>
+<li>Bugfix: fixed a bug with TFS module that it might corrupt large files.<br>  (zhcn381)</li>
+</ul>
+<h4 id="Tengine-1-4-3-21-Jan-2013-Feature-added-the-TFS-module-which-provides-a-RESTful-API-to-Taobao"><a href="#Tengine-1-4-3-21-Jan-2013-Feature-added-the-TFS-module-which-provides-a-RESTful-API-to-Taobao" class="headerlink" title="Tengine-1.4.3 [21 Jan 2013]*   Feature: added the TFS module which provides a RESTful API to Taobao"></a>Tengine-1.4.3 [21 Jan 2013]*   Feature: added the TFS module which provides a RESTful API to Taobao</h4><pre><code>File System. (zhcn381, monadbobo)*   Feature: added a $sent_cookie_XXX variable which could be used to get
+the value of cookie XXX from the Set-Cookie headers. (skoo87)
+</code></pre><ul>
+<li>Feature: now the syslog logging supports host name and domain name as<br>  its destination address. (cfsego)<em>   Change: added an attribute ‘id’ for the server directive in the<br>  upstream block. (yaoweibin)</em>   Bugfix: fixed a bug of DSO module which might stop Tengine from<br>  reloading. (monadbobo)<em>   Bugfix: fixed a segmentation fault bug of upstream_check module when<br>  the check timeout was larger than the check interval. (yaoweibin)</em>   Bugfix: fixed a segmentation fault bug of user_agent module when there<br>  was no User-Agent header existed in a request. (dinic)*   Bugfix: fixed the bug that sysguard module didn’t work on Mac OS.<br>  (lizi)</li>
+</ul>
+<h4 id="Tengine-1-4-2-22-Nov-2012-Feature-added-the-option-‘–dso-tool-path’-to-configure-script-which-can-specify-the-installation-path-for-the-dso-tool-script-monadbobo"><a href="#Tengine-1-4-2-22-Nov-2012-Feature-added-the-option-‘–dso-tool-path’-to-configure-script-which-can-specify-the-installation-path-for-the-dso-tool-script-monadbobo" class="headerlink" title="Tengine-1.4.2 [22 Nov 2012]*   Feature: added the option ‘–dso-tool-path’ to configure script, which can specify the installation path for the dso_tool script. (monadbobo)"></a>Tengine-1.4.2 [22 Nov 2012]*   Feature: added the option ‘–dso-tool-path’ to configure script, which can specify the installation path for the dso_tool script. (monadbobo)</h4><ul>
+<li>Feature: added a new variable ‘$unix_time’, whose value is the current number of seconds since unix epoch time. (yaoweibin)</li>
+<li>Feature: added the ‘make test’ target to run test cases. (yaoweibin)</li>
+<li>Feature: now the sysguard module can be used in a location block. (lifeibo)</li>
+<li>Change: merged the changes from Nginx-1.2.4 and Nginx-1.2.5. (zhuzhaoyuan)</li>
+<li>Change: now checks the error codes of input body filters more carefully to avoid socket leaks. (cfsego)*   Bugfix: fixed the problem with directive limit_req can’t handle 4 arguments. (monadbobo)<pre><code>Thanks to LazyZhu.*   Bugfix: fixed a compilation error with the file of sysinfo in Cygwin. (lifeibo)
+Thanks to Cao Peiran.
+</code></pre></li>
+<li>Bugfix: now the installation script will copy the user_agent module’s configuration. (monadbobo)<pre><code>Thanks to Jianbin Xiao.
+</code></pre></li>
+<li>Bugfix: fixed the installation directory error with the DSO module when creating the RPM package. (monadbobo)<pre><code>Thanks to Jianbin Xiao and Ren Xiaolei.
+</code></pre></li>
+</ul>
+<h4 id="Tengine-1-4-1-10-Oct-2012-Feature-added-jemalloc-library-support-fanjizhao"><a href="#Tengine-1-4-1-10-Oct-2012-Feature-added-jemalloc-library-support-fanjizhao" class="headerlink" title="Tengine-1.4.1 [10 Oct 2012]*   Feature: added jemalloc library support. (fanjizhao)"></a>Tengine-1.4.1 [10 Oct 2012]*   Feature: added jemalloc library support. (fanjizhao)</h4><ul>
+<li>Feature: added a new variable ‘$dollar’, whose value is the dollar sign (‘$’). (zhuzhaoyuan)<em>   Feature: added the option ‘off’ to ‘worker_cpu_affinity’ directive. (cfsego)</em>   Change: disable CPU affinity when a new worker process is forked as an old one exits abnormally. (cfsego)<em>   Bugfix: fixed compile error with shared Lua module when using LuaJIT in Mac OS. (monadbobo)</em>   Bugfix: fixed the wrong module execution order with the third party shared filter module. (monadbobo)</li>
+</ul>
+<h4 id="Tengine-1-4-0-05-Sep-2012-Feature-added-the-dynamic-module-loading-support-a-k-a-DSO-so-we-don’t-have-to-recompile-tengine-when-we-want-to-add-a-new-module-monadbobo"><a href="#Tengine-1-4-0-05-Sep-2012-Feature-added-the-dynamic-module-loading-support-a-k-a-DSO-so-we-don’t-have-to-recompile-tengine-when-we-want-to-add-a-new-module-monadbobo" class="headerlink" title="Tengine-1.4.0 [05 Sep 2012]*   Feature: added the dynamic module loading support (a.k.a. DSO), so we don’t have to recompile tengine when we want to add a new module. (monadbobo)"></a>Tengine-1.4.0 [05 Sep 2012]*   Feature: added the dynamic module loading support (a.k.a. DSO), so we don’t have to recompile tengine when we want to add a new module. (monadbobo)</h4><ul>
+<li>Feature: updated the Lua module to the latest stable version. (chaoslawful, agentzh, jinglong)</li>
+<li>Feature: added json and csv format output for the upstream_check module. (yaoweibin)</li>
+<li>Feature: added the ‘log_empty_request’ directive which could be used to turn off logs from a connection without HTTP data. (zhuzhaoyuan)</li>
+<li>Feature: added the ‘concat_delimiter’ directive to the concat module to allow      adding delimiter between each file. (dinic)</li>
+<li>Feature: added the ‘concat_ignore_file_error’ directive to ignore file<br>   errors and the syntax of concat is less strict now. (dinic)</li>
+<li>Feature: added the ‘default’ option to the ‘error_page’ directive to<br>   set all error pages to default values. (jinglong)</li>
+<li>Feature: added the ‘priority’ directive of the procs module. (yzprofile)</li>
+<li>Feature: added the ‘delay_start’ directive of the procs module. (yzprofile)</li>
+<li>Change: merged changes from nginx-1.2.3. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed a segmentation fault bug of the geo module when ‘range’<br>   was set without default value. (yzprofile)</li>
+<li>Bugfix: fixed a segmentation fault bug with the procs module. (yzprofile)</li>
+<li>Bugfix: fixed a socket leak bug when upstream_check was enabled. (yaoweibin)</li>
+<li>Bugfix: fixed some bugs of the limit_req module. (monadbobo)</li>
+<li>Bugfix: fixed wrong format types with error logs. (yaoweibin)</li>
+<li>Bugfix: fixed a compile error if the perl module was used with procs. (yzprofile)</li>
+</ul>
+<h4 id="Tengine-1-3-0-25-May-2012-Feature-added-the-Lua-module-which-embeds-the-power-of-Lua-into-Tengine-chaoslawful-agentzh"><a href="#Tengine-1-3-0-25-May-2012-Feature-added-the-Lua-module-which-embeds-the-power-of-Lua-into-Tengine-chaoslawful-agentzh" class="headerlink" title="Tengine-1.3.0 [25 May 2012]*   Feature: added the Lua module which embeds the power of Lua into Tengine. (chaoslawful, agentzh)"></a>Tengine-1.3.0 [25 May 2012]*   Feature: added the Lua module which embeds the power of Lua into Tengine. (chaoslawful, agentzh)</h4><ul>
+<li>Feature: Feature: added the procs module which provides a mechanism to support<br>   standalone processes. (yzprofile)</li>
+<li>Change: renamed the parameter from nongreedy to greedy in the user_agent module. (dinic)</li>
+<li>Bugfix: fixed a segmentation fault bug in syslog with uninitialized pointer problem. (cfsego)</li>
+<li>Bugfix: fixed a compile error in syslog with –with-ipv6 configuration parameter. (cfsego)</li>
+</ul>
+<h4 id="Tengine-1-2-5-09-May-2012-Feature-added-the-upstream-check-module-which-could-be-used-to-do-proactive"><a href="#Tengine-1-2-5-09-May-2012-Feature-added-the-upstream-check-module-which-could-be-used-to-do-proactive" class="headerlink" title="Tengine-1.2.5 [09 May 2012]*   Feature: added the upstream_check module which could be used to do proactive"></a>Tengine-1.2.5 [09 May 2012]*   Feature: added the upstream_check module which could be used to do proactive</h4><pre><code>health checks of upstream servers. (yaoweibin)
+</code></pre><ul>
+<li>Feature: now allow to specify program identifiers with syslogs. (cfsego)</li>
+<li>Change: merged changes between nginx-1.0.14 and nginx-1.0.15. (zhuzhaoyuan)</li>
+<li>Change: the default value of ‘accept_mutex_delay’ was changed from 500ms<br>   to 100ms to gain better performance. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed a segmentation fault bug in syslog when failed to connect to an upstream server. (cfsego)</li>
+<li>Bugfix: fixed the bug of ‘access_log’ might not be compatible with the ‘buffer’ parameter. (cfsego)</li>
+</ul>
+<h4 id="Tengine-1-2-4-30-Mar-2012-Feature-added-the-user-agent-module-dinic"><a href="#Tengine-1-2-4-30-Mar-2012-Feature-added-the-user-agent-module-dinic" class="headerlink" title="Tengine-1.2.4 [30 Mar 2012]*   Feature: added the user_agent module. (dinic)"></a>Tengine-1.2.4 [30 Mar 2012]*   Feature: added the user_agent module. (dinic)</h4><ul>
+<li>Feature: added the ‘log_escape’ directive. (agentzh, skoo87)</li>
+<li>Change: merged changes between nginx-1.0.12 and nginx-1.0.14. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed a bug in the limit_req module. (liseen.wan)</li>
+<li>Bugfix: fixed a bug in subrequest. (lifeibo)</li>
+</ul>
+<h4 id="Tengine-1-2-3-27-Feb-2012-Feature-added-the-‘request-time-cache’-directive-to-get-more-precise"><a href="#Tengine-1-2-3-27-Feb-2012-Feature-added-the-‘request-time-cache’-directive-to-get-more-precise" class="headerlink" title="Tengine-1.2.3 [27 Feb 2012]*   Feature: added the ‘request_time_cache’ directive to get more precise"></a>Tengine-1.2.3 [27 Feb 2012]*   Feature: added the ‘request_time_cache’ directive to get more precise</h4><pre><code>$request_time/$request_time_msec/$request_time_usec. (yzprofile)
+</code></pre><ul>
+<li>Feature: added the slice module. (zhuzhaoyuan)</li>
+<li>Change: merged changes between nginx-1.0.11 and nginx-1.0.12. (zhuzhaoyuan)</li>
+<li>Change: deleted unused browsers detection. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed a bug in upstream when reading header. (lifeibo)</li>
+<li>Bugfix: fixed a bug in ‘expires_by_types’. (lifeibo)</li>
+</ul>
+<h4 id="Tengine-1-2-2-11-Jan-2012-Feature-added-the-input-body-filter-mechanism-cfsego"><a href="#Tengine-1-2-2-11-Jan-2012-Feature-added-the-input-body-filter-mechanism-cfsego" class="headerlink" title="Tengine-1.2.2 [11 Jan 2012]*   Feature: added the input body filter mechanism. (cfsego)"></a>Tengine-1.2.2 [11 Jan 2012]*   Feature: added the input body filter mechanism. (cfsego)</h4><ul>
+<li>Feature: added SSL dialog support to the mail module. (cfsego)</li>
+<li>Change: merged changes between nginx-1.0.10 and nginx-1.0.11. (zhuzhaoyuan)</li>
+<li>Change: turned ‘lingering_close’ off by default. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed a bug in pipe logs. (cfsego)</li>
+<li>Bugfix: fixed a ‘forbid_action’ bug in the limit_req module. (monadbobo)</li>
+<li>Bugfix: fixed a bug in ‘backtrace_max_stack_size’. (monadbobo)</li>
+<li>Bugfix: fixed a bug in the footer module when output body is empty. (dinic)</li>
+<li>Bugfix: fixed the last hostname letter omitted bug in syslog. (cfsego)</li>
+</ul>
+<h4 id="Tengine-1-2-1-06-Dev-2011-Bugfix-fixed-a-segmentation-fault-bug-when-using-default-error-log-or-access"><a href="#Tengine-1-2-1-06-Dev-2011-Bugfix-fixed-a-segmentation-fault-bug-when-using-default-error-log-or-access" class="headerlink" title="Tengine-1.2.1 [06 Dev 2011]*   Bugfix: fixed a segmentation fault bug when using default error log or access"></a>Tengine-1.2.1 [06 Dev 2011]*   Bugfix: fixed a segmentation fault bug when using default error log or access</h4><pre><code>log. (yzprofile)
+</code></pre><h4 id="Tengine-1-2-0-29-Nov-2011-The-first-public-release"><a href="#Tengine-1-2-0-29-Nov-2011-The-first-public-release" class="headerlink" title="Tengine-1.2.0 [29 Nov 2011]*   The first public release."></a>Tengine-1.2.0 [29 Nov 2011]*   The first public release.</h4><ul>
+<li>Feature: added syslog support to error_log and access_log. (cfsego)</li>
+<li>Feature: added pipe support to error_log and access_log. (cfsego)</li>
+<li>Feature: added realloc() related APIs. (gongyuan)</li>
+<li>Feature: added time specific variables. (skoo87)</li>
+<li>Feature: added the backtrace module. (monadbobo)</li>
+<li>Feature: added whitelist support to the limit_req module. (monadbobo)</li>
+<li>Feature: now more limit_req directives are allowed in a single location. (monadbobo)</li>
+<li>Feature: added the sysguard module. (lifeibo)</li>
+<li>Feature: added two APIs, ngx_http_header_in and ngx_http_header_out. (lifeibo)</li>
+<li>Feature: added two variables, $request_time_msec and $request_time_usec. (jinglong)</li>
+<li>Feature: added the footer module. (yunxing)</li>
+<li>Feature: added the $conn_requests variable which is similar to Apache’s ‘%K’. (lieyuan)</li>
+<li>Feature: added the $host_comment variable. (yunxing)</li>
+<li>Feature: added a ‘ratio’ parameter to access_log so now access log can be sampled. (cfsego)</li>
+<li>Feature: added the ‘server_info’ and ‘server_admin’ directives to show<br>   more information when 4xx/5xx errors encountered. (lieyuan)</li>
+<li>Feature: added the ‘-d’ command line option to dump contents of<br>   the configuration files. (piaoling)</li>
+<li>Feature: added response time statistics to the stub_status module. (jinglong)</li>
+<li>Feature: added the ‘server_tag’ directive. (zhuzhaoyuan)</li>
+<li>Feature: now the ‘worker_processes’ supports the ‘auto’ parameter, which<br>   sets the worker process numbers to the cores automatically. (cfsego)</li>
+<li>Feature: now the ‘worker_cpu_affinity’ directive supports the ‘auto’<br>   parameter, which binds the worker processes to the cores automatically. (cfsego)</li>
+<li>Feature: added the ‘ssl_pass_phrase_dialog’ directive. (cfsego)</li>
+<li>Feature: added the ‘-s start’ command line option. (zhuzhaoyuan)</li>
+<li>Feature: added ‘-m’ command line option to list all compiled-in modules. (zhuzhaoyuan)</li>
+<li>Feature: added the ‘expires_by_types’ directive. (lifeibo)</li>
+<li>Feature: added the ‘-l’ command line option to list all supported directives. (dinic)</li>
+<li>Feature: added the ngx_atoll() API, which can convert a string to a long<br>   long integer (64 bits). (lifeibo)</li>
+<li>Feature: now status lines (302, 405) are RFC-2616 compatibale. (zhuzhaoyuan)</li>
+<li>Feature: now ngx_escape_uri/ngx_unescape_uri supports encoding/decoding<br><br>   style of Java and PHP. (zhuzhaoyuan)</li>
+<li>Feature: now configuration files included are sorted. (zhuzhaoyuan)</li>
+<li>Feature: now ‘error_page’ can be reset to ‘default’ (zhuzhaoyuan)</li>
+<li>Change: turned ‘msie_padding’ off by default. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed a bug when subrequest_in_memory and upstream keepalive<br>   being used. (lifeibo)</li>
+<li>Bugfix: fixed a bug in $sent_http_connection and $sent_http_keep_alive. (Zhongsheng)</li>
+<li>Bugfix: fixed a bug that error_page directive can’t detect duplicate<br>   codes and inherited correctly. (zhuzhaoyuan)</li>
+<li>Bugfix: fixed a segmentation fault bug in the FastCGI module, while<br>   processing duplicated HTTP headers. (monadbobo)</li>
+<li>Bugfix: fixed a bug that file in open_file_cache can’t be updated. (cfsego)</li>
+<li>Bugfix: fixed a bug in ‘worker_cpu_affinity’. (cfsego)</li>
+</ul>
+
+                    
+                </div>
+
+            </div>
+        </article>
+
+    </div>
+</div>
+
+</section>
+  </div>
+  <div class="fluid-container global-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="footer-logo"></div>
+      </div>
+      <div class="col-lg-6 clearfix">
+        <select name="" id="" class="lang-switch pull-right">
+          <option value="cn" selected>China</option>
+          <option value="en">World</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <span class="footer-text copyright">
+          &copy; 2011-2016 Alibaba Inc. All rights reserved.
+        </span>
+        <span class="footer-text design-by">Designed by 阿里云UED AX</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/particles.min.js"></script>
+<script src="/js/jquery.scrollTo-1.4.2-min.js"></script>
+<script src="/js/jquery.localscroll-1.2.7-min.js"></script>
+<script src="/js/jquery.parallax-1.1.3.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+</body>
+</html>

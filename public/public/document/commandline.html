@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="cn" dir="ltr" class="no-js" data-env="dev-env">
+
+<head>
+
+  <meta charset="utf-8"/>
+
+  <meta name="renderer" content="webkit"/>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  
+
+  
+
+  <meta name="author" content="Designed by 阿里云UED AX"/>
+
+  
+  <meta name="robots" content="index, follow"/>
+
+  <link rel="dns-prefetch" href="//" />
+  <link rel="dns-prefetch" href="//" />
+
+  <link rel="shortcut icon" href="///favicon.ico?v=s&t=20150120-2R" />
+
+  
+
+  <title>Command line options - The Tengine Web Server</title>
+
+  
+    <meta name="description" content="the ‘-m’ optionShow all compiled-in modules then exit. Tengine supports DSO modules since 1.4.0. The tag ‘static’ means static module. The tag ‘shared’ means dynamic shared module which is also attach">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Command line options">
+<meta property="og:url" content="http://tengine.taobao.org/document/commandline.html">
+<meta property="og:site_name" content="The Tengine Web Server">
+<meta property="og:description" content="the ‘-m’ optionShow all compiled-in modules then exit. Tengine supports DSO modules since 1.4.0. The tag ‘static’ means static module. The tag ‘shared’ means dynamic shared module which is also attach">
+<meta property="og:updated_time" content="2016-12-01T14:34:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Command line options">
+<meta name="twitter:description" content="the ‘-m’ optionShow all compiled-in modules then exit. Tengine supports DSO modules since 1.4.0. The tag ‘static’ means static module. The tag ‘shared’ means dynamic shared module which is also attach">
+
+    
+      <link rel="alternate" href="/atom.xml" title="The Tengine Web Server" type="application/atom+xml">
+    
+  
+
+
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+</head>
+
+
+<body class="page-is-loading">
+
+  <div class="fluid-container global-header">
+    <div class="container">
+        <div class="header clearfix">
+            <nav>
+                <ul class="nav nav-pills pull-right">
+                    
+                    <li role="presentation"><a href="/download.html">下载</a></li>
+                    
+                    <li role="presentation"><a href="/source.html">源码</a></li>
+                    
+                    <li role="presentation"><a href="/documentation.html">文档</a></li>
+                    
+                    <li role="presentation"><a href="/faq.html">FAQ</a></li>
+                    
+                    <li role="presentation"><a href="/contact.html">联系我们</a></li>
+                    
+                    <li role="presentation"><a href="http://tengine.taobao.org/book/">教程</a></li>
+                    
+                    <li role="presentation" class="hide"><a href="#"><i class="fa fa-bars" aria-hidden="true"></i></a></li>
+                </ul>
+            </nav>
+            <h1 class="text-muted site-logo"><a href="/" id="logo">The Tengine Web Server</a></h1>
+        </div>
+    </div>
+</div>
+
+  <div class="outer">
+    <section id="main"><div class="fluid-container">
+    <div class="container">
+
+        <article id="post-document/commandline" class="article article-type-post" itemscope itemprop="blogPost">
+            <div class="article-inner">
+                
+                <header class="article-header">
+                    
+  
+    <h1 class="article-title" itemprop="name">
+      Command line options
+    </h1>
+  
+
+                </header>
+                
+                <div class="article-entry" itemprop="articleBody">
+                    
+                    <h2 id="the-‘-m’-option"><a href="#the-‘-m’-option" class="headerlink" title="the ‘-m’ option"></a>the ‘-m’ option</h2><p>Show all compiled-in modules then exit. Tengine supports DSO modules since 1.4.0. The tag ‘static’ means static module. The tag ‘shared’ means dynamic shared module which is also attached with major and minor version of this modules. e.g:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">$ nginx -m </div><div class="line"></div><div class="line">Tengine version: Tengine/1.4.1 (nginx/1.2.3)</div><div class="line"></div><div class="line">loaded modules:</div><div class="line"></div><div class="line">    ngx_core_module (static)</div><div class="line"></div><div class="line">    ngx_errlog_module (static)</div><div class="line"></div><div class="line">    ngx_conf_module (static)</div><div class="line"></div><div class="line">    ngx_events_module (static)</div><div class="line"></div><div class="line">    ngx_event_core_module (static)</div><div class="line"></div><div class="line">    ngx_epoll_module (static)</div><div class="line"></div><div class="line">    ngx_http_module (static)</div><div class="line"></div><div class="line">    ngx_http_core_module (static)</div><div class="line"></div><div class="line">    ngx_http_log_module (static)</div><div class="line"></div><div class="line">    ngx_http_upstream_module (static)</div><div class="line"></div><div class="line">    ngx_http_static_module (static)</div><div class="line"></div><div class="line">    ngx_http_index_module (static)</div><div class="line"></div><div class="line">    ngx_http_rewrite_module (static)</div><div class="line"></div><div class="line">    ngx_http_proxy_module (static)</div><div class="line"></div><div class="line">    ngx_http_memcached_module (shared, 1.1)</div><div class="line"></div><div class="line">    ngx_http_write_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_header_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_chunked_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_range_header_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_gzip_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_postpone_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_headers_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_copy_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_range_body_filter_module (static)</div><div class="line"></div><div class="line">    ngx_http_not_modified_filter_module (static)</div></pre></td></tr></table></figure>
+<h2 id="the-‘-l’-option"><a href="#the-‘-l’-option" class="headerlink" title="the ‘-l’ option"></a>the ‘-l’ option</h2><p>Show all supported directives then exit. e.g:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">$ nginx -l </div><div class="line"></div><div class="line">Tengine version: Tengine/1.4.1 (nginx/1.2.3)</div><div class="line"></div><div class="line">all available directives:</div><div class="line"></div><div class="line">ngx_core_module:</div><div class="line"></div><div class="line">daemon</div><div class="line"></div><div class="line">master_process</div><div class="line"></div><div class="line">timer_resolution</div><div class="line"></div><div class="line">pid</div><div class="line"></div><div class="line">lock_file</div><div class="line"></div><div class="line">worker_processes</div><div class="line"></div><div class="line">debug_points</div><div class="line"></div><div class="line">user</div><div class="line"></div><div class="line">worker_priority</div><div class="line"></div><div class="line">worker_cpu_affinity</div><div class="line"></div><div class="line">worker_rlimit_nofile</div><div class="line"></div><div class="line">worker_rlimit_core</div><div class="line"></div><div class="line">worker_rlimit_sigpending</div><div class="line"></div><div class="line">working_directory</div><div class="line"></div><div class="line">env</div><div class="line"></div><div class="line">ngx_dso_module:</div><div class="line"></div><div class="line">dso</div><div class="line"></div><div class="line">ngx_http_memcached_module (shared):</div><div class="line"></div><div class="line">dso</div><div class="line"></div><div class="line">memcached_pass</div><div class="line"></div><div class="line">memcached_bind</div><div class="line"></div><div class="line">memcached_connect_timeout</div><div class="line"></div><div class="line">memcached_send_timeout</div><div class="line"></div><div class="line">memcached_buffer_size</div><div class="line"></div><div class="line">memcached_read_timeout</div><div class="line"></div><div class="line">memcached_next_upstream</div><div class="line"></div><div class="line">[snip]</div></pre></td></tr></table></figure>
+<h2 id="the-‘-d’-option"><a href="#the-‘-d’-option" class="headerlink" title="the ‘-d’ option"></a>the ‘-d’ option</h2><p>Dump the contents of the configuration file, including the contents of ‘include’d files. e.g:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">$ nginx -d </div><div class="line"></div><div class="line"># contents of file &quot;/home/shudu/nginx/sandbox/conf/nginx.conf&quot;:</div><div class="line"></div><div class="line">user  shudu;</div><div class="line"></div><div class="line">worker_processes  1;</div><div class="line"></div><div class="line">worker_rlimit_core 1000M;</div><div class="line"></div><div class="line">error_log  logs/error.log  debug;</div><div class="line"></div><div class="line">#pid        logs/nginx.pid;</div><div class="line"></div><div class="line">events &#123;</div><div class="line"></div><div class="line">worker_connections  1024;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line"></div><div class="line">include       mime.types;</div><div class="line"></div><div class="line">default_type  application/octet-stream;</div><div class="line"></div><div class="line">access_log  logs/access.log combined;</div><div class="line"></div><div class="line">[snip]</div></pre></td></tr></table></figure>
+
+                    
+                </div>
+
+            </div>
+        </article>
+
+    </div>
+</div>
+
+</section>
+  </div>
+  <div class="fluid-container global-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="footer-logo"></div>
+      </div>
+      <div class="col-lg-6 clearfix">
+        <select name="" id="" class="lang-switch pull-right">
+          <option value="cn" selected>China</option>
+          <option value="en">World</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <span class="footer-text copyright">
+          &copy; 2011-2016 Alibaba Inc. All rights reserved.
+        </span>
+        <span class="footer-text design-by">Designed by 阿里云UED AX</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/particles.min.js"></script>
+<script src="/js/jquery.scrollTo-1.4.2-min.js"></script>
+<script src="/js/jquery.localscroll-1.2.7-min.js"></script>
+<script src="/js/jquery.parallax-1.1.3.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+</body>
+</html>
