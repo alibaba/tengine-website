@@ -31,7 +31,7 @@
     overflow: hidden;
 }
 
-.global-header .site-logo a{
+.global-header .site-logo a {
     display: block;
     margin-left: 20px;
     height: 51px;
@@ -220,4 +220,40 @@
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
     padding-top: 20px;
+}
+
+#main figure {
+    background: #2d2d2d;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #333;
+    margin-bottom: 40px;
+}
+
+#main figure table {
+    width: 100%;
+    height: 100%;
+}
+
+#main figure table .gutter {
+    display: none;
+}
+
+#main figure table .code {
+    background: #2d2d2d;
+}
+
+#main figure table .code pre {
+    background: #2d2d2d;
+    color: #d8b584;
+    border: none;
+    margin-bottom: 0
+}
+
+#main figure table .code pre .line {
+    border-bottom: 1px dashed #353535;
+}
+
+#main blockquote{
+    margin-top: 60px;
 }
