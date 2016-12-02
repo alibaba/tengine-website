@@ -23,7 +23,7 @@
 }
 
 .global-header .site-logo {
-    margin: 20px 0 0;
+    margin: 30px 0 0;
     z-index: 1;
     background: url(/img/logo.png) no-repeat;
     height: 51px;
@@ -33,16 +33,12 @@
 
 .global-header .site-logo a {
     display: block;
-    margin-left: 20px;
     height: 51px;
     width: 171px;
-    line-height: 10;
-    text-indent: 100%;
-    overflow: hidden;
 }
 
 .global-header nav {
-    margin: 20px 0 0;
+    margin: 30px 0 0;
 }
 
 .homepage-intro {
@@ -51,15 +47,76 @@
     height: 600px;
 }
 
-.homepage-intro h2 {
+.homepage-intro .lead-label,
+.homepage-item-list .info-feature .lead-label,
+.homepage-item-list .info-recent .lead-label {
     position: relative;
     z-index: 1;
-    background: url(/img/home-intro.png) no-repeat;
-    height: 80px;
+    height: 68px;
     width: 200px;
-    text-indent: -100%;
-    overflow: hidden;
     margin: 120px auto 40px;
+    overflow: hidden;
+    cursor: default;
+}
+
+.homepage-intro .lead-label h2,
+.homepage-item-list .info-feature .lead-label h2,
+.homepage-item-list .info-recent .lead-label h2 {
+    z-index: 2;
+    margin: 0;
+    font-size: 35px;
+    line-height: 62px;
+    text-align: center;
+    color: #a6d4d7;
+}
+
+.homepage-intro .lead-label h2 .fa,
+.homepage-item-list .info-feature .lead-label h2 .fa,
+.homepage-item-list .info-recent .lead-label h2 .fa {
+    margin-left: 8px;
+    font-size: 50px;
+    line-height: 68px;
+    vertical-align: middle;
+    margin-right: 14px;
+}
+
+.homepage-intro .lead-label h2 span,
+.homepage-item-list .info-feature .lead-label h2 span,
+.homepage-item-list .info-recent .lead-label h2 span {
+    line-height: 68px;
+    font-size: 35px;
+    vertical-align: middle;
+}
+
+.container-en-us.homepage-intro .lead-label h2 span,
+.container-en-us.homepage-item-list .info-feature .lead-label h2 span,
+.container-en-us.homepage-item-list .info-recent .lead-label h2 span {
+    line-height: 68px;
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.homepage-intro .bg-border-container,
+.homepage-item-list .info-feature .bg-border-container,
+.homepage-item-list .info-recent .bg-border-container {
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    left: 17px;
+    transform: rotate(7deg);
+}
+
+.homepage-intro .bg-border,
+.homepage-item-list .info-feature .bg-border,
+.homepage-item-list .info-recent .bg-border {
+    border: 1px solid #fff;
+    height: 67px;
+    margin: 0 auto;
+    width: 172px;
+    transform: skewY(173deg);
+    text-indent: 0;
+    line-height: 69px;
+    font-size: 35px;
 }
 
 .homepage-intro p {
@@ -71,7 +128,8 @@
     line-height: 25px;
 }
 
-#particles-js {
+#particles-js-cn,
+#particles-js-en {
     position: absolute;
     width: 100%;
     top: 0;
@@ -123,8 +181,8 @@
     color: #f9fafb;
 }
 
-.homepage-item-list #info-feature,
-.homepage-item-list #info-recent {
+.homepage-item-list .info-feature,
+.homepage-item-list .info-recent {
     background: #77c0c7;
     font-family: PingFangSC;
     font-size: 18px;
@@ -135,13 +193,13 @@
     color: #435257;
 }
 
-.homepage-item-list #info-feature a,
-.homepage-item-list #info-recent a {
+.homepage-item-list .info-feature a,
+.homepage-item-list .info-recent a {
     color: #214f62;
 }
 
-.homepage-item-list #info-feature a:hover,
-.homepage-item-list #info-recent a:hover {
+.homepage-item-list .info-feature a:hover,
+.homepage-item-list .info-recent a:hover {
     color: #125062;
 }
 
@@ -149,46 +207,38 @@
     color: #70d7cd;
 }
 
-.homepage-item-list #info-recent2 {
+.homepage-item-list .info-recent2 {
     height: inherit;
 }
 
-.homepage-item-list #info-feature ul, .homepage-item-list #info-recent ul {
+.homepage-item-list .info-feature ul,
+.homepage-item-list .info-recent ul {
     display: block;
     line-height: 2em;
 }
 
-.homepage-item-list #info-recent h2,
-.homepage-item-list #info-feature h2 {
-    position: relative;
-    z-index: 1;
-    height: 80px;
-    width: 200px;
-    text-indent: -100%;
-    overflow: hidden;
-    margin: 120px auto 40px;
+.homepage-item-list .info-feature .lead-label h2,
+.homepage-item-list .info-recent .lead-label h2 {
+    color: #214f62;
 }
 
-.homepage-item-list #info-feature2 a,
-.homepage-item-list #info-recent2 a {
+.homepage-item-list .info-feature .bg-border,
+.homepage-item-list .info-recent .bg-border {
+    border: 1px solid #214f62;
+}
+
+.homepage-item-list .info-feature2 a,
+.homepage-item-list .info-recent2 a {
     color: #77c0c7;
 }
 
-.homepage-item-list #info-feature2 a:hover,
-.homepage-item-list #info-recent2 a:hover {
+.homepage-item-list .info-feature2 a:hover,
+.homepage-item-list .info-recent2 a:hover {
     color: #50c7c4;
 }
 
-.homepage-item-list #info-feature h2 {
-    background: url("/img/home-feature.png") no-repeat;
-}
-
-.homepage-item-list #info-recent h2 {
-    background: url("/img/home-recent.png") no-repeat;
-}
-
-.homepage-item-list #info-feature2,
-.homepage-item-list #info-recent2 {
+.homepage-item-list .info-feature2,
+.homepage-item-list .info-recent2 {
     background: #214f62;
     font-family: PingFangSC;
     font-size: 18px;
@@ -197,7 +247,8 @@
     text-align: left;
 }
 
-.homepage-item-list #info-feature2 ul, .homepage-item-list #info-recent2 ul {
+.homepage-item-list .info-feature2 ul,
+.homepage-item-list .info-recent2 ul {
     margin: 120px auto;
     display: block;
     line-height: 2em;
@@ -307,4 +358,66 @@
 
 #main blockquote {
     margin-top: 60px;
+}
+
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-moz-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-ms-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-o-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.fadeIn {
+    -webkit-animation-name: fadeIn;
+    -moz-animation-name: fadeIn;
+    -ms-animation-name: fadeIn;
+    -o-animation-name: fadeIn;
+    animation-name: fadeIn;
+}
+
+.animated {
+    -webkit-animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    -ms-animation-duration: 1s;
+    -o-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    -ms-animation-fill-mode: both;
+    -o-animation-fill-mode: both;
+    animation-fill-mode: both;
 }
