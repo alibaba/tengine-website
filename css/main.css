@@ -117,6 +117,9 @@
     height: 700px;
 }
 
+.homepage-item-list #info-recent2 {
+    height: inherit;
+}
 .homepage-item-list #info-feature ul, .homepage-item-list #info-recent ul {
     display: block;
     line-height: 2em;
