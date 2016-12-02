@@ -117,34 +117,22 @@ $(function () {
         }
     });
 
-    (function (control) {
-        if (!control.length) {
-            return;
-        }
-        control.on('change', function () {
-            var cur = $.cookie('lang');
-            if (cur !== this.value) {
-                $.cookie('lang', this.value) && switchLang(this.value);
-            }
-        });
-    })($('.lang-switch'));
-
-    function switchLang(lang) {
-        console.log('switch', lang, location.pathname)
+    function updateURL(lang) {
         switch (lang) {
             case 'cn':
                 switch (location.pathname) {
                     case '/':
+                    case '/index_en.html':
                     case '/index.html':
                         location.pathname = 'index_cn.html';
                         break;
                     default:
-
-                        if (!location.pathname.match(/^(\/)(.+)(_cn\.html)$/)) {
-                            location.pathname = location.pathname.replace(/^(\/)(.+)(\.html)$/, "$1$2_cn$3")
+                        if (location.pathname.match(/^(\/)(.+)(\/)(.+)(\.html)$/) && !location.pathname.match(/^(\/)(.+)(_cn)(\/)(.+)(_cn\.html)$/)) {
+                            location.pathname = location.pathname.replace(/^(\/)(.+)(\/)(.+)(\.html)$/, "$1$2_cn$3$4_cn$5");
+                            return;
+                        } else if (!location.pathname.match(/^(\/)(.+)(_cn\.html)$/)) {
+                            location.pathname = location.pathname.replace(/^(\/)(.+)(\.html)$/, "$1$2_cn$3");
                         }
-
-                        console.log(location.pathname.match(/^\/.+\/.+\.html$/))
                         break;
                 }
                 break;
@@ -154,22 +142,54 @@ $(function () {
                     case '/':
                         break;
                     case '/index_cn.html':
-                        location.pathname = 'index.html';
+                        location.pathname = 'index_en.html';
                         break;
                     default:
+
+                        if (location.pathname.match(/^(\/)(.+)(_cn)(\/)(.+)(_cn\.html)$/)) {
+                            // location.pathname = location.pathname.replace(/^(\/)(.+)(_cn)(\/)(.+)(_cn\.html)$/, "$1$2$4$5.html");
+                            return;
+                        }
 
                         if (location.pathname.match(/^(\/)(.+)(_cn\.html)$/)) {
                             location.pathname = location.pathname.replace(/^(\/)(.+)(_cn\.html)$/, "$1$2.html")
                         }
-
-
                         break;
                 }
                 break;
         }
     }
 
-    switchLang($.cookie('lang'));
+    var cur = location.pathname.match(/^(\/)(.+)(_cn\.html)$/) ? 'cn' : 'en';
+    if ($.cookie('lang') !== cur) {
+        updateURL($.cookie('lang'));
+    }
+    if ($.cookie('lang') === 'cn') {
+        $('#nav-menu .menu-item').each(function (k, item) {
+            $(item).attr('href', item.href.replace('.html', '_cn.html'));
+        });
+    }
+
+    (function (control) {
+        if (!control.length) {
+            return;
+        }
+        switch ($.cookie('lang')) {
+            case 'cn':
+                control.append('<option value="cn" selected>China</option><option value="en">English</option>')
+                break;
+            case 'en':
+            default:
+                control.append('<option value="cn">China</option><option value="en" selected>English</option>')
+                break;
+        }
+        control.on('change', function () {
+            $.cookie('lang', this.value, {expires: 30, path: '/'});
+            location.reload();
+        });
+
+    })($('.lang-switch'));
+
 
 });
 
