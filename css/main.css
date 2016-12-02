@@ -4,6 +4,18 @@
     height: 110px;
 }
 
+.global-header .lang-switch{
+    width: 80px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    line-height: 40px;
+    font-size: 16px;
+    background: #00293d;
+    color: #9bccd2;
+    border: 1px solid #9bccd2;
+}
+
 .global-header .nav-pills > li > a {
     font-family: PingFangSC-Regular;
     font-size: 18px;
