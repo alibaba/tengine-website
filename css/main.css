@@ -299,6 +299,7 @@
     width: 162px;
     height: 40px;
     color: #7b7b7b;
+    text-indent: 10px;
     -webkit-appearance: none;
 }
 
@@ -513,6 +514,7 @@
     .col-hide-xs {
         display: block !important;
     }
+
     .global-header .lang-switch {
         width: 86px;
         text-indent: 10px;
