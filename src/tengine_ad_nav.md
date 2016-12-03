@@ -1,1 +1,0 @@
-[买服务器](http://click.aliyun.com/m/4339/)

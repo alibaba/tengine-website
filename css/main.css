@@ -4,7 +4,7 @@
     height: 110px;
 }
 
-.global-header .lang-switch{
+.global-header .lang-switch {
     width: 80px;
     height: 40px;
     padding: 0;
@@ -14,9 +14,11 @@
     background: #00293d;
     color: #9bccd2;
     border: 1px solid #9bccd2;
+    -webkit-appearance: none;
+    text-indent: 10px;
 }
 
-.global-header .nav-pills > li > a {
+.global-header li > a {
     font-family: PingFangSC-Regular;
     font-size: 18px;
     color: #abdce1;
@@ -37,7 +39,7 @@
 .global-header .site-logo {
     margin: 30px 0 0;
     z-index: 1;
-    background: url(/img/logo.png) no-repeat;
+    background: url("/img/logo.png") no-repeat;
     height: 51px;
     width: 171px;
     overflow: hidden;
@@ -269,7 +271,7 @@
 .global-footer {
     background: #fafafa;
     padding-bottom: 40px;
-    border-top: 2px #dcdcdc solid;
+    border-top: 3px #dcdcdc solid;
 }
 
 .global-footer .footer-logo {
@@ -297,6 +299,7 @@
     width: 162px;
     height: 40px;
     color: #7b7b7b;
+    -webkit-appearance: none;
 }
 
 #main {
@@ -372,7 +375,6 @@
     margin-top: 60px;
 }
 
-
 @-webkit-keyframes fadeIn {
     0% {
         opacity: 0;
@@ -381,6 +383,7 @@
         opacity: 1;
     }
 }
+
 @-moz-keyframes fadeIn {
     0% {
         opacity: 0;
@@ -389,6 +392,7 @@
         opacity: 1;
     }
 }
+
 @-ms-keyframes fadeIn {
     0% {
         opacity: 0;
@@ -397,6 +401,7 @@
         opacity: 1;
     }
 }
+
 @-o-keyframes fadeIn {
     0% {
         opacity: 0;
@@ -405,6 +410,7 @@
         opacity: 1;
     }
 }
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
@@ -413,6 +419,7 @@
         opacity: 1;
     }
 }
+
 .fadeIn {
     -webkit-animation-name: fadeIn;
     -moz-animation-name: fadeIn;
@@ -432,4 +439,82 @@
     -ms-animation-fill-mode: both;
     -o-animation-fill-mode: both;
     animation-fill-mode: both;
+}
+
+.icon-bar {
+    background: #a6d4d7;
+}
+
+@media screen and (max-width: 768px) {
+    .col-hide-xs {
+        display: none !important;
+    }
+
+    .global-header {
+        height: inherit !important;
+    }
+
+    .global-header nav {
+        margin: 0;
+    }
+
+    .global-header .navbar-toggle {
+        margin-top: 15px;
+        margin-right: 7px;
+    }
+
+    .homepage-intro .lead-label {
+        margin-top: 40px;
+    }
+
+    .homepage-intro p {
+        text-indent: 2em;
+        font-size: 14px;
+    }
+
+    .homepage-intro .download-button {
+        text-indent: 0;
+    }
+
+    .homepage-item-list .info-item .lead-label {
+        margin-top: 40px;
+    }
+
+    .homepage-item-list .info-item ul {
+        margin: 40px 0;
+        font-size: 13px !important;
+    }
+
+    .homepage-item-list .info-item {
+        height: inherit;
+    }
+
+    .homepage-intro {
+        height: inherit;
+        padding-bottom: 20px;
+    }
+
+    .global-header .site-logo {
+        margin: 8px 0 5px 0;
+    }
+
+    .global-footer .footer-logo {
+        margin: 2rem;
+    }
+
+    .global-footer .lang-switch {
+        width: 100px;
+        border: 1px solid #666;
+    }
+
+}
+
+@media screen and (width: 768px) {
+    .col-hide-xs {
+        display: block !important;
+    }
+    .global-header .lang-switch {
+        width: 86px;
+        text-indent: 10px;
+    }
 }
