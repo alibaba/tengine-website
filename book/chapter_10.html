@@ -1,0 +1,338 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nginx基础设施 &mdash; Nginx开发从入门到精通</title>
+    <link rel="stylesheet" href="_static/book.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/comment.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../js/??ga.js,correctpng.js?v=1"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/booktools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="_static/comment.js"></script>
+    <link rel="top" title="Nginx开发从入门到精通" href="index.html" />
+    <link rel="up" title="下篇：nginx原理解析篇" href="source_analysis.html" />
+    <link rel="next" title="nginx的启动阶段 (30%)" href="chapter_11.html" />
+    <link rel="prev" title="nginx架构详解(50%)" href="chapter_09.html" /> 
+  </head>
+  <body lang="zh-Hans">
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="chapter_11.html" title="nginx的启动阶段 (30%)"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_09.html" title="nginx架构详解(50%)"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="source_analysis.html" accesskey="U">下篇：nginx原理解析篇</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nginx">
+<h1>nginx基础设施<a class="headerlink" href="#nginx" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id1">
+<h2>内存池<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id2">
+<h3>简介:<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h3>
+<p>Nginx里内存的使用大都十分有特色:申请了永久保存,抑或伴随着请求的结束而全部释放,还有写满了缓冲再从头接着写.这么做的原因也主要取决于Web Server的特殊的场景,内存的分配和请求相关,一条请求处理完毕,即可释放其相关的内存池,降低了开发中对内存资源管理的复杂度,也减少了内存碎片的存在.</p>
+<p>所以在Nginx使用内存池时总是只申请,不释放,使用完毕后直接destroy整个内存池.我们来看下内存池相关的实现。</p>
+</div>
+<div class="section" id="id3">
+<h3>结构:<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<div class="code c highlight-python"><pre>struct ngx_pool_s {
+    ngx_pool_data_t       d;
+    size_t                max;
+    ngx_pool_t           *current;
+    ngx_chain_t          *chain;
+    ngx_pool_large_t     *large;
+    ngx_pool_cleanup_t   *cleanup;
+    ngx_log_t            *log;
+};
+
+struct ngx_pool_large_s {
+    ngx_pool_large_t     *next;
+    void                 *alloc;
+};
+
+typedef struct {
+    u_char               *last;
+    u_char               *end;
+    ngx_pool_t           *next;
+    ngx_uint_t            failed;
+} ngx_pool_data_t;</pre>
+</div>
+<img alt="内存池" class="align-center" src="https://raw.github.com/yzprofile/nginx-book/master/source/images/chapter-10-1.PNG" />
+</div>
+<div class="section" id="id4">
+<h3>实现:<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<p>这三个数据结构构成了基本的内存池的主体.通过ngx_create_pool可以创建一个内存池,通过ngx_palloc可以从内存池中分配指定大小的内存。</p>
+<div class="code c highlight-python"><pre>ngx_pool_t *
+ngx_create_pool(size_t size, ngx_log_t *log)
+{
+    ngx_pool_t  *p;
+
+    p = ngx_memalign(NGX_POOL_ALIGNMENT, size, log);
+    if (p == NULL) {
+        return NULL;
+    }
+
+    p-&gt;d.last = (u_char *) p + sizeof(ngx_pool_t);
+    p-&gt;d.end = (u_char *) p + size;
+    p-&gt;d.next = NULL;
+    p-&gt;d.failed = 0;
+
+    size = size - sizeof(ngx_pool_t);
+    p-&gt;max = (size &lt; NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;
+
+    p-&gt;current = p;
+    p-&gt;chain = NULL;
+    p-&gt;large = NULL;
+    p-&gt;cleanup = NULL;
+    p-&gt;log = log;
+
+    return p;
+}</pre>
+</div>
+<p>这里首申请了一块大小为size的内存区域，其前sizeof(ngx_pool_t)字节用来存储ngx_pool_t这个结构体自身自身.所以若size小于sizeof(ngx_pool_t)将会有coredump的可能性。</p>
+<p>我们常用来分配内存的有三个接口:ngx_palloc，ngx_pnalloc，ngx_pcalloc。</p>
+<p>分别来看下它们的实现：</p>
+<div class="code c highlight-python"><pre> void *
+ ngx_palloc(ngx_pool_t *pool, size_t size)
+ {
+     u_char      *m;
+     ngx_pool_t  *p;
+
+     if (size &lt;= pool-&gt;max) {
+
+         p = pool-&gt;current;
+
+         do {
+             m = ngx_align_ptr(p-&gt;d.last, NGX_ALIGNMENT);
+
+             if ((size_t) (p-&gt;d.end - m) &gt;= size) {
+                 p-&gt;d.last = m + size;
+
+                 return m;
+             }
+
+             p = p-&gt;d.next;
+
+         } while (p);
+
+         return ngx_palloc_block(pool, size);
+     }
+
+     return ngx_palloc_large(pool, size);
+ }
+
+
+ void *
+ ngx_pnalloc(ngx_pool_t *pool, size_t size)
+ {
+     u_char      *m;
+     ngx_pool_t  *p;
+
+     if (size &lt;= pool-&gt;max) {
+
+         p = pool-&gt;current;
+
+         do {
+             m = p-&gt;d.last;
+
+             if ((size_t) (p-&gt;d.end - m) &gt;= size) {
+                 p-&gt;d.last = m + size;
+
+                 return m;
+             }
+
+             p = p-&gt;d.next;
+
+         } while (p);
+
+         return ngx_palloc_block(pool, size);
+     }
+
+     return ngx_palloc_large(pool, size);
+ }
+
+
+ void *
+ ngx_pcalloc(ngx_pool_t *pool, size_t size)
+ {
+     void *p;
+
+     p = ngx_palloc(pool, size);
+     if (p) {
+         ngx_memzero(p, size);
+     }
+
+     return p;
+}</pre>
+</div>
+<p>ngx_pcalloc其只是ngx_palloc的一个封装，将申请到的内存全部初始化为0。</p>
+<p>ngx_palloc相对ngx_pnalloc，其会将申请的内存大小向上扩增到NGX_ALIGNMENT的倍数，以方便内存对齐，减少内存访问次数。</p>
+<p>Nginx的内存池不仅用于内存方面的管理，还可以通过`ngx_pool_cleanup_add`来添加内存池释放时的回调函数，以便用来释放自己申请的其他相关资源。</p>
+<p>从代码中可以看出，这些由自己添加的释放回调是以链表形式保存的，也就是说你可以添加多个回调函数来管理不同的资源。</p>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>共享内存<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<div class="section" id="slab">
+<h3>slab算法<a class="headerlink" href="#slab" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+<div class="section" id="buffer">
+<h2>buffer管理<a class="headerlink" href="#buffer" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id6">
+<h3>buffer重用机制<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id7">
+<h3>buffer防拷贝机制<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+<div class="section" id="chain">
+<h2>chain管理<a class="headerlink" href="#chain" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id8">
+<h3>chain重用机制<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+<div class="section" id="aio">
+<h2>aio原理<a class="headerlink" href="#aio" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="id9">
+<h2>锁实现<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="id10">
+<h2>基本数据结构<a class="headerlink" href="#id10" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="id11">
+<h2>时间缓存<a class="headerlink" href="#id11" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="id12">
+<h2>文件缓存<a class="headerlink" href="#id12" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="log">
+<h2>log机制<a class="headerlink" href="#log" title="永久链接至标题">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="http://tengine.taobao.org/">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nginx基础设施</a><ul>
+<li><a class="reference internal" href="#id1">内存池</a><ul>
+<li><a class="reference internal" href="#id2">简介:</a></li>
+<li><a class="reference internal" href="#id3">结构:</a></li>
+<li><a class="reference internal" href="#id4">实现:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">共享内存</a><ul>
+<li><a class="reference internal" href="#slab">slab算法</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#buffer">buffer管理</a><ul>
+<li><a class="reference internal" href="#id6">buffer重用机制</a></li>
+<li><a class="reference internal" href="#id7">buffer防拷贝机制</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#chain">chain管理</a><ul>
+<li><a class="reference internal" href="#id8">chain重用机制</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#aio">aio原理</a></li>
+<li><a class="reference internal" href="#id9">锁实现</a></li>
+<li><a class="reference internal" href="#id10">基本数据结构</a></li>
+<li><a class="reference internal" href="#id11">时间缓存</a></li>
+<li><a class="reference internal" href="#id12">文件缓存</a></li>
+<li><a class="reference internal" href="#log">log机制</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="chapter_09.html"
+                        title="上一章">nginx架构详解(50%)</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="chapter_11.html"
+                        title="下一章">nginx的启动阶段 (30%)</a></p>
+  <h3>本页</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/chapter_10.txt"
+           rel="nofollow">显示源代码</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>快速搜索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="搜索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的模块，术语，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="chapter_11.html" title="nginx的启动阶段 (30%)"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_09.html" title="nginx架构详解(50%)"
+             >上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="source_analysis.html" >下篇：nginx原理解析篇</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; 版权所有 2012, taobao.
+      使用 <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

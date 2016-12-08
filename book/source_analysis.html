@@ -1,0 +1,284 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>下篇：nginx原理解析篇 &mdash; Nginx开发从入门到精通</title>
+    <link rel="stylesheet" href="_static/book.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/comment.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../js/??ga.js,correctpng.js?v=1"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/booktools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="_static/comment.js"></script>
+    <link rel="top" title="Nginx开发从入门到精通" href="index.html" />
+    <link rel="next" title="高性能服务器设计" href="chapter_08.html" />
+    <link rel="prev" title="模块开发高级篇(30%)" href="chapter_07.html" /> 
+  </head>
+  <body lang="zh-Hans">
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="chapter_08.html" title="高性能服务器设计"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_07.html" title="模块开发高级篇(30%)"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nginx">
+<h1>下篇：nginx原理解析篇<a class="headerlink" href="#nginx" title="永久链接至标题">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter_08.html">高性能服务器设计</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_08.html#c10k">c10k问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_08.html#id2">高性能服务器编写的关键原则</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_08.html#id3">事件驱动的核心引擎</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_08.html#id4">定时器管理</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_09.html">nginx架构详解(50%)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_09.html#nginx-100">nginx的源码目录结构(100%)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_09.html#nginxconfigure-100">nginx的configure原理(100%)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#auto">auto脚本</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#id1">模块编译顺序</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_09.html#nginx">nginx的事件机制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#event">event框架及非阻塞模型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#id2">定时器实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#id3">信号处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#id4">惊群问题</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_09.html#id5">nginx的进程机制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#master">master进程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#worker">worker进程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_09.html#id6">进程间通讯</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_10.html">nginx基础设施</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#id1">内存池</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_10.html#id2">简介:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_10.html#id3">结构:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_10.html#id4">实现:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#id5">共享内存</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_10.html#slab">slab算法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#buffer">buffer管理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_10.html#id6">buffer重用机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_10.html#id7">buffer防拷贝机制</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#chain">chain管理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_10.html#id8">chain重用机制</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#aio">aio原理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#id9">锁实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#id10">基本数据结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#id11">时间缓存</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#id12">文件缓存</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_10.html#log">log机制</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_11.html">nginx的启动阶段 (30%)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_11.html#id1">概述 (100%)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_11.html#id2">共有流程 (100%)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_11.html#id3">配置解析接口 (100%)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_11.html#id4">配置解析</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_11.html#id5">通用过程 (100%)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_11.html#http">http的解析</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chapter_11.html#id6">创建并初始化上下文环境</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_11.html#id7">调用通用解析流程解析</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_11.html#id8">根据解析结果进行后续合并处理</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_11.html#id13">善后工作</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_11.html#id14">server的管理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_11.html#id15">location的管理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_11.html#id16">模块初始化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_11.html#id17">热代码部署</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_11.html#reload">reload过程解析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_11.html#upgrade">upgrade过程解析</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_12.html">nginx的请求处理阶段 (90%)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_12.html#id1">接收请求流程 (99%)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#http-99">http请求格式简介 (99%)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#id2">请求头读取 (99%)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#id3">解析请求行 (99%)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#id4">解析请求头 (99%)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#id5">请求体读取(100%)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#id6">读取请求体</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#id7">丢弃请求体</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_12.html#id8">多阶段处理请求</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#id9">多阶段执行链</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#post-read">POST_READ阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#server-rewrite">SERVER_REWRITE阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#find-config">FIND_CONFIG阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#rewrite">REWRITE阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#post-rewrite">POST_REWRITE阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#preaccess">PREACCESS阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#access">ACCESS阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#post-access">POST_ACCESS阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#try-files">TRY_FILES阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#content">CONTENT阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#log">LOG阶段</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_12.html#nginx-filter">Nginx filter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#header-filter">header filter分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#body-filter">body filter分析</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#ngx-http-copy-filter-module">ngx_http_copy_filter_module分析</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#ngx-http-write-filter-module">ngx_http_write_filter_module分析</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_12.html#subrequest-99">subrequest原理解析 (99%)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_12.html#https">https请求处理解析</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#nginxssl">nginx支持ssl简介</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_12.html#ssl-ssl">ssl连接建立(ssl握手)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#ssl">对ssl连接建立的准备</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#id18">实际ssl握手阶段</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#id19">ssl协议接受数据</a></li>
+<li class="toctree-l4"><a class="reference internal" href="chapter_12.html#id20">ssl协议发送数据</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_13.html">nginx的upstream原理解析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_13.html#id1">无缓冲的处理流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_13.html#id2">带缓冲的处理流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_13.html#subrequestupstream">subrequest访问upstream的处理流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_13.html#id3">负载均衡算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_13.html#round-robin">round-robin算法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_13.html#iphash">基于ip的hash算法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_13.html#upstream">upstream缓存机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_13.html#id4">常用upstream模块分析</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chapter_13.html#proxy">proxy模块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chapter_13.html#fastcgi">fastcgi模块</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chapter_14.html">nginx的script处理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter_14.html#id1">正则表达式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_14.html#id2">变量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_14.html#id3">复杂变量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter_14.html#if">if的处理</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="http://tengine.taobao.org/">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="chapter_07.html"
+                        title="上一章">模块开发高级篇(30%)</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="chapter_08.html"
+                        title="下一章">高性能服务器设计</a></p>
+  <h3>本页</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/source_analysis.txt"
+           rel="nofollow">显示源代码</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>快速搜索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="搜索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的模块，术语，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="chapter_08.html" title="高性能服务器设计"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_07.html" title="模块开发高级篇(30%)"
+             >上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; 版权所有 2012, taobao.
+      使用 <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
