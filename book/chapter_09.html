@@ -1,0 +1,897 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nginx架构详解(50%) &mdash; Nginx开发从入门到精通</title>
+    <link rel="stylesheet" href="_static/book.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/comment.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../js/??ga.js,correctpng.js?v=1"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/booktools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="_static/comment.js"></script>
+    <link rel="top" title="Nginx开发从入门到精通" href="index.html" />
+    <link rel="up" title="下篇：nginx原理解析篇" href="source_analysis.html" />
+    <link rel="next" title="nginx基础设施" href="chapter_10.html" />
+    <link rel="prev" title="高性能服务器设计" href="chapter_08.html" /> 
+  </head>
+  <body lang="zh-Hans">
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="chapter_10.html" title="nginx基础设施"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_08.html" title="高性能服务器设计"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="source_analysis.html" accesskey="U">下篇：nginx原理解析篇</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nginx-50">
+<h1>nginx架构详解(50%)<a class="headerlink" href="#nginx-50" title="永久链接至标题">¶</a></h1>
+<p>nginx的下篇将会更加深入的介绍nginx的实现原理。上一章，我们了解到了如何设计一个高性能服务器，那这一章将会开始讲解，nginx是如何一步一步实现高性能服务器的。</p>
+<div class="section" id="nginx-100">
+<h2>nginx的源码目录结构(100%)<a class="headerlink" href="#nginx-100" title="永久链接至标题">¶</a></h2>
+<p>nginx的优秀除了体现在程序结构以及代码风格上，nginx的源码组织也同样简洁明了，目录结构层次结构清晰，值得我们去学习。nginx的源码目录与nginx的模块化以及功能的划分是紧密结合，这也使得我们可以很方便地找到相关功能的代码。这节先介绍nginx源码的目录结构，先对nginx的源码有一个大致的认识，下节会讲解nginx如何编译。</p>
+<p>下面是nginx源码的目录结构：</p>
+<div class="highlight-python"><pre>.
+├── auto            自动检测系统环境以及编译相关的脚本
+│   ├── cc          关于编译器相关的编译选项的检测脚本
+│   ├── lib         nginx编译所需要的一些库的检测脚本
+│   ├── os          与平台相关的一些系统参数与系统调用相关的检测
+│   └── types       与数据类型相关的一些辅助脚本
+├── conf            存放默认配置文件，在make install后，会拷贝到安装目录中去
+├── contrib         存放一些实用工具，如geo配置生成工具（geo2nginx.pl）
+├── html            存放默认的网页文件，在make install后，会拷贝到安装目录中去
+├── man             nginx的man手册
+└── src             存放nginx的源代码
+    ├── core        nginx的核心源代码，包括常用数据结构的定义，以及nginx初始化运行的核心代码如main函数
+    ├── event       对系统事件处理机制的封装，以及定时器的实现相关代码
+    │   └── modules 不同事件处理方式的模块化，如select、poll、epoll、kqueue等
+    ├── http        nginx作为http服务器相关的代码
+    │   └── modules 包含http的各种功能模块
+    ├── mail        nginx作为邮件代理服务器相关的代码
+    ├── misc        一些辅助代码，测试c++头的兼容性，以及对google_perftools的支持
+    └── os          主要是对各种不同体系统结构所提供的系统函数的封装，对外提供统一的系统调用接口</pre>
+</div>
+</div>
+<div class="section" id="nginxconfigure-100">
+<h2>nginx的configure原理(100%)<a class="headerlink" href="#nginxconfigure-100" title="永久链接至标题">¶</a></h2>
+<p>nginx的编译旅程将从configure开始，configure脚本将根据我们输入的选项、系统环境参与来生成所需的文件（包含源文件与Makefile文件）。configure会调用一系列auto脚本来实现编译环境的初始化。</p>
+<div class="section" id="auto">
+<h3>auto脚本<a class="headerlink" href="#auto" title="永久链接至标题">¶</a></h3>
+<p>auto脚本由一系列脚本组成，他们有一些是实现一些通用功能由其它脚本来调用（如have），有一些则是完成一些特定的功能（如option）。脚本之间的主要执行顺序及调用关系如下图所示（由上到下，表示主流程的执行）：</p>
+<img alt="http://tengine.taobao.org/book/_images/chapter-9-1.jpg" src="http://tengine.taobao.org/book/_images/chapter-9-1.jpg" />
+<p>接下来，我们结合代码来分析下configure的原理:</p>
+<ol class="arabic simple">
+<li>初始化</li>
+</ol>
+<div class="code c highlight-python"><pre>. auto/options
+. auto/init
+. auto/sources</pre>
+</div>
+<p>这是configure源码开始执行的前三行，依次交由auto目录下面的option、init、sources来处理。</p>
+<ol class="arabic simple" start="2">
+<li>auto/options主是处理用户输入的configure选项，以及输出帮助信息等。读者可以结合nginx的源码来阅读本章内容。由于篇幅关系，这里大致列出此文件的结构：</li>
+</ol>
+<div class="code c highlight-python"><pre>##1. 设置选项对应的shell变量以及他们的初始值
+help=no
+NGX_PREFIX=
+NGX_SBIN_PATH=
+NGX_CONF_PREFIX=
+NGX_CONF_PATH=
+NGX_ERROR_LOG_PATH=
+NGX_PID_PATH=
+NGX_LOCK_PATH=
+NGX_USER=
+NGX_GROUP=
+
+...
+
+
+## 2, 处理每一个选项值，并设置到对应的全局变量中
+for option
+do
+    opt="$opt `echo $option | sed -e \"s/\(--[^=]*=\)\(.* .*\)/\1'\2'/\"`"
+
+    # 得到此选项的value部分
+    case "$option" in
+        -*=*) value=`echo "$option" | sed -e 's/[-_a-zA-Z0-9]*=//'` ;;
+            *) value="" ;;
+    esac
+
+    # 根据option内容进行匹配，并设置相应的选项
+    case "$option" in
+        --help)                          help=yes                   ;;
+        --prefix=)                       NGX_PREFIX="!"             ;;
+        --prefix=*)                      NGX_PREFIX="$value"        ;;
+        --sbin-path=*)                   NGX_SBIN_PATH="$value"     ;;
+        --conf-path=*)                   NGX_CONF_PATH="$value"     ;;
+        --error-log-path=*)              NGX_ERROR_LOG_PATH="$value";;
+        --pid-path=*)                    NGX_PID_PATH="$value"      ;;
+        --lock-path=*)                   NGX_LOCK_PATH="$value"     ;;
+        --user=*)                        NGX_USER="$value"          ;;
+        --group=*)                       NGX_GROUP="$value"         ;;
+
+        ...
+
+        *)
+            # 没有找到的对应选项
+            echo "$0: error: invalid option \"$option\""
+            exit 1
+        ;;
+    esac
+done
+
+## 3. 对选项进行处理
+
+# 如果有--help，则输出帮助信息
+if [ $help = yes ]; then
+
+    cat &lt;&lt; END
+
+        --help                             print this message
+
+        --prefix=PATH                      set installation prefix
+        --sbin-path=PATH                   set nginx binary pathname
+        --conf-path=PATH                   set nginx.conf pathname
+        --error-log-path=PATH              set error log pathname
+        --pid-path=PATH                    set nginx.pid pathname
+        --lock-path=PATH                   set nginx.lock pathname
+
+        --user=USER                        set non-privileged user for
+        worker processes
+        --group=GROUP                      set non-privileged group for
+                                 worker processes
+END
+
+    exit 1
+fi
+
+# 默认文件路径
+NGX_CONF_PATH=${NGX_CONF_PATH:-conf/nginx.conf}
+NGX_CONF_PREFIX=`dirname $NGX_CONF_PATH`
+NGX_PID_PATH=${NGX_PID_PATH:-logs/nginx.pid}
+NGX_LOCK_PATH=${NGX_LOCK_PATH:-logs/nginx.lock}
+
+...</pre>
+</div>
+<p>上面的代码中，我们选用了文件中的部分代码进行了说明。大家可结合源码再进行分析。auto/options的目的主要是处理用户选项，并由选项生成一些全局变量的值，这些值在其它文件中会用到。该文件也会输出configure的帮助信息。</p>
+<ol class="arabic simple" start="3">
+<li>auto/init</li>
+</ol>
+<p>该文件的目录在于初始化一些临时文件的路径，检查echo的兼容性，并创建Makefile。</p>
+<div class="code c highlight-python"><pre># 生成最终执行编译的makefile文件路径
+NGX_MAKEFILE=$NGX_OBJS/Makefile
+# 动态生成nginx模块列表的路径，由于nginx的的一些模块是可以选择编译的，而且可以添加自己的模块，所以模块列表是动态生成的
+NGX_MODULES_C=$NGX_OBJS/ngx_modules.c
+
+NGX_AUTO_HEADERS_H=$NGX_OBJS/ngx_auto_headers.h
+NGX_AUTO_CONFIG_H=$NGX_OBJS/ngx_auto_config.h
+
+# 自动测试目录与日志输出文件
+NGX_AUTOTEST=$NGX_OBJS/autotest
+# 如果configure出错，可用来查找出错的原因
+NGX_AUTOCONF_ERR=$NGX_OBJS/autoconf.err
+
+NGX_ERR=$NGX_OBJS/autoconf.err
+MAKEFILE=$NGX_OBJS/Makefile
+
+
+NGX_PCH=
+NGX_USE_PCH=
+
+
+# 检查echo是否支持-n或\c
+
+# check the echo's "-n" option and "\c" capability
+
+if echo "test\c" | grep c &gt;/dev/null; then
+
+    # 不支持-c的方式，检查是否支持-n的方式
+
+    if echo -n test | grep n &gt;/dev/null; then
+        ngx_n=
+        ngx_c=
+
+    else
+        ngx_n=-n
+        ngx_c=
+    fi
+
+else
+    ngx_n=
+    ngx_c='\c'
+fi
+
+# 创建最初始的makefile文件
+# default表示目前编译对象
+# clean表示执行clean工作时，需要删除makefile文件以及objs目录
+# 整个过程中只会生成makefile文件以及objs目录，其它所有临时文件都在objs目录之下，所以执行clean后，整个目录还原到初始状态
+# 要再次执行编译，需要重新执行configure命令
+
+# create Makefile
+
+cat &lt;&lt; END &gt; Makefile
+
+default:    build
+
+clean:
+    rm -rf Makefile $NGX_OBJS
+END</pre>
+</div>
+<ol class="arabic simple" start="4">
+<li>auto/sources</li>
+</ol>
+<p>该文件从文件名中就可以看出，它的主要功能是跟源文件相关的。它的主要作用是定义不同功能或系统所需要的文件的变量。根据功能，分为CORE/REGEX/EVENT/UNIX/FREEBSD/HTTP等。每一个功能将会由四个变量组成，&#8221;_MODULES&#8221;表示此功能相关的模块，最终会输出到ngx_modules.c文件中，即动态生成需要编译到nginx中的模块；&#8221;INCS&#8221;表示此功能依赖的源码目录，查找头文件的时候会用到，在编译选项中，会出现在&#8221;-I&#8221;中；”DEPS&#8221;显示指明在Makefile中需要依赖的文件名，即编译时，需要检查这些文件的更新时间；&#8221;SRCS&#8221;表示需要此功能编译需要的源文件。</p>
+<p>拿core来说：</p>
+<div class="code c highlight-python"><div class="highlight"><pre><span class="n">CORE_MODULES</span><span class="o">=</span><span class="s">&quot;ngx_core_module ngx_errlog_module ngx_conf_module ngx_emp_server_module ngx_emp_server_core_module&quot;</span>
+
+<span class="n">CORE_INCS</span><span class="o">=</span><span class="s">&quot;src/core&quot;</span>
+
+<span class="n">CORE_DEPS</span><span class="o">=</span><span class="s">&quot;src/core/nginx.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_config.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_core.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_log.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_palloc.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_array.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_list.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_hash.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_buf.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_queue.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_string.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_parse.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_inet.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_file.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_crc.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_crc32.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_murmurhash.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_md5.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_sha1.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_rbtree.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_radix_tree.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_slab.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_times.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_shmtx.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_connection.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_cycle.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_conf_file.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_resolver.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_open_file_cache.h </span><span class="se">\</span>
+<span class="s">         src/core/nginx_emp_server.h </span><span class="se">\</span>
+<span class="s">         src/core/emp_server.h </span><span class="se">\</span>
+<span class="s">         src/core/task_thread.h </span><span class="se">\</span>
+<span class="s">         src/core/standard.h </span><span class="se">\</span>
+<span class="s">         src/core/dprint.h </span><span class="se">\</span>
+<span class="s">         src/core/ngx_crypt.h&quot;</span>
+
+<span class="n">CORE_SRCS</span><span class="o">=</span><span class="s">&quot;src/core/nginx.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_log.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_palloc.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_array.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_list.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_hash.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_buf.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_queue.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_output_chain.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_string.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_parse.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_inet.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_file.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_crc32.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_murmurhash.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_md5.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_rbtree.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_radix_tree.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_slab.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_times.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_shmtx.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_connection.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_cycle.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_spinlock.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_cpuinfo.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_conf_file.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_resolver.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_open_file_cache.c </span><span class="se">\</span>
+<span class="s">         src/core/nginx_emp_server.c </span><span class="se">\</span>
+<span class="s">         src/core/emp_server.c </span><span class="se">\</span>
+<span class="s">         src/core/standard.c </span><span class="se">\</span>
+<span class="s">         src/core/task_thread.c </span><span class="se">\</span>
+<span class="s">         src/core/dprint.c </span><span class="se">\</span>
+<span class="s">         src/core/ngx_crypt.c&quot;</span>
+</pre></div>
+</div>
+<p>如果我们自己写一个第三方模块，我们可能会引用到这些变量的值，或对这些变量进行修改，比如添加我们自己的模块，或添加自己的一个头文件查找目录(在第三方模块的config中)，在后面，我们会看到它是如何加框第三方模块的。
+在继续分析执行流程之前，我们先介绍一些工具脚本。</p>
+<ol class="arabic simple" start="5">
+<li>auto/have</li>
+</ol>
+<div class="code c highlight-python"><pre>cat &lt;&lt; END &gt;&gt; $NGX_AUTO_CONFIG_H
+
+#ifndef $have
+#define $have  1
+#endif
+
+END</pre>
+</div>
+<p>从代码中，我们可以看到，这个工具的作用是，将$have变量的值，宏定义为1，并输出到auto_config文件中。通常我们通过这个工具来控制是否打开某个特性。这个工具在使用前，需要先定义宏的名称 ，即$have变量。</p>
+<ol class="arabic simple" start="6">
+<li>再回到configure文件中来：</li>
+</ol>
+<div class="code c highlight-python"><pre># NGX_DEBUG是在auto/options文件中处理的，如果有--with-debug选项，则其值是YES
+if [ $NGX_DEBUG = YES ]; then
+    # 当有debug选项时，会定义NGX_DEBUG宏
+    have=NGX_DEBUG . auto/have
+fi</pre>
+</div>
+<p>这段代码中，可以看出，configure是如何定义一个特性的：通过宏定义，输出到config头文件中，然后在程序中可以判断这个宏是否有定义，来实现不同的特性。</p>
+<p>configure文件中继续向下：</p>
+<div class="code c highlight-python"><pre># 编译器选项
+. auto/cc/conf
+
+# 头文件支持宏定义
+if [ "$NGX_PLATFORM" != win32 ]; then
+    . auto/headers
+fi
+
+# 操作系统相关的配置的检测
+. auto/os/conf
+
+# unix体系下的通用配置检测
+if [ "$NGX_PLATFORM" != win32 ]; then
+    . auto/unix
+fi</pre>
+</div>
+<p>configure会依次调用其它几个文件，来进行环境的检测，包括编译器、操作系统相关。</p>
+<ol class="arabic simple" start="7">
+<li>auto/feature</li>
+</ol>
+<p>nginx的configure会自动检测不同平台的特性，神奇之处就是auto/feature的实现，在继续向下分析之前，我们先来看看这个工具的实现原理。此工具的核心思想是，输出一小段代表性c程序，然后设置好编译选项，再进行编译连接运行，再对结果进行分析。例如，如果想检测某个库是否存在，就在小段c程序里面调用库里面的某个函数，再进行编译链接，如果出错，则表示库的环境不正常，如果编译成功，且运行正常，则库的环境检测正常。我们在写nginx第三方模块时，也常使用此工具来进行环境的检测，所以，此工具的作用贯穿整个configure过程。</p>
+<p>先看一小段使用例子：</p>
+<div class="code c highlight-python"><pre>ngx_feature="poll()"
+ngx_feature_name=
+ngx_feature_run=no
+ngx_feature_incs="#include &lt;poll.h&gt;"
+ngx_feature_path=
+ngx_feature_libs=
+ngx_feature_test="int  n; struct pollfd  pl;
+                  pl.fd = 0;
+                  pl.events = 0;
+                  pl.revents = 0;
+                  n = poll(&amp;pl, 1, 0);
+                  if (n == -1) return 1"
+. auto/feature
+
+if [ $ngx_found = no ]; then
+    # 如果没有找到poll，就设置变量的值
+    EVENT_POLL=NONE
+fi</pre>
+</div>
+<p>这段代码在auto/unix里面实现，用来检测当前操作系统是否支持poll函数调用。在调用auto/feature之前，需要先设置几个输入参数变量的值，然后结果会存在$ngx_found变量里面, 并输出宏定义以表示支持此特性:</p>
+<div class="code c highlight-python"><pre>$ngx_feature      特性名称
+$ngx_feature_name 特性的宏定义名称，如果特性测试成功，则会定义该宏定义
+$ngx_feature_path 编译时要查找头文件目录
+$ngx_feature_test 要执行的测试代码
+$ngx_feature_incs 在代码中要include的头文件
+$ngx_feature_libs 编译时需要link的库文件选项
+$ngx_feature_run  编译成功后，对二进制文件需要做的动作，可以是yes value bug 其它
+
+#ngx_found 如果找到，并测试成功，其值为yes，否则其值为no</pre>
+</div>
+<p>看看ngx_feature的关键代码：</p>
+<div class="code c highlight-python"><pre># 初始化输出结果为no
+ngx_found=no
+
+#将特性名称小写转换成大写
+if test -n "$ngx_feature_name"; then
+    # 小写转大写
+    ngx_have_feature=`echo $ngx_feature_name \
+                   | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
+fi
+
+# 将所有include目录转换成编译选项
+if test -n "$ngx_feature_path"; then
+    for ngx_temp in $ngx_feature_path; do
+        ngx_feature_inc_path="$ngx_feature_inc_path -I $ngx_temp"
+    done
+fi
+
+
+# 生成临时的小段c程序代码。
+# $ngx_feature_incs变量是程序需要include的头文件
+# $ngx_feature_test是测试代码
+cat &lt;&lt; END &gt; $NGX_AUTOTEST.c
+
+#include &lt;sys/types.h&gt;
+$NGX_INCLUDE_UNISTD_H
+$ngx_feature_incs
+
+int main() {
+    $ngx_feature_test;
+    return 0;
+}
+
+END
+
+# 编译命令
+# 编译之后的目标文件是 $NGX_AUTOTEST，后面会判断这个文件是否存在来判断是否编译成功
+ngx_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS $ngx_feature_inc_path \
+      -o $NGX_AUTOTEST $NGX_AUTOTEST.c $NGX_TEST_LD_OPT $ngx_feature_libs"
+
+# 执行编译过程
+# 编译成功后，会生成$NGX_AUTOTEST命名的文件
+eval "/bin/sh -c \"$ngx_test\" &gt;&gt; $NGX_AUTOCONF_ERR 2&gt;&amp;1"
+
+# 如果文件存在，则编译成功
+if [ -x $NGX_AUTOTEST ]; then
+
+    case "$ngx_feature_run" in
+
+        # 需要运行来判断是否支持特性
+        # 测试程序能否正常执行（即程序退出后的状态码是否是0），如果正常退出，则特性测试成功，设置ngx_found为yes，并添加名为ngx_feature_name的宏定义，宏的值为1
+        yes)
+            # 如果程序正常退出，退出码为0，则程序执行成功，我们可以在测试代码里面手动返回非0来表示程序出错
+            # /bin/sh is used to intercept "Killed" or "Abort trap" messages
+            if /bin/sh -c $NGX_AUTOTEST &gt;&gt; $NGX_AUTOCONF_ERR 2&gt;&amp;1; then
+                echo " found"
+                ngx_found=yes
+
+                # 添加宏定义，宏的值为1
+                if test -n "$ngx_feature_name"; then
+                    have=$ngx_have_feature . auto/have
+                fi
+
+            else
+                echo " found but is not working"
+            fi
+        ;;
+
+        # 需要运行程序来判断是否支持特性，如果支持，将程序标准输出的结果作为宏的值
+        value)
+        # /bin/sh is used to intercept "Killed" or "Abort trap" messages
+        if /bin/sh -c $NGX_AUTOTEST &gt;&gt; $NGX_AUTOCONF_ERR 2&gt;&amp;1; then
+            echo " found"
+            ngx_found=yes
+
+            # 与yes不一样的是，value会将程序从标准输出里面打印出来的值，设置为ngx_feature_name宏变量的值
+            # 在此种情况下，程序需要设置ngx_feature_name变量名
+            cat &lt;&lt; END &gt;&gt; $NGX_AUTO_CONFIG_H
+
+#ifndef $ngx_feature_name
+#define $ngx_feature_name  `$NGX_AUTOTEST`
+#endif
+
+END
+            else
+                echo " found but is not working"
+            fi
+        ;;
+
+        # 与yes正好相反
+        bug)
+            # /bin/sh is used to intercept "Killed" or "Abort trap" messages
+            if /bin/sh -c $NGX_AUTOTEST &gt;&gt; $NGX_AUTOCONF_ERR 2&gt;&amp;1; then
+                echo " not found"
+
+            else
+                echo " found"
+                ngx_found=yes
+
+                if test -n "$ngx_feature_name"; then
+                    have=$ngx_have_feature . auto/have
+                fi
+            fi
+        ;;
+
+        # 不需要运行程序，最后定义宏变量
+        *)
+            echo " found"
+            ngx_found=yes
+
+            if test -n "$ngx_feature_name"; then
+                have=$ngx_have_feature . auto/have
+            fi
+        ;;
+
+    esac
+else
+    # 编译失败
+    echo " not found"
+
+    # 编译失败，会保存信息到日志文件中
+    echo "----------"    &gt;&gt; $NGX_AUTOCONF_ERR
+    # 保留编译文件的内容
+    cat $NGX_AUTOTEST.c  &gt;&gt; $NGX_AUTOCONF_ERR
+    echo "----------"    &gt;&gt; $NGX_AUTOCONF_ERR
+    # 保留编译文件的选项
+    echo $ngx_test       &gt;&gt; $NGX_AUTOCONF_ERR
+    echo "----------"    &gt;&gt; $NGX_AUTOCONF_ERR
+fi
+
+# 最后删除生成的临时文件
+rm $NGX_AUTOTEST*</pre>
+</div>
+<ol class="arabic simple" start="8">
+<li>auto/cc/conf</li>
+</ol>
+<p>在了解了工具auto/feature后，继续我们的主流程，auto/cc/conf的代码就很好理解了，这一步主要是检测编译器，并设置编译器相关的选项。它先调用auto/cc/name来得到编译器的名称，然后根据编译器选择执行不同的编译器相关的文件如gcc执行auto/cc/gcc来设置编译器相关的一些选项。</p>
+<ol class="arabic simple" start="9">
+<li>auto/include</li>
+</ol>
+<p>这个工具用来检测是头文件是否支持。需要检测的头文件放在$ngx_include里面，如果支持，则$ngx_found变量的值为yes，并且会产生NGX_HAVE_{ngx_include}的宏定义。</p>
+<ol class="arabic simple" start="10">
+<li>auto/headers</li>
+</ol>
+<p>生成头文件的宏定义。生成的定义放在objs/ngx_auto_headers.h里面：</p>
+<pre class="code c literal-block">
+<span class="comment preproc">#ifndef NGX_HAVE_UNISTD_H
+#define NGX_HAVE_UNISTD_H  1
+#endif
+</span>
+
+<span class="comment preproc">#ifndef NGX_HAVE_INTTYPES_H
+#define NGX_HAVE_INTTYPES_H  1
+#endif
+</span>
+
+<span class="comment preproc">#ifndef NGX_HAVE_LIMITS_H
+#define NGX_HAVE_LIMITS_H  1
+#endif
+</span>
+
+<span class="comment preproc">#ifndef NGX_HAVE_SYS_FILIO_H
+#define NGX_HAVE_SYS_FILIO_H  1
+#endif
+</span>
+
+<span class="comment preproc">#ifndef NGX_HAVE_SYS_PARAM_H
+#define NGX_HAVE_SYS_PARAM_H  1
+#endif
+</span>
+</pre>
+<ol class="arabic simple" start="11">
+<li>auto/os/conf</li>
+</ol>
+<p>针对不同的操作系统平台特性的检测，并针对不同的操作系统，设置不同的CORE_INCS、CORE_DEPS、CORE_SRCS变量。nginx跨平台的支持就是在这个地方体现出来的。</p>
+<ol class="arabic simple" start="12">
+<li>auto/unix</li>
+</ol>
+<p>针对unix体系的通用配置或系统调用的检测，如poll等事件处理系统调用的检测等。</p>
+<ol class="arabic simple" start="13">
+<li>回到configure里面</li>
+</ol>
+<div class="code c highlight-python"><pre># 生成模块列表
+. auto/modules
+# 配置库的依赖
+. auto/lib/conf</pre>
+</div>
+<ol class="arabic simple" start="14">
+<li>auto/modules</li>
+</ol>
+<p>该脚本根据不同的条件，输出不同的模块列表，最后输出的模块列表的文件在objs/ngx_modules.c：</p>
+<div class="code c highlight-python"><pre>#include &lt;ngx_config.h&gt;
+#include &lt;ngx_core.h&gt;
+
+
+extern ngx_module_t  ngx_core_module;
+extern ngx_module_t  ngx_errlog_module;
+extern ngx_module_t  ngx_conf_module;
+extern ngx_module_t  ngx_emp_server_module;
+
+...
+
+
+ngx_module_t *ngx_modules[] = {
+    &amp;ngx_core_module,
+    &amp;ngx_errlog_module,
+    &amp;ngx_conf_module,
+    &amp;ngx_emp_server_module,
+    ...
+    NULL
+};</pre>
+</div>
+<p>这个文件会决定所有模块的顺序，这会直接影响到最后的功能，下一小节我们将讨论模块间的顺序。这个文件会加载我们的第三方模块，这也是我们值得关注的地方：</p>
+<div class="code c highlight-python"><pre>if test -n "$NGX_ADDONS"; then
+
+    echo configuring additional modules
+
+    for ngx_addon_dir in $NGX_ADDONS
+    do
+        echo "adding module in $ngx_addon_dir"
+
+        if test -f $ngx_addon_dir/config; then
+            # 执行第三方模块的配置
+            . $ngx_addon_dir/config
+
+            echo " + $ngx_addon_name was configured"
+
+        else
+            echo "$0: error: no $ngx_addon_dir/config was found"
+            exit 1
+        fi
+    done
+fi</pre>
+</div>
+<p>这段代码比较简单，确实现了nginx很强大的扩展性，加载第三方模块。$ngx_addon_dir变量是在configure执行时，命令行参数&#8211;add-module加入的，它是一个目录列表，每一个目录，表示一个第三方模块。从代码中，我们可以看到，它就是针对每一个第三方模块执行其目录下的config文件。于是我们可以在config文件里面执行我们自己的检测逻辑，比如检测库依赖，添加编译选项等。</p>
+<ol class="arabic simple" start="15">
+<li>auto/lib/conf</li>
+</ol>
+<p>该文件会针对nginx编译所需要的基础库的检测，比如rewrite模块需要的PCRE库的检测支持。</p>
+<ol class="arabic simple" start="16">
+<li>configure接下来定义一些宏常量，主要是是文件路径方面的：</li>
+</ol>
+<div class="code c highlight-python"><pre>case ".$NGX_PREFIX" in
+    .)
+        NGX_PREFIX=${NGX_PREFIX:-/usr/local/nginx}
+        have=NGX_PREFIX value="\"$NGX_PREFIX/\"" . auto/define
+    ;;
+
+    .!)
+        NGX_PREFIX=
+    ;;
+
+    *)
+        have=NGX_PREFIX value="\"$NGX_PREFIX/\"" . auto/define
+    ;;
+esac
+
+if [ ".$NGX_CONF_PREFIX" != "." ]; then
+    have=NGX_CONF_PREFIX value="\"$NGX_CONF_PREFIX/\"" . auto/define
+fi
+
+have=NGX_SBIN_PATH value="\"$NGX_SBIN_PATH\"" . auto/define
+have=NGX_CONF_PATH value="\"$NGX_CONF_PATH\"" . auto/define
+have=NGX_PID_PATH value="\"$NGX_PID_PATH\"" . auto/define
+have=NGX_LOCK_PATH value="\"$NGX_LOCK_PATH\"" . auto/define
+have=NGX_ERROR_LOG_PATH value="\"$NGX_ERROR_LOG_PATH\"" . auto/define
+
+have=NGX_HTTP_LOG_PATH value="\"$NGX_HTTP_LOG_PATH\"" . auto/define
+have=NGX_HTTP_CLIENT_TEMP_PATH value="\"$NGX_HTTP_CLIENT_TEMP_PATH\""
+. auto/define
+have=NGX_HTTP_PROXY_TEMP_PATH value="\"$NGX_HTTP_PROXY_TEMP_PATH\""
+. auto/define
+have=NGX_HTTP_FASTCGI_TEMP_PATH value="\"$NGX_HTTP_FASTCGI_TEMP_PATH\""
+. auto/define
+have=NGX_HTTP_UWSGI_TEMP_PATH value="\"$NGX_HTTP_UWSGI_TEMP_PATH\""
+. auto/define
+have=NGX_HTTP_SCGI_TEMP_PATH value="\"$NGX_HTTP_SCGI_TEMP_PATH\""
+. auto/define</pre>
+</div>
+<ol class="arabic simple" start="17">
+<li>configure最后的工作，生成编译安装的makefile</li>
+</ol>
+<div class="code c highlight-python"><pre># 生成objs/makefile文件
+. auto/make
+
+# 生成关于库的编译选项到makefile文件
+. auto/lib/make
+# 生成与安装相关的makefile文件内容，并生成最外层的makefile文件
+. auto/install
+
+# STUB
+. auto/stubs
+
+have=NGX_USER value="\"$NGX_USER\"" . auto/define
+have=NGX_GROUP value="\"$NGX_GROUP\"" . auto/define
+
+# 编译的最后阶段，汇总信息
+. auto/summary</pre>
+</div>
+</div>
+<div class="section" id="id1">
+<h3>模块编译顺序<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h3>
+<p>上一节中，提到过，nginx模块的顺序很重要，会直接影响到程序的功能。而且，nginx和部分模块，也有着自己特定的顺序要求，比如ngx_http_write_filter_module模块一定要在filter模块的最后一步执行。想查看模块的执行顺序，可以在objs/ngx_modules.c这个文件中找到，这个文件在configure之后生成，上一节中，我们看过这个文件里面的内容。</p>
+<p>下面是一个ngx_modules.c文件的示例：</p>
+<div class="code c highlight-python"><pre>ngx_module_t *ngx_modules[] = {
+    // 全局core模块
+    &amp;ngx_core_module,
+    &amp;ngx_errlog_module,
+    &amp;ngx_conf_module,
+    &amp;ngx_emp_server_module,
+    &amp;ngx_emp_server_core_module,
+
+    // event模块
+    &amp;ngx_events_module,
+    &amp;ngx_event_core_module,
+    &amp;ngx_kqueue_module,
+
+    // 正则模块
+    &amp;ngx_regex_module,
+
+    // http模块
+    &amp;ngx_http_module,
+    &amp;ngx_http_core_module,
+    &amp;ngx_http_log_module,
+    &amp;ngx_http_upstream_module,
+
+    // http handler模块
+    &amp;ngx_http_static_module,
+    &amp;ngx_http_autoindex_module,
+    &amp;ngx_http_index_module,
+    &amp;ngx_http_auth_basic_module,
+    &amp;ngx_http_access_module,
+    &amp;ngx_http_limit_conn_module,
+    &amp;ngx_http_limit_req_module,
+    &amp;ngx_http_geo_module,
+    &amp;ngx_http_map_module,
+    &amp;ngx_http_split_clients_module,
+    &amp;ngx_http_referer_module,
+    &amp;ngx_http_rewrite_module,
+    &amp;ngx_http_proxy_module,
+    &amp;ngx_http_fastcgi_module,
+    &amp;ngx_http_uwsgi_module,
+    &amp;ngx_http_scgi_module,
+    &amp;ngx_http_memcached_module,
+    &amp;ngx_http_empty_gif_module,
+    &amp;ngx_http_browser_module,
+    &amp;ngx_http_upstream_ip_hash_module,
+    &amp;ngx_http_upstream_keepalive_module,
+    //此处是第三方handler模块
+
+    // http filter模块
+    &amp;ngx_http_write_filter_module,
+    &amp;ngx_http_header_filter_module,
+    &amp;ngx_http_chunked_filter_module,
+    &amp;ngx_http_range_header_filter_module,
+    &amp;ngx_http_gzip_filter_module,
+    &amp;ngx_http_postpone_filter_module,
+    &amp;ngx_http_ssi_filter_module,
+    &amp;ngx_http_charset_filter_module,
+    &amp;ngx_http_userid_filter_module,
+    &amp;ngx_http_headers_filter_module,
+    // 第三方filter模块
+    &amp;ngx_http_copy_filter_module,
+    &amp;ngx_http_range_body_filter_module,
+    &amp;ngx_http_not_modified_filter_module,
+    NULL
+};</pre>
+</div>
+<p>http handler模块与http filter模块的顺序很重要，这里我们主要关注一下这两类模块。</p>
+<p>http handler模块，在后面的章节里面会讲到多阶段请求的处理链。对于content phase之前的handler，同一个阶段的handler，模块是顺序执行的。比如上面的示例代码中，ngx_http_auth_basic_module与ngx_http_access_module这两个模块都是在access phase阶段，由于ngx_http_auth_basic_module在前面，所以会先执行。由于content phase只会有一个执行，所以不存在顺序问题。另外，我们加载的第三方handler模块永远是在最后执行。</p>
+<p>http filter模块，filter模块会将所有的filter handler排成一个倒序链，所以在最前面的最后执行。上面的例子中，&amp;ngx_http_write_filter_module最后执行，ngx_http_not_modified_filter_module最先执行。注意，我们加载的第三方filter模块是在copy_filter模块之后，headers_filter模块之前执行。</p>
+</div>
+</div>
+<div class="section" id="nginx">
+<h2>nginx的事件机制<a class="headerlink" href="#nginx" title="永久链接至标题">¶</a></h2>
+<div class="section" id="event">
+<h3>event框架及非阻塞模型<a class="headerlink" href="#event" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id2">
+<h3>定时器实现<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id3">
+<h3>信号处理<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id4">
+<h3>惊群问题<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+<div class="section" id="id5">
+<h2>nginx的进程机制<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<div class="section" id="master">
+<h3>master进程<a class="headerlink" href="#master" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="worker">
+<h3>worker进程<a class="headerlink" href="#worker" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id6">
+<h3>进程间通讯<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="http://tengine.taobao.org/">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nginx架构详解(50%)</a><ul>
+<li><a class="reference internal" href="#nginx-100">nginx的源码目录结构(100%)</a></li>
+<li><a class="reference internal" href="#nginxconfigure-100">nginx的configure原理(100%)</a><ul>
+<li><a class="reference internal" href="#auto">auto脚本</a></li>
+<li><a class="reference internal" href="#id1">模块编译顺序</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nginx">nginx的事件机制</a><ul>
+<li><a class="reference internal" href="#event">event框架及非阻塞模型</a></li>
+<li><a class="reference internal" href="#id2">定时器实现</a></li>
+<li><a class="reference internal" href="#id3">信号处理</a></li>
+<li><a class="reference internal" href="#id4">惊群问题</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">nginx的进程机制</a><ul>
+<li><a class="reference internal" href="#master">master进程</a></li>
+<li><a class="reference internal" href="#worker">worker进程</a></li>
+<li><a class="reference internal" href="#id6">进程间通讯</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="chapter_08.html"
+                        title="上一章">高性能服务器设计</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="chapter_10.html"
+                        title="下一章">nginx基础设施</a></p>
+  <h3>本页</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/chapter_09.txt"
+           rel="nofollow">显示源代码</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>快速搜索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="搜索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的模块，术语，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="chapter_10.html" title="nginx基础设施"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_08.html" title="高性能服务器设计"
+             >上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="source_analysis.html" >下篇：nginx原理解析篇</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; 版权所有 2012, taobao.
+      使用 <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

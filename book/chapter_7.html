@@ -1,0 +1,315 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>模块开发高级篇(30%) &mdash; Nginx开发从入门到精通</title>
+    <link rel="stylesheet" href="_static/book.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/comment.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../js/??ga.js,correctpng.js?v=1"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/booktools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="_static/comment.js"></script>
+    <link rel="top" title="Nginx开发从入门到精通" href="index.html" />
+    <link rel="up" title="上篇：nginx模块开发篇" href="module_development.html" />
+    <link rel="next" title="下篇：nginx原理解析篇" href="source_analysis.html" />
+    <link rel="prev" title="其他模块 (40%)" href="chapter_6.html" /> 
+  </head>
+  <body lang="zh-Hans">
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="source_analysis.html" title="下篇：nginx原理解析篇"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_6.html" title="其他模块 (40%)"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="module_development.html" accesskey="U">上篇：nginx模块开发篇</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="id1">
+<h1>模块开发高级篇(30%)<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>变量(80%)<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h3>综述<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<p>在Nginx中同一个请求需要在模块之间数据的传递或者说在配置文件里面使用模块动态的数据一般来说都是使用变量，比如在HTTP模块中导出了host/remote_addr等变量，这样我们就可以在配置文件中以及在其他的模块使用这个变量。在Nginx中，有两种定义变量的方式，一种是在配置文件中,使用set指令，一种就是上面我们提到的在模块中定义变量，然后导出.</p>
+<p>在Nginx中所有的变量都是与HTTP相关的(也就是说赋值都是在请求阶段)，并且基本上是同时保存在两个数据结构中，一个就是hash表(可选)，另一个是数组. 比如一些特殊的变量，比如arg_xxx/cookie_xxx等，这些变量的名字是不确定的(因此不能内置)，而且他们还是只读的(不能交由用户修改)，如果每个都要放到hash表中的话(不知道用户会取多少个),会很占空间的，因此这些变量就没有hash,只有索引.这里要注意，用户不能定义这样的变量，这样的变量只存在于Nginx内部.</p>
+<p>对应的变量结构体是这样子(每一个变量都是一个ngx_http_variable_s结构体)的：</p>
+<div class="highlight-none"><div class="highlight"><pre>struct ngx_http_variable_s {
+    ngx_str_t                     name;   /* must be first to build the hash */
+    ngx_http_set_variable_pt      set_handler;
+    ngx_http_get_variable_pt      get_handler;
+    uintptr_t                     data;
+    ngx_uint_t                    flags;
+    ngx_uint_t                    index;
+};
+</pre></div>
+</div>
+<p>其中name表示对应的变量名字，set/get_handler表示对应的设置以及读取回调，而data是传递给回调的参数，flags表示变量的属性，index提供了一个索引(数组的脚标)，从而可以迅速定位到对应的变量。set/get_handler只有在真正读取设置变量的时候才会被调用.</p>
+<p>这里要注意flag属性,flag属性就是由下面的几个属性组合而成:</p>
+<div class="highlight-none"><div class="highlight"><pre>#define NGX_HTTP_VAR_CHANGEABLE   1
+#define NGX_HTTP_VAR_NOCACHEABLE  2
+#define NGX_HTTP_VAR_INDEXED      4
+#define NGX_HTTP_VAR_NOHASH       8
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li>NGX_HTTP_VAR_CHANGEABLE表示这个变量是可变的,比如arg_xxx这类变量，如果你使用set指令来修改，那么Nginx就会报错.</li>
+<li>NGX_HTTP_VAR_NOCACHEABLE表示这个变量每次都要去取值，而不是直接返回上次cache的值(配合对应的接口).</li>
+<li>NGX_HTTP_VAR_INDEXED表示这个变量是用索引读取的.</li>
+<li>NGX_HTTP_VAR_NOHASH表示这个变量不需要被hash.</li>
+</ol>
+<p>而变量在Nginx中的初始化流程是这样的:</p>
+<ol class="arabic simple">
+<li>首先当解析HTTP之前会调用ngx_http_variables_add_core_vars(pre_config)来将HTTP core模块导出的变量(http_host/remote_addr...)添加进全局的hash key链中.</li>
+<li>解析完HTTP模块之后，会调用ngx_http_variables_init_vars来初始化所有的变量(不仅包括HTTP core模块的变量，也包括其他的HTTP模块导出的变量,以及配置文件中使用set命令设置的变量),这里的初始化包括初始化hash表,以及初始化数组索引.</li>
+<li>当每次请求到来时会给每个请求创建一个变量数组(数组的个数就是上面第二步所保存的变量个数)。然后只有取变量值的时候，才会将变量保存在对应的变量数组位置。</li>
+</ol>
+</div>
+<div class="section" id="id4">
+<h3>创建变量<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<p>在Nginx中，创建变量有两种方式，分别是在配置文件中使用set指令，和在模块中调用对应的接口，在配置文件中创建变量比较简单，因此我们主要来看如何在模块中创建自己的变量。</p>
+<p>在Nginx中提供了下面的接口，可以供模块调用来创建变量。</p>
+<div class="highlight-none"><div class="highlight"><pre>ngx_http_variable_t *ngx_http_add_variable(ngx_conf_t *cf, ngx_str_t *name, ngx_uint_t flags);
+</pre></div>
+</div>
+<p>这个函数所做的工作就是将变量 &#8220;name&#8221;添加进全局的hash key表中,然后初始化一些域，不过这里要注意，对应的变量的get/set回调，需要当这个函数返回之后，显示的设置,比如在split_clients模块中的例子:</p>
+<div class="highlight-none"><div class="highlight"><pre>var = ngx_http_add_variable(cf, &amp;name, NGX_HTTP_VAR_CHANGEABLE);
+if (var == NULL) {
+        return NGX_CONF_ERROR;
+}
+//设置回调
+var-&gt;get_handler = ngx_http_split_clients_variable;
+var-&gt;data = (uintptr_t) ctx;
+</pre></div>
+</div>
+<p>而对应的回调函数原型是这样的:</p>
+<div class="highlight-none"><div class="highlight"><pre>typedef void (*ngx_http_set_variable_pt) (ngx_http_request_t *r,
+    ngx_http_variable_value_t *v, uintptr_t data);
+typedef ngx_int_t (*ngx_http_get_variable_pt) (ngx_http_request_t *r,
+    ngx_http_variable_value_t *v, uintptr_t data);
+</pre></div>
+</div>
+<p>回调函数比较简单，第一个参数是当前请求，第二个是需要设置或者获取的变量值，第三个是初始化时的回调指针，这里我们着重来看一下ngx_http_variable_value_t,下面就是这个结构体的原型:</p>
+<div class="highlight-none"><div class="highlight"><pre>typedef struct {
+    unsigned    len:28;
+
+    unsigned    valid:1;
+    unsigned    no_cacheable:1;
+    unsigned    not_found:1;
+    unsigned    escape:1;
+    u_char     *data;
+} ngx_variable_value_t;
+</pre></div>
+</div>
+<p>这里主要是data域，当我们在get_handle中设置变量值的时候，只需要将对应的值放入到data中就可以了，这里data需要在get_handle中分配内存,比如下面的例子(ngx_http_fastcgi_script_name_variable),就是fastcgi_script_name变量的get_handler代码片段:</p>
+<div class="highlight-none"><div class="highlight"><pre>v-&gt;len = f-&gt;script_name.len + flcf-&gt;index.len;
+
+v-&gt;data = ngx_pnalloc(r-&gt;pool, v-&gt;len);
+if (v-&gt;data == NULL) {
+        return NGX_ERROR;
+}
+
+p = ngx_copy(v-&gt;data, f-&gt;script_name.data, f-&gt;script_name.len);
+ngx_memcpy(p, flcf-&gt;index.data, flcf-&gt;index.len);
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>使用变量<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
+<p>Nginx的内部变量指的就是Nginx的官方模块中所导出的变量，在Nginx中，大部分常用的变量都是CORE HTTP模块导出的。而在Nginx中，不仅可以在模块代码中使用变量，而且还可以在配置文件中使用。</p>
+<p>假设我们需要在配置文件中使用http模块的host变量，那么只需要这样在变量名前加一个$符号就可以了($host).而如果需要在模块中使用host变量，那么就比较麻烦，Nginx提供了下面几个接口来取得变量:</p>
+<div class="highlight-none"><div class="highlight"><pre>ngx_http_variable_value_t *ngx_http_get_indexed_variable(ngx_http_request_t *r,
+    ngx_uint_t index);
+ngx_http_variable_value_t *ngx_http_get_flushed_variable(ngx_http_request_t *r,
+    ngx_uint_t index);
+ngx_http_variable_value_t *ngx_http_get_variable(ngx_http_request_t *r,
+    ngx_str_t *name, ngx_uint_t key);
+</pre></div>
+</div>
+<p>他们的区别是这样子的，ngx_http_get_indexed_variable和ngx_http_get_flushed_variable都是用来取得有索引的变量，不过他们的区别是后一个会处理
+NGX_HTTP_VAR_NOCACHEABLE这个标记，也就是说如果你想要cache你的变量值，那么你的变量属性就不能设置NGX_HTTP_VAR_NOCACHEABLE,并且通过ngx_http_get_flushed_variable来获取变量值.而ngx_http_get_variable和上面的区别就是它能够得到没有索引的变量值.</p>
+<p>通过上面我们知道可以通过索引来得到变量值，可是这个索引改如何取得呢，Nginx也提供了对应的接口：</p>
+<div class="highlight-none"><div class="highlight"><pre>ngx_int_t ngx_http_get_variable_index(ngx_conf_t *cf, ngx_str_t *name);
+</pre></div>
+</div>
+<p>通过这个接口，就可以取得对应变量名的索引值。</p>
+<p>接下来来看对应的例子，比如在http_log模块中，如果在log_format中配置了对应的变量，那么它会调用ngx_http_get_variable_index来保存索引:</p>
+<div class="highlight-none"><div class="highlight"><pre>static ngx_int_t
+ngx_http_log_variable_compile(ngx_conf_t *cf, ngx_http_log_op_t *op,
+    ngx_str_t *value)
+{
+    ngx_int_t  index;
+    //得到变量的索引
+    index = ngx_http_get_variable_index(cf, value);
+    if (index == NGX_ERROR) {
+        return NGX_ERROR;
+    }
+
+    op-&gt;len = 0;
+    op-&gt;getlen = ngx_http_log_variable_getlen;
+    op-&gt;run = ngx_http_log_variable;
+    //保存索引值
+    op-&gt;data = index;
+
+    return NGX_OK;
+ }
+</pre></div>
+</div>
+<p>然后http_log模块会使用ngx_http_get_indexed_variable来得到对应的变量值,这里要注意，就是使用这个接口的时候，判断返回值，不仅要判断是否为空，也需要判断value-&gt;not_found,这是因为只有第一次调用才会返回空，后续返回就不是空，因此需要判断value-&gt;not_found:</p>
+<div class="highlight-none"><div class="highlight"><pre>static u_char *
+ngx_http_log_variable(ngx_http_request_t *r, u_char *buf, ngx_http_log_op_t *op)
+{
+    ngx_http_variable_value_t  *value;
+    //获取变量值
+    value = ngx_http_get_indexed_variable(r, op-&gt;data);
+
+    if (value == NULL || value-&gt;not_found) {
+            *buf = &#39;-&#39;;
+            return buf + 1;
+    }
+
+    if (value-&gt;escape == 0) {
+            return ngx_cpymem(buf, value-&gt;data, value-&gt;len);
+
+    } else {
+            return (u_char *) ngx_http_log_escape(buf, value-&gt;data, value-&gt;len);
+    }
+ }
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="upstream">
+<h2>upstream<a class="headerlink" href="#upstream" title="永久链接至标题">¶</a></h2>
+<div class="section" id="subrequestupstream">
+<h3>使用subrequest访问upstream<a class="headerlink" href="#subrequestupstream" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id6">
+<h3>超越upstream<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
+<div class="section" id="event">
+<h4>event机制<a class="headerlink" href="#event" title="永久链接至标题">¶</a></h4>
+</div>
+<div class="section" id="id7">
+<h4>例讲（主动健康检查模块）<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h4>
+</div>
+</div>
+</div>
+<div class="section" id="lua">
+<h2>使用lua模块<a class="headerlink" href="#lua" title="永久链接至标题">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="http://tengine.taobao.org/">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">模块开发高级篇(30%)</a><ul>
+<li><a class="reference internal" href="#id2">变量(80%)</a><ul>
+<li><a class="reference internal" href="#id3">综述</a></li>
+<li><a class="reference internal" href="#id4">创建变量</a></li>
+<li><a class="reference internal" href="#id5">使用变量</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upstream">upstream</a><ul>
+<li><a class="reference internal" href="#subrequestupstream">使用subrequest访问upstream</a></li>
+<li><a class="reference internal" href="#id6">超越upstream</a><ul>
+<li><a class="reference internal" href="#event">event机制</a></li>
+<li><a class="reference internal" href="#id7">例讲（主动健康检查模块）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lua">使用lua模块</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="chapter_6.html"
+                        title="上一章">其他模块 (40%)</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="source_analysis.html"
+                        title="下一章">下篇：nginx原理解析篇</a></p>
+  <h3>本页</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/chapter_7.txt"
+           rel="nofollow">显示源代码</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>快速搜索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="搜索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的模块，术语，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="source_analysis.html" title="下篇：nginx原理解析篇"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_6.html" title="其他模块 (40%)"
+             >上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="module_development.html" >上篇：nginx模块开发篇</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; 版权所有 2012, taobao.
+      使用 <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

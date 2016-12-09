@@ -1,0 +1,181 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>附录A 编码风格 (100%) &mdash; Nginx开发从入门到精通</title>
+    <link rel="stylesheet" href="_static/book.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/comment.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../js/??ga.js,correctpng.js?v=1"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/booktools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="_static/comment.js"></script>
+    <link rel="top" title="Nginx开发从入门到精通" href="index.html" />
+    <link rel="next" title="附录B 常用API" href="appendix_b.html" />
+    <link rel="prev" title="nginx的script处理" href="chapter_14.html" /> 
+  </head>
+  <body lang="zh-Hans">
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="appendix_b.html" title="附录B 常用API"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_14.html" title="nginx的script处理"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="a-100">
+<h1>附录A 编码风格 (100%)<a class="headerlink" href="#a-100" title="永久链接至标题">¶</a></h1>
+<div class="section" id="nginx-100">
+<h2>Nginx代码风格图示 (100%)<a class="headerlink" href="#nginx-100" title="永久链接至标题">¶</a></h2>
+<p>一、基本原则</p>
+<blockquote>
+<div><p>K&amp;R编码风格（偏BSD子类）。</p>
+<p>每行不能超过80列。</p>
+<p>不用TAB对齐，用空格。</p>
+<p>默认对齐单元是4个空格。</p>
+<p>除宏定义外，字母均为小写，单词间用下划线_间隔。</p>
+<p>使用C方式的注释，不得使用//形式注释。</p>
+<p>中缀运算符的前后须空一格，如3 + 2以及a &gt; 3。</p>
+<p>逗号后须空一格，如foo(a, b, c);</p>
+</div></blockquote>
+<p>二、风格图示</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-1.JPG" src="http://tengine.taobao.org/book/_images/code-style-1.JPG" />
+<p>1、      if/while/for/switch语句的左花括号和关键字在同一行上，和括号之间空一个空格。</p>
+<p>2、      else关键字和两个花括号在同一行上。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-2.JPG" src="http://tengine.taobao.org/book/_images/code-style-2.JPG" style="width: 550px;" />
+<p>3、      文件开始的注释空一行。</p>
+<p>4、      较为完整的代码块间的距离为空两行。如函数声明、函数定义之间等。</p>
+<p>5、      函数声明或定义若一行显示不下，则函数原型空4个空格。</p>
+<p>6、      结构体数组的花括号和内容之间空一个空格。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-3.JPG" src="http://tengine.taobao.org/book/_images/code-style-3.JPG" />
+<p>7、      结构体数组的左花括号放在同一行上。</p>
+<p>8、      较大的结构体数组元素最开始空一行。</p>
+<p>9、      元素内容上下对齐。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-4.JPG" src="http://tengine.taobao.org/book/_images/code-style-4.JPG" />
+<p>10、注释上下对齐。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-5.JPG" src="http://tengine.taobao.org/book/_images/code-style-5.JPG" />
+<p>11、函数调用折行时，参数上下对齐。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-6.JPG" src="http://tengine.taobao.org/book/_images/code-style-6.JPG" style="width: 550px;" />
+<p>12、函数定义时，类型单独一行。</p>
+<p>13、变量声明的类型上下排列按照从短到长的顺序。注意，最下面的变量的类型和名称间的空格为2-3个。一般情况下为2个，这是Nginx中最小的变量声明中类型和名称的距离。</p>
+<p>14、变量名称上下对齐——字母对齐，不包括指针的*号。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-7.JPG" src="http://tengine.taobao.org/book/_images/code-style-7.JPG" />
+<p>15、结构体内变量上下对齐（字母，不包括指针的的*号）。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-8.JPG" src="http://tengine.taobao.org/book/_images/code-style-8.JPG" style="width: 550px;" />
+<p>16、单行注释格式为/* something */</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-9.JPG" src="http://tengine.taobao.org/book/_images/code-style-9.JPG" style="width: 550px;" />
+<p>17、多行注释的格式为：</p>
+<div class="code c highlight-python"><pre>/*
+ * something
+ */</pre>
+</div>
+<img alt="http://tengine.taobao.org/book/_images/code-style-10.JPG" src="http://tengine.taobao.org/book/_images/code-style-10.JPG" style="width: 550px;" />
+<p>18、函数定义的左花括号独占一行。</p>
+<p>19、switch语句中，switch和case关键字上下对齐。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-11.JPG" src="http://tengine.taobao.org/book/_images/code-style-11.JPG" style="width: 550px;" />
+<p>20、当条件表达式过长需要折行时，关系运算符须位于下一行的行首，并与上一行的条件表达式的第一个字符对齐，同时右花括号须位于单独的一行，并与if/while等关键字对齐。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-12.JPG" src="http://tengine.taobao.org/book/_images/code-style-12.JPG" style="width: 550px;" />
+<p>21、 else语句之前须空出一行。</p>
+<img alt="http://tengine.taobao.org/book/_images/code-style-13.JPG" src="http://tengine.taobao.org/book/_images/code-style-13.JPG" />
+<p>22、在函数中，相同类型的变量声明放在一行上。</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="http://tengine.taobao.org/">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">附录A 编码风格 (100%)</a><ul>
+<li><a class="reference internal" href="#nginx-100">Nginx代码风格图示 (100%)</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="chapter_14.html"
+                        title="上一章">nginx的script处理</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="appendix_b.html"
+                        title="下一章">附录B 常用API</a></p>
+  <h3>本页</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/appendix_a.txt"
+           rel="nofollow">显示源代码</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>快速搜索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="搜索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的模块，术语，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="appendix_b.html" title="附录B 常用API"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_14.html" title="nginx的script处理"
+             >上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; 版权所有 2012, taobao.
+      使用 <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
