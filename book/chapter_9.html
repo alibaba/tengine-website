@@ -1,0 +1,187 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nginx架构详解 &mdash; Nginx开发从入门到精通</title>
+    <link rel="stylesheet" href="_static/book.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/comment.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../js/??ga.js,correctpng.js?v=1"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/booktools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="_static/comment.js"></script>
+    <link rel="top" title="Nginx开发从入门到精通" href="index.html" />
+    <link rel="up" title="下篇：nginx原理解析篇" href="source_analysis.html" />
+    <link rel="next" title="nginx基础设施" href="chapter_10.html" />
+    <link rel="prev" title="高性能服务器设计" href="chapter_8.html" /> 
+  </head>
+  <body lang="zh-Hans">
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="chapter_10.html" title="nginx基础设施"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_8.html" title="高性能服务器设计"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="source_analysis.html" accesskey="U">下篇：nginx原理解析篇</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nginx">
+<h1>nginx架构详解<a class="headerlink" href="#nginx" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id1">
+<h2>nginx的源码目录结构<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="nginxconfigure">
+<h2>nginx的configure原理<a class="headerlink" href="#nginxconfigure" title="永久链接至标题">¶</a></h2>
+<div class="section" id="auto">
+<h3>auto脚本<a class="headerlink" href="#auto" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id2">
+<h3>模块编译顺序<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>nginx的事件机制<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="section" id="event">
+<h3>event框架及非阻塞模型<a class="headerlink" href="#event" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id4">
+<h3>定时器实现<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id5">
+<h3>信号处理<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id6">
+<h3>惊群问题<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>nginx的进程机制<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<div class="section" id="master">
+<h3>master进程<a class="headerlink" href="#master" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="worker">
+<h3>worker进程<a class="headerlink" href="#worker" title="永久链接至标题">¶</a></h3>
+</div>
+<div class="section" id="id8">
+<h3>进程间通讯<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="http://tengine.taobao.org/">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nginx架构详解</a><ul>
+<li><a class="reference internal" href="#id1">nginx的源码目录结构</a></li>
+<li><a class="reference internal" href="#nginxconfigure">nginx的configure原理</a><ul>
+<li><a class="reference internal" href="#auto">auto脚本</a></li>
+<li><a class="reference internal" href="#id2">模块编译顺序</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">nginx的事件机制</a><ul>
+<li><a class="reference internal" href="#event">event框架及非阻塞模型</a></li>
+<li><a class="reference internal" href="#id4">定时器实现</a></li>
+<li><a class="reference internal" href="#id5">信号处理</a></li>
+<li><a class="reference internal" href="#id6">惊群问题</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id7">nginx的进程机制</a><ul>
+<li><a class="reference internal" href="#master">master进程</a></li>
+<li><a class="reference internal" href="#worker">worker进程</a></li>
+<li><a class="reference internal" href="#id8">进程间通讯</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="chapter_8.html"
+                        title="上一章">高性能服务器设计</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="chapter_10.html"
+                        title="下一章">nginx基础设施</a></p>
+  <h3>本页</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/chapter_9.txt"
+           rel="nofollow">显示源代码</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>快速搜索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="搜索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的模块，术语，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="chapter_10.html" title="nginx基础设施"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="chapter_8.html" title="高性能服务器设计"
+             >上一页</a> |</li>
+        <li><a href="index.html">Nginx开发从入门到精通</a> &raquo;</li>
+          <li><a href="source_analysis.html" >下篇：nginx原理解析篇</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; 版权所有 2012, taobao.
+      使用 <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
