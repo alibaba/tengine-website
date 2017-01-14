@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Tuning FreeBSD for the highload</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Tuning FreeBSD for the highload</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a class="notrans">русский</a><br><br><a href="../../cn/docs/tuning_freebsd.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../">news</a><br><a href="../../en/">about</a><br><a href="../../en/download.html">download</a><br><a href="../../en/security_advisories.html">security advisories</a><br><a href="./">documentation</a><br><a href="../../en/pgp_keys.html">pgp keys</a><br><a href="faq.html">faq</a><br><a href="../../en/links.html">links</a><br><a href="../../en/books.html">books</a><br><a href="../../en/support.html">support</a><br><a href="../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#listen_queues">Listen queues</a><br><a href="#sockets_and_files">Sockets and files</a><br><a href="#socket_buffers">Socket buffers</a><br><a href="#mbufs">mbufs, mbuf clusters, etc.</a><br><a href="#proxying">Proxying</a><br><a href="#finalizing_connection">Finalizing connection</a><br><a href="#i386_specific_tuning">i386 specific tuning</a><br><a href="#minor_optimizations">Minor optimizations</a><br></td></tr></table><center><h4>Syncache and syncookies</h4></center><p>
+We look at how various kernel settings affect ability of the kernel
+to process requests. Let’s start with TCP/IP connection establishment.
+</p><p>
+[ syncache, syncookies ]
+</p><a name="listen_queues"></a><center><h4>Listen queues</h4></center><p>
+After the connection has been established it is placed in the listen queue
+of the listen socket.
+To see the current listen queues state, you may run the command
+“<code>netstat -Lan</code>”:
+
+</p> <blockquote class="example"><pre>
+Current listen queue sizes (qlen/incqlen/maxqlen)
+Proto Listen         Local Address
+tcp4  <b>10</b>/0/128       *.80
+tcp4  0/0/128        *.22
+</pre></blockquote><p> 
+
+This is a normal case: the listen queue of the port *:80 contains
+just 10 unaccepted connections.
+If the web server is not able to handle the load, you may see
+something like this:
+
+</p> <blockquote class="example"><pre>
+Current listen queue sizes (qlen/incqlen/maxqlen)
+Proto Listen         Local Address
+tcp4  <b>192/</b>0/<b>128</b>      *.80
+tcp4  0/0/128        *.22
+</pre></blockquote><p> 
+
+Here are 192 unaccepted connections and most likely new coming connections
+are discarding. Although the limit is 128 connections, FreeBSD allows
+to receive 1.5 times connections than the limit before it starts to discard
+the new connections. You may increase the limit using
+
+</p> <blockquote class="example"><pre>
+sysctl kern.ipc.somaxconn=4096
+</pre></blockquote><p> 
+
+However, note that the queue is only a damper to quench bursts.
+If it is always overflowed, this means that you need to improve the web server,
+but not to continue to increase the limit.
+You may also change the listen queue maximum size in nginx configuration:
+
+</p> <blockquote class="example"><pre>
+listen  80  backlog=1024;
+</pre></blockquote><p> 
+
+However, you may not set it more than the current
+<code>kern.ipc.somaxconn</code> value.
+By default nginx uses the maximum value of FreeBSD kernel.
+</p><p>
+</p> <blockquote class="example"><pre>
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="example"><pre>
+</pre></blockquote><p> 
+</p><a name="sockets_and_files"></a><center><h4>Sockets and files</h4></center><p>
+[ sockets, files ]
+</p><a name="socket_buffers"></a><center><h4>Socket buffers</h4></center><p>
+When a client sends a data, the data first is received by the kernel
+which places the data in the socket receiving buffer.
+Then an application such as the web server
+may call <code>recv()</code> or <code>read()</code> system calls
+to get the data from the buffer.
+When the application wants to send a data, it calls
+<code>send()</code> or <code>write()</code>
+system calls to place the data in the socket sending buffer.
+Then the kernel manages to send the data from the buffer to the client.
+In modern FreeBSD versions the default sizes of the socket receiving
+and sending buffers are respectively 64K and 32K.
+You may change them on the fly using the sysctls
+<code>net.inet.tcp.recvspace</code> and
+<code>net.inet.tcp.sendspace</code>.
+Of course the bigger buffer sizes may increase throughput,
+because connections may use bigger TCP sliding windows sizes.
+And on the Internet you may see recommendations to increase
+the buffer sizes to one or even several megabytes.
+However, such large buffer sizes are suitable for local networks
+or for networks under your control.
+Since on the Internet a slow modem client may ask a large file
+and then it will download the file during several minutes if not hours.
+All this time the megabyte buffer will be bound to the slow client,
+although we may devote just several kilobytes to it.
+</p><p>
+There is one more advantage of the large sending buffers for
+the web servers such as Apache which use the blocking I/O system calls.
+The server may place a whole large response in the sending buffer, then may
+close the connection, and let the kernel to send the response to a slow client,
+while the server is ready to serve other requests.
+You should decide what is it better to bind to a client in your case:
+a tens megabytes Apache/mod_perl process
+or the hundreds kilobytes socket sending buffer.
+Note that nginx uses non-blocking I/O system calls
+and devotes just tens kilobytes to connections,
+therefore it does not require the large buffer sizes.
+</p><p>
+[ dynamic buffers ]
+</p><a name="mbufs"></a><center><h4>mbufs, mbuf clusters, etc.</h4></center><p>
+Inside the kernel the buffers are stored in the form of chains of
+memory chunks linked using the <i>mbuf</i> structures.
+The mbuf size is 256 bytes and it can be used to store a small amount
+of data, for example, TCP/IP header. However, the mbufs point mostly
+to other data stored in the <i>mbuf clusters</i> or <i>jumbo clusters</i>,
+and in this kind they are used as the chain links only.
+The mbuf cluster size is 2K.
+The jumbo cluster size can be equal to a CPU page size (4K for i386 and amd64),
+9K, or 16K.
+The 9K and 16K jumbo clusters are used mainly in local networks with Ethernet
+frames larger than usual 1500 bytes, and they are beyond the scope of
+this article.
+The page size jumbo clusters are usually used for sending only,
+while the mbuf clusters are used for both sending and receiving.
+
+To see the current usage of the mbufs and clusters and their limits,
+you may run the command <nobr>“<code>netstat -m</code>”.</nobr>
+Here is a sample from FreeBSD 7.2/amd64 with the default settings:
+
+</p> <blockquote class="example"><pre>
+1477/<b>3773/5250 mbufs</b> in use (current/cache/total)
+771/2203/<b>2974/25600 mbuf clusters</b> in use (current/cache/total/max)
+771/1969 mbuf+clusters out of packet secondary zone in use
+   (current/cache)
+296/863/<b>1159/12800 4k (page size) jumbo clusters</b> in use
+   (current/cache/total/max)
+0/0/0/6400 9k jumbo clusters in use (current/cache/total/max)
+0/0/0/3200 16k jumbo clusters in use (current/cache/total/max)
+3095K/8801K/11896K bytes allocated to network(current/cache/total)
+0/0/0 requests for mbufs denied (mbufs/clusters/mbuf+clusters)
+0/0/0 requests for jumbo clusters denied (4k/9k/16k)
+0/0/0 sfbufs in use (current/peak/max)
+0 requests for sfbufs denied
+0 requests for sfbufs delayed
+523590 requests for I/O initiated by sendfile
+0 calls to protocol drain routines
+</pre></blockquote><p> 
+
+There are 12800 page size jumbo clusters,
+therefore they can store only 50M of data.
+If you set the <code>net.inet.tcp.sendspace</code> to 1M,
+then merely 50 slow clients will take all jumbo clusters
+requesting large files.
+</p><p>
+You may increase the clusters limits on the fly using:
+
+</p> <blockquote class="example"><pre>
+sysctl kern.ipc.nmbclusters=200000
+sysctl kern.ipc.nmbjumbop=100000
+</pre></blockquote><p> 
+
+The former command increases the mbuf clusters limit
+and the latter increases page size jumbo clusters limit.
+Note that all allocated mbufs clusters will take about 440M physical memory:
+(200000 × (2048 + 256)) because each mbuf cluster requires also the mbuf.
+All allocated page size jumbo clusters will take yet about 415M physical memory:
+(100000 × (4096 + 256)).
+And together they may take 845M.
+
+</p> <blockquote class="note">
+The page size jumbo clusters have been introduced in FreeBSD 7.0.
+In earlier versions you should tune only 2K mbuf clusters.
+Prior to FreeBSD 6.2, the <code>kern.ipc.nmbclusters</code> value can be
+set only on the boot time via loader tunable.
+</blockquote><p> 
+</p><p>
+On the amd64 architecture FreeBSD kernel can use for sockets buffers
+almost all physical memory,
+while on the i386 architecture no more than 2G memory can be used,
+regardless of the available physical memory.
+We will discuss the i386 specific tuning later.
+</p><p>
+There is way not to use the jumbo clusters while serving static files:
+the <i>sendfile()</i> system call.
+The sendfile allows to send a file or its part to a socket directly
+without reading the parts in an application buffer.
+It creates the mbufs chain where the mufs point to the file pages that are
+already present in FreeBSD cache memory, and passes the chain to
+the TCP/IP stack.
+Thus, sendfile decreases both CPU usage by omitting two memory copy operations,
+and memory usage by using the cached file pages.
+</p><p>
+And again, the amd64 sendfile implementation is the best:
+the zeros in the <nobr>“<code>netstat -m</code>”</nobr> output
+</p> <blockquote class="example"><pre>
+...
+<b>0/0/0</b> sfbufs in use (current/peak/max)
+...
+</pre></blockquote><p> 
+mean that there is no <i>sfbufs</i> limit,
+while on i386 architecture you should to tune them.
+</p><a name="proxying"></a><center><h4>Proxying</h4></center><blockquote class="example"><pre>
+net.inet.ip.portrange.randomized=0
+net.inet.ip.portrange.first=1024
+net.inet.ip.portrange.last=65535
+</pre></blockquote><a name="finalizing_connection"></a><center><h4>Finalizing connection</h4></center><blockquote class="example"><pre>
+net.inet.tcp.fast_finwait2_recycle=1
+</pre></blockquote><a name="i386_specific_tuning"></a><center><h4>i386 specific tuning</h4></center><p>
+[ KVA, KVM, nsfbufs ]
+</p><a name="minor_optimizations"></a><center><h4>Minor optimizations</h4></center><p>
+
+</p> <blockquote class="example"><pre>
+sysctl kern.random.sys.harvest.ethernet=0
+</pre></blockquote><p> 
+
+</p></td></tr></table></body></html>

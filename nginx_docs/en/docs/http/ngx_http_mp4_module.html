@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Module ngx_http_mp4_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Module ngx_http_mp4_module</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../../../ru/docs/http/ngx_http_mp4_module.html">русский</a><br><br><a href="../../../cn/docs/http/ngx_http_mp4_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">news</a><br><a href="../../../en/">about</a><br><a href="../../../en/download.html">download</a><br><a href="../../../en/security_advisories.html">security advisories</a><br><a href="../../../en/docs/">documentation</a><br><a href="../../../en/pgp_keys.html">pgp keys</a><br><a href="../../../en/docs/faq.html">faq</a><br><a href="../../../en/links.html">links</a><br><a href="../../../en/books.html">books</a><br><a href="../../../en/support.html">support</a><br><a href="../../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Example Configuration</a><br><a href="#directives">Directives</a><br>     <a href="#mp4">mp4</a><br>     <a href="#mp4_buffer_size">mp4_buffer_size</a><br>     <a href="#mp4_max_buffer_size">mp4_max_buffer_size</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+The module <code>ngx_http_mp4_module</code> provides pseudo-streaming
+server-side support for H.264/AAC files typically having filename extensions
+<code>.mp4</code>, <code>.m4v</code>, and <code>.m4a</code>.
+</p><p>
+Pseudo-streaming works in alliance with conforming Flash players.
+A player sends an HTTP request to the server with a start time
+argument in the request URI’s query string (named simply
+<code>start</code>
+and specified in seconds), and the server responds with a stream
+so that its start position corresponds to the requested time,
+for example:
+</p> <blockquote class="example"><pre>
+http://example.com/elephants_dream.mp4?start=238.88
+</pre></blockquote><p> 
+This allows for a random seeking at any time, or starting playback
+in the middle of a timeline.
+</p><p>
+To support seeking, H.264-based formats store the metadata
+in the so-called “moov atom.”
+It is a part of the file that holds the index information for the
+whole file.
+</p><p>
+To start playback, a player first needs to read metadata.
+This is done by sending a special request with the
+<code>start=0</code>
+argument.  Many encoding software will insert the metadata at
+the end of the file.  This is bad for pseudo-streaming:
+the metadata needs to be located at the beginning of the file,
+or else the entire file will have to be downloaded before it
+starts playing.  If a file is well-formed (with metadata at the
+beginning of a file), nginx just sends back the contents of a file.
+Otherwise, it has to read the file and prepare a new stream so that
+metadata comes before media data.
+This involves some CPU, memory, and disk I/O overhead,
+so it is a good idea to
+<a href="http://flowplayer.org/plugins/streaming/pseudostreaming.html#prepare">
+prepare an original file for pseudo-streaming</a>,
+rather than having nginx do this on every such request.
+</p><p>
+For a matching request with a non-zero
+<code>start</code>
+argument, nginx will read metadata from the file, prepare the
+stream starting from the requested offset, and send it to a client.
+This has the same overhead as described above.
+</p><p>
+If a matching request does not include the
+<code>start</code>
+argument, there is no overhead, and the file is just sent as a static resource.
+Some players also support byte-range requests, and thus do not require
+this module at all.
+</p><p>
+This module is not built by default, it should be enabled with the
+<code>--with-http_mp4_module</code>
+configuration parameter.
+</p> <blockquote class="note">
+If a third-party mp4 module was previously used, it needs to be disabled.
+</blockquote><p> 
+</p><p>
+A similar pseudo-streaming support for FLV files is provided by the module
+<a href="ngx_http_flv_module.html">ngx_http_flv_module</a>.
+</p>
+
+
+<a name="example"></a><center><h4>Example Configuration</h4></center><p>
+</p> <blockquote class="example"><pre>
+location /video/ {
+    mp4;
+    mp4_buffer_size     1m;
+    mp4_max_buffer_size 5m;
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Directives</h4></center><a name="mp4"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>mp4</strong>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Turns on module processing in a surrounding location.
+</p><a name="mp4_buffer_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>mp4_buffer_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>mp4_buffer_size 512K;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Sets the initial size of a memory buffer used to process MP4 files.
+</p><a name="mp4_max_buffer_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>mp4_max_buffer_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>mp4_max_buffer_size 10M;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+During metadata processing, a larger buffer may become necessary.
+Its size cannot exceed the specified <code><i>size</i></code>,
+or else nginx will return the server error
+500 (Internal Server Error),
+and log the following:
+</p> <blockquote class="example"><pre>
+"/some/movie/file.mp4" mp4 moov atom is too large:
+12583268, you may want to increase mp4_max_buffer_size
+</pre></blockquote><p> 
+</p>
+
+</td></tr></table></body></html>

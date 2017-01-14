@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>连接处理方法</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>连接处理方法</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../en/docs/events.html">english</a><br><a href="../../ru/docs/events.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../">新闻</a> [en]<br><a href="../../cn/">nginx 介绍</a><br><a href="../../en/download.html">下载</a> [en]<br><a href="../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="./">文档</a><br><a href="faq.html">FAQ</a><br><a href="../../en/links.html">外部连接</a> [en]<br><a href="../../en/books.html">书籍</a> [en]<br><a href="../../en/support.html">支持</a> [en]<br><a href="../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><p>
+nginx支持多种连接处理方法，而哪些处理方法可用则取决于使用的平台。
+如果平台支持多种方法，那么nginx一般会自动选择最高效的方法。
+如果需要，也可以使用<a href="ngx_core_module.html#use">use</a>指令明确指定连接处理方法。
+</p><p>
+nginx支持下列连接处理方法：
+</p> <ul class="compact">
+
+<li id="select">
+<p>
+<code>select</code> — 标准方法。
+在平台不支持更高效的方法时，nginx会自动编译此模块。
+可以使用<code>--with-select_module</code>和<code>--without-select_module</code>编译选项
+强行开启或禁止编译此模块。
+</p>
+</li>
+
+<li id="poll">
+<p>
+<code>poll</code> — 标准模块。
+在平台不支持更高效的方法时，nginx会自动编译此模块。
+可以使用<code>--with-poll_module</code>和<code>--without-poll_module</code>编译选项
+强行开启或禁止编译此模块。
+</p>
+</li>
+
+<li id="kqueue">
+<p>
+<code>kqueue</code> — FreeBSD 4.1+、OpenBSD 2.9+、NetBSD 2.0和Mac OS X的高效方法。
+</p>
+</li>
+
+<li id="epoll">
+<p>
+<code>epoll</code> — Linux 2.6+的高效方法。
+</p> <blockquote class="note">
+一些旧的发行版，比如SuSE 8.2，提供了补丁，在2.4内核上支持了epoll方法。
+</blockquote><p> 
+</p>
+</li>
+
+<li id="rtsig">
+<p>
+<code>rtsig</code> — 实时信号，Linux 2.2.19+的高效方法。
+系统级的事件队列默认有1024个信号的限制。在高负载的服务器上，将此限制上调可能是必须的。
+调整的方法是改变<code>/proc/sys/kernel/rtsig-max</code>内核参数的值。
+在Linux 2.6.6-mm2上，这个参数不存在，而且每个进程拥有自己的事件队列。
+每个队列的长度由<code>RLIMIT_SIGPENDING</code>所限，并可使用<a href="ngx_core_module.html#worker_rlimit_sigpending">worker_rlimit_sigpending</a>指令修改。
+</p>
+
+<p>
+队列溢出时，nginx丢弃这个队列，并回退到<code>poll</code>连接处理方法，直到情况恢复正常为止。
+</p>
+</li>
+
+<li id="devpoll">
+<p>
+<code>/dev/poll</code> — Solaris 7 11/99+、HP/UX 11.22+ (eventport)、IRIX 6.5.15+和Tru64 UNIX 5.1A+的高效方法。
+</p>
+</li>
+
+<li id="eventport">
+<p>
+<code>eventport</code> — 事件端口，Solaris 10的高效方法。
+</p>
+</li>
+
+</ul><p> 
+</p><table width="100%"><tr><td align="right">翻译: cfsego<br></td></tr></table></td></tr></table></body></html>

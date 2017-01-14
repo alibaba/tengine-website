@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>安装nginx</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>安装nginx</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../en/docs/install.html">english</a><br><a href="../../ru/docs/install.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../">新闻</a> [en]<br><a href="../../cn/">nginx 介绍</a><br><a href="../../en/download.html">下载</a> [en]<br><a href="../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="./">文档</a><br><a href="faq.html">FAQ</a><br><a href="../../en/links.html">外部连接</a> [en]<br><a href="../../en/books.html">书籍</a> [en]<br><a href="../../en/support.html">支持</a> [en]<br><a href="../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">翻译内容可能已经过旧。
+你可以通过 <a href="../../en/docs/install.html">英文版本</a>
+查看最近的更新。</blockquote></span><p>
+<code>configure</code>命令用来配置nginx编译环境。
+该命令定义了系统各方面功能，包括允许nginx使用的连接处理方式。
+其执行结果是生成一个<code>Makefile</code>文件。 <code>configure</code>命令支持如下参数：
+
+</p> <ul class="compact">
+<li>
+<p>
+<code>--prefix=<code><i>path</i></code></code> — 
+定义服务器文件的完整路径，该路径同时也是<code>configure</code>命令设置的
+相对路径（除类库源文件外）以及<code>nginx.conf</code>文件定义的相对路径的基准路径。其默认
+值是<code>/usr/local/nginx</code>。
+</p>
+</li>
+
+<li>
+<p>
+<code>--sbin-path=<code><i>path</i></code></code> — 
+设置nginx可执行文件的完整路径，该路径仅在安装期间使用，
+默认路径为<code><code><i>prefix</i></code>/sbin/nginx</code>。
+</p>
+</li>
+
+<li>
+<p>
+<code>--conf-path=<code><i>path</i></code></code> — 
+设置配置文件<code>nginx.conf</code>的完整路径。如有必要，总是可以
+在nginx启动时通过命令行参数<nobr><code>-c<code><i>file</i></code></code></nobr>指定一个不同的配置文件路径。
+默认路径为<code><code><i>prefix</i></code>/conf/nginx.conf</code>。
+</p>
+</li>
+
+<li>
+<p>
+<code>--pid-path=<code><i>path</i></code></code> — 
+设置nginx.pid文件的完整路径，该文件存储了主进程的进程ID。安装完成后，
+该路径总是可以在<code>nginx.conf</code>文件中用
+<a href="ngx_core_module.html#pid">pid</a>指令来修改。
+默认路径为<code><code><i>prefix</i></code>/logs/nginx.pid</code>。
+</p>
+</li>
+
+<li>
+<p>
+<code>--error-log-path=<code><i>path</i></code></code> — 
+设置记录主要错误、警告以及调试信息日志的完整路径。安装完成后，
+该路径总是可以在<code>nginx.conf</code>文件中用
+<a href="ngx_core_module.html#error_log">error_log</a> 指令来修改。
+默认路径为<code><code><i>prefix</i></code>/logs/error.log</code>。
+</p>
+</li>
+
+<li>
+<p>
+<code>--http-log-path=<code><i>path</i></code></code> — 
+设置记录HTTP服务器主要请求日志的完整路径。安装完成后，
+该路径总是可以在<code>nginx.conf</code>文件用
+<a href="http/ngx_http_log_module.html#access_log">access_log</a> 指令来修改。
+默认路径为<code><code><i>prefix</i></code>/logs/access.log</code>
+</p>
+</li>
+
+<li>
+<p>
+<code>--user=<code><i>name</i></code></code> — 
+设置工作进程以某非特权用户的身份运行。安装完成后，该用户名总是可以在
+<code>nginx.conf</code>文件用<a href="ngx_core_module.html#user">user</a>指令来修改。
+其默认值为nobody。
+</p>
+</li>
+
+<li>
+<p>
+<code>--group=<code><i>name</i></code></code> — 
+设置工作进程以某非特权用户的身份运行。安装完成后，该用户名总是可以在
+<code>nginx.conf</code>用<a href="ngx_core_module.html#user">user</a>指令来修改。
+其默认名称与未授权用户名称相同。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-select_module</code><br>
+<code>--without-select_module</code> — 
+设置是否将<code>select()</code>方法模块编译进nginx中。如果系统平台不支持kqueue、epoll、rtsig或/dev/poll等更合适的方法，
+该模块会被自动编译。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-poll_module</code><br>
+<code>--without-poll_module</code> — 
+设置是否将<code>poll()</code>方法模块编译进nginx中。如果系统平台不支持kqueue、epoll、rtsig或/dev/poll等更合适的方法，
+该模块会被自动编译。
+</p>
+</li>
+
+<li>
+<p>
+<code>--without-http_gzip_module</code> — 
+不编译<a href="http/ngx_http_gzip_module.html">http_gzip_module</a>模块。该模块可以压缩HTTP服务器的响应，该模块需要zlib库才能编译和运行。
+</p>
+</li>
+
+<li>
+<p>
+<code>--without-http_rewrite_module</code> — 
+不编译<a href="http/ngx_http_rewrite_module.html">http_rewrite_module</a>模块。该模块允许HTTP服务器重定向请求，改变请求的URI地址
+。创建并运行该模块需要PCRE库支持。
+</p>
+</li>
+
+<li>
+<p>
+<code>--without-http_proxy_module</code> — 
+不编译HTTP服务器的<a href="http/ngx_http_proxy_module.html">代理模块</a>。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-http_ssl_module</code> — 
+为HTTP服务器编译<a href="http/ngx_http_ssl_module.html">HTTPS协议支持的模块</a>。该模块默认是不编译的。它需要OpenSSL库才能编译和运行。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-pcre=<code><i>path</i></code></code> — 
+设置PCRE库源文件的路径地址。PCRE库的发行版(version
+4.4 — 8.30)需要先从<a href="http://www.pcre.org">PCRE</a>站点下载并解压缩。
+剩下的安装工作由nginx的./configure和make命令来完成。该库应用于<a href="http/ngx_http_core_module.html#location">location</a>
+指令的正则表达式支持以及<a href="http/ngx_http_rewrite_module.html">ngx_http_rewrite_module</a>模块。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-pcre-jit</code> — 
+编译PCRE库时增加“实时编译（<a href="ngx_core_module.html#pcre_jit">pcre_jit</a>）”支持。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-zlib=<code><i>path</i></code></code> — 
+设置zlib库源文件的路径地址。zlib库的发行版(version
+1.1.3 — 1.2.5)需要先从<a href="http://www.gzip.org/zlib/">zlib</a>站点下载并解压缩。
+剩下的安装工作由nginx的./configure和make命令来完成。该库应用于
+<a href="http/ngx_http_gzip_module.html">ngx_http_gzip_module</a>模块。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-cc-opt=<code><i>parameters</i></code></code> — 
+设置将会添加额外参数到CFLAGS变量中。当在FreeBSD使用系统PCRE库时，需要指定
+<code>--with-cc-opt="-I /usr/local/include"</code>。
+如果需要增加<code>select()</code>方法所支持的文件数量，也可以参照如下方式指定：
+<code>--with-cc-opt="-D FD_SETSIZE=2048"</code>。
+</p>
+</li>
+
+<li>
+<p>
+<code>--with-ld-opt=<code><i>parameters</i></code></code> — 
+设置将会在链接（linking）过程中使用的额外参数。当在FreeBSD使用系统PCRE库时，需要指定
+<code>--with-ld-opt="-L /usr/local/lib"</code>。
+</p>
+</li>
+
+</ul><p> 
+
+</p><p>
+以下是参数使用示例（注意不应有换行）：
+</p> <blockquote class="example"><pre>
+./configure
+    --sbin-path=/usr/local/nginx/nginx
+    --conf-path=/usr/local/nginx/nginx.conf
+    --pid-path=/usr/local/nginx/nginx.pid
+    --with-http_ssl_module
+    --with-pcre=../pcre-4.4
+    --with-zlib=../zlib-1.1.3
+</pre></blockquote><p> 
+</p><table width="100%"><tr><td align="right">翻译: 樵客<br></td></tr></table></td></tr></table></body></html>

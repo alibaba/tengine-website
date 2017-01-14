@@ -1,0 +1,422 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Имена сервера</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Имена сервера</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/server_names.html">english</a><br>русский<br><br><a href="../../../cn/docs/http/server_names.html">简体中文</a><br><a href="../../../he/docs/http/server_names.html">עברית</a><br><a href="../../../ja/docs/http/server_names.html">日本語</a><br><a href="../../../tr/docs/http/server_names.html">türkçe</a><br><br><a href="../../../">новости</a> [en]<br><a href="../../../ru/">об nginx</a><br><a href="../../../ru/download.html">скачать</a><br><a href="../../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="../../../ru/docs/">документация</a><br><a href="../../../ru/docs/faq.html">faq</a><br><a href="../../../en/links.html">ссылки</a> [en]<br><a href="../../../en/books.html">книги</a> [en]<br><a href="../../../ru/support.html">поддержка</a><br><a href="../../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#wildcard_names">Имена с масками</a><br><a href="#regex_names">Имена, заданные регулярными выражениями</a><br><a href="#miscellaneous_names">Прочие имена</a><br><a href="#optimization">Оптимизация</a><br><a href="#compatibility">Совместимость</a><br></td></tr></table><p>
+Имена сервера задаются с помощью директивы
+<a href="ngx_http_core_module.html#server_name">server_name</a>
+и определяют, в каком блоке <a href="ngx_http_core_module.html#server">server</a>
+будет обрабатываться тот или иной запрос.
+См. также “<a href="request_processing.html">Как nginx обрабатывает запросы</a>”.
+Имена могут быть заданы точно, с помощью маски или регулярного
+выражения:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org  www.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  *.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  mail.*;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  ~^(?&lt;user&gt;.+)\.example\.net$;
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+При поиске виртуального сервера по имени,
+если имени соответствует несколько из указанных вариантов,
+например, одновременно подходят и имя с маской, и регулярное выражение,
+будет выбран первый подходящий вариант в следующем порядке приоритета:
+</p> <ol class="compact">
+
+<li>
+точное имя
+</li>
+
+<li>
+самое длинное имя с маской в начале, например
+“<code>*.example.org</code>”
+</li>
+
+<li>
+самое длинное имя с маской в конце, например “<code>mail.*</code>”
+</li>
+
+<li>
+первое подходящее регулярное выражение
+(в порядке следования в конфигурационном файле)
+</li>
+
+</ol><p> 
+</p><a name="wildcard_names"></a><center><h4>Имена с масками</h4></center><p>
+Имя с маской может содержать звёздочку (“<code>*</code>”) только в начале
+или в конце имени, и только на границе, определяемой точкой.
+Имена “<code>www.*.example.org</code>” и
+“<code>w*.example.org</code>” являются некорректными,
+но их можно задать с помощью регулярных выражений,
+например, “<code>~^www\..+\.example\.org$</code>” и
+“<code>~^w.*\.example\.org$</code>”.
+Звёздочка может соответствовать нескольким частям имени.
+Имени с маской “<code>*.example.org</code>” соответствует не только
+<code>www.example.org</code>, но и
+<code>www.sub.example.org</code>.
+</p><p>
+Специальное имя с маской вида “<code>.example.org</code>”
+соответствует как точному имени “<code>example.org</code>”,
+так и маске “<code>*.example.org</code>”.
+</p><a name="regex_names"></a><center><h4>Имена, заданные регулярными выражениями</h4></center><p>
+Регулярные выражения, используемые в nginx, совместимы
+с используемыми в языке программирования Perl (PCRE).
+Имя сервера, заданное регулярным выражением,
+должно начинаться с символа тильды:
+
+</p> <blockquote class="example"><pre>
+server_name  ~^www\d+\.example\.net$;
+</pre></blockquote><p> 
+
+в противном случае оно будет рассматриваться как точное, или же, если
+выражение содержит звёздочку (“<code>*</code>”), то как имя с маской
+(и, скорее всего, некорректное).
+Не забывайте ставить специальные символы начала (“<code>^</code>”)
+и конца (“<code>$</code>”) строки.
+По синтаксису они не требуются, но логически они могут быть нужны.
+Также заметьте, что все точки в доменных именах должны быть экранированы
+символом обратной косой черты.
+Регулярное выражение, содержащее символы “<code>{</code>”
+и “<code>}</code>”, необходимо экранировать:
+
+</p> <blockquote class="example"><pre>
+server_name  "~^(?&lt;name&gt;\w\d<b>{</b>1,3<b>}</b>+)\.example\.net$";
+</pre></blockquote><p> 
+
+иначе nginx откажется запускаться и выдаст сообщение об ошибке:
+
+</p> <blockquote class="example"><pre>
+directive "server_name" is not terminated by ";" in ...
+</pre></blockquote><p> 
+
+К именованному выделению в регулярном выражении можно впоследствии
+обратиться через переменную:
+
+</p> <blockquote class="example"><pre>
+server {
+    server_name   ~^(www\.)?(<b>?&lt;domain&gt;</b>.+)$;
+
+    location / {
+        root   /sites/<b>$domain</b>;
+    }
+}
+</pre></blockquote><p> 
+
+Библиотека PCRE поддерживает именованные выделения, используя следующий
+синтаксис:
+
+<blockquote><table width="100%">
+
+<tr>
+<td><code>?&lt;<code><i>name</i></code>&gt;</code></td>
+<td>Совместимый с Perl 5.10 синтаксис, поддерживается начиная с PCRE-7.0</td>
+</tr>
+
+<tr>
+<td><code>?'<code><i>name</i></code>'</code></td>
+<td>Совместимый с Perl 5.10 синтаксис, поддерживается начиная с PCRE-7.0</td>
+</tr>
+
+<tr>
+<td><code>?P&lt;<code><i>name</i></code>&gt;</code></td>
+<td>Python-совместимый синтаксис, поддерживается начиная с PCRE-4.0</td>
+</tr>
+
+</table></blockquote>
+
+Если nginx отказывается запускаться и выдаёт сообщение об ошибке:
+
+</p> <blockquote class="example"><pre>
+pcre_compile() failed: unrecognized character after (?&lt; in ...
+</pre></blockquote><p> 
+
+то это значит, что используется старая версия библиотеки PCRE и следует
+вместо этого попробовать синтаксис
+“<code>?P&lt;<code><i>name</i></code>&gt;</code>”.
+Также можно использовать нумерованные выделения:
+
+</p> <blockquote class="example"><pre>
+server {
+    server_name   ~^(www\.)?(.+)$;
+
+    location / {
+        root   /sites/<b>$2</b>;
+    }
+}
+</pre></blockquote><p> 
+
+Однако такое использование должно ограничиваться простыми случаями как в
+примере выше, поскольку нумерованные выделения легко могут быть перезаписаны.
+</p><a name="miscellaneous_names"></a><center><h4>Прочие имена</h4></center><p>
+Некоторые имена имеют специальное значение.
+</p><p>
+Если необходимо обрабатывать запросы без поля “Host” в заголовке
+в блоке <a href="ngx_http_core_module.html#server">server</a>, который не
+является сервером по умолчанию, следует указать пустое имя:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org  www.example.org  "";
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+Если директива
+<a href="ngx_http_core_module.html#server_name">server_name</a>
+не задана в блоке <a href="ngx_http_core_module.html#server">server</a>,
+то nginx будет использовать пустое имя в качестве имени сервера.
+</p> <blockquote class="note">
+Версии nginx вплоть до 0.8.48 в этом случае использовали имя хоста (hostname)
+машины в качестве имени сервера.
+</blockquote><p> 
+</p><p>
+Если имя сервера задано как “<code>$hostname</code>” (0.9.4), то
+используется имя хоста (hostname) машины.
+</p><p>
+Если в запросе вместо имени сервера указан IP-адрес,
+то поле “Host” заголовка запроса будет содержать
+IP-адрес, и запрос можно обработать, используя IP-адрес как имя сервера:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org
+                 www.example.org
+                 ""
+                 <b>192.168.1.1</b>
+                 ;
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+В примерах конфигурации серверов, обрабатывающих все запросы, встречается
+странное имя “<code>_</code>”:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80  default_server;
+    server_name  _;
+    return       444;
+}
+</pre></blockquote><p> 
+
+Оно не является каким-то особенным, это просто одно из множества
+некорректных доменных имён, которые никогда не пересекутся ни с одним из
+реальных имён.
+С тем же успехом можно использовать имена типа “<code>--</code>”
+и “<code>!@#</code>”.
+</p><p>
+Версии nginx вплоть до 0.6.25 поддерживали специальное имя
+“<code>*</code>”, которое многими неверно воспринималось как
+имя сервера для обработки всех запросов.
+Оно никогда так не работало, и не работало как имя с маской.
+Это имя действовало так же, как сейчас действует директива
+<a href="ngx_http_core_module.html#server_name_in_redirect">server_name_in_redirect</a>.
+Специальное имя “<code>*</code>” объявлено устаревшим, а вместо него
+следует использовать директиву
+<a href="ngx_http_core_module.html#server_name_in_redirect">server_name_in_redirect</a>.
+Заметьте, что с помощью директивы
+<a href="ngx_http_core_module.html#server_name">server_name</a>
+нельзя задать ни имя сервера для обработки всех запросов,
+ни сервер по умолчанию.
+Это является свойством директивы
+<a href="ngx_http_core_module.html#listen">listen</a>,
+а не
+<a href="ngx_http_core_module.html#server_name">server_name</a>.
+См. также “<a href="request_processing.html">Как nginx обрабатывает запросы</a>”.
+Можно настроить серверы, слушающие на портах *:80 и *:8080,
+и указать, что один из них будет сервером по умолчанию для порта *:8080,
+а другой — для порта *:80:
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    listen       8080  default_server;
+    server_name  example.net;
+    ...
+}
+
+server {
+    listen       80  default_server;
+    listen       8080;
+    server_name  example.org;
+    ...
+}
+</pre></blockquote><p> 
+</p><a name="optimization"></a><center><h4>Оптимизация</h4></center><p>
+Точные имена, имена с масками, начинающиеся со звёздочки,
+и имена с масками, заканчивающиеся на звёздочку, хранятся
+в трёх хэш-таблицах, привязанных к слушающим портам.
+Размеры хэш-таблиц оптимизируются на фазе конфигурации таким образом,
+что имя может быть найдено с минимальным числом непопаданий в кэш процессора.
+Подробнее настройка хэш-таблиц обсуждается в отдельном
+<a href="../hash.html">документе</a>.
+</p><p>
+В первую очередь имя ищется в хэш-таблице точных имён.
+Если имя не было найдено, то имя ищется в хэш-таблице имён с масками,
+начинающихся со звёздочки.
+Если и там поиск не дал результата, то имя ищется в хэш-таблице имён с масками,
+оканчивающихся на звёздочку.
+</p><p>
+Поиск в хэш-таблице имён с масками медленнее, чем поиск в хэш-таблице точных
+имён, поскольку имена сравниваются по доменным частям.
+Заметьте, что специальное имя с маской вида “<code>.example.org</code>”
+хранится в хэш-таблице имён с масками, а не в хэш-таблице точных имён.
+</p><p>
+Регулярные выражения проверяются последовательно,
+а значит являются самым медленным и плохо масштабируемым методом.
+</p><p>
+По вышеизложенным причинам предпочтительнее использовать точные имена,
+где это только возможно.
+Например, если к серверу наиболее часто обращаются по именам
+<code>example.org</code> и <code>www.example.org</code>,
+то эффективнее будет указать их явно:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org  www.example.org  *.example.org;
+    ...
+}
+</pre></blockquote><p> 
+
+нежели чем использовать упрощённую форму:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  .example.org;
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+Если задано большое число имён серверов, либо заданы необычно
+длинные имена, возможно потребуется скорректировать значения директив
+<a href="ngx_http_core_module.html#server_names_hash_max_size">server_names_hash_max_size</a>
+и <a href="ngx_http_core_module.html#server_names_hash_bucket_size">server_names_hash_bucket_size</a>
+на уровне <i>http</i>.
+Значение по умолчанию директивы
+<a href="ngx_http_core_module.html#server_names_hash_bucket_size">server_names_hash_bucket_size</a>
+может быть равно 32, 64, либо другой величине,
+в зависимости от размера строки кэша процессора.
+Если значение по умолчанию равно 32 и имя сервера задано как
+“<code>too.long.server.name.example.org</code>”,
+то nginx откажется запускаться и выдаст сообщение об ошибке:
+
+</p> <blockquote class="example"><pre>
+could not build the server_names_hash,
+you should increase server_names_hash_bucket_size: 32
+</pre></blockquote><p> 
+
+В этом случае следует увеличить значение директивы до следующей степени двойки:
+
+</p> <blockquote class="example"><pre>
+http {
+    server_names_hash_bucket_size  64;
+    ...
+</pre></blockquote><p> 
+
+Если задано большое число имён серверов, то будет выдано другое
+сообщение об ошибке:
+
+</p> <blockquote class="example"><pre>
+could not build the server_names_hash,
+you should increase either server_names_hash_max_size: 512
+or server_names_hash_bucket_size: 32
+</pre></blockquote><p> 
+
+В таком случае сначала следует попробовать установить
+<a href="ngx_http_core_module.html#server_names_hash_max_size">server_names_hash_max_size</a>
+в величину, близкую к числу имён серверов,
+и только если это не поможет
+или время запуска nginx станет неприемлемо большим, следует попытаться увеличить
+<a href="ngx_http_core_module.html#server_names_hash_bucket_size">server_names_hash_bucket_size</a>.
+</p><p>
+Если сервер является единственным сервером для слушающего порта,
+то nginx не будет проверять имена сервера вообще (а также не будет
+строить хэш-таблицы для слушающего порта).
+За одним исключением: если имя сервера задано регулярным выражением
+с выделениями, то nginx’у придётся выполнить это выражение,
+чтобы получить значения выделений.
+</p><a name="compatibility"></a><center><h4>Совместимость</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Специальное имя сервера “<code>$hostname</code>” поддерживается начиная с
+версии 0.9.4.
+</li>
+
+<li>
+Имя сервера по умолчанию является пустой строкой “” начиная с версии 0.8.48.
+</li>
+
+<li>
+Именованные выделения в именах серверов, заданных с помощью регулярных
+выражений, поддерживаются начиная с версии 0.8.25.
+</li>
+
+<li>
+Выделения в именах серверов, заданных с помощью регулярных выражений,
+поддерживаются начиная с версии 0.7.40.
+</li>
+
+<li>
+Пустое имя сервера “” поддерживается начиная с версии 0.7.12.
+</li>
+
+<li>
+В качестве первого имени сервера можно задать маску или регулярное выражение
+начиная с версии 0.6.25.
+</li>
+
+<li>
+Регулярные выражения в имени сервера поддерживаются начиная с версии 0.6.7.
+</li>
+
+<li>
+Имена с маской вида <code>example.*</code> поддерживаются начиная
+с версии 0.6.0.
+</li>
+
+<li>
+Специальная форма имени вида <code>.example.org</code> поддерживается
+начиная с версии 0.3.18.
+</li>
+
+<li>
+Имена с маской вида <code>*.example.org</code> поддерживаются начиная
+с версии 0.1.13.
+</li>
+
+</ul><p> 
+</p><table width="100%"><tr><td align="right">автор: Игорь Сысоев<br>редактор: Brian Mercer<br></td></tr></table></td></tr></table></body></html>

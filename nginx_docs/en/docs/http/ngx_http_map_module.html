@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Module ngx_http_map_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Module ngx_http_map_module</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../../../ru/docs/http/ngx_http_map_module.html">русский</a><br><br><a href="../../../cn/docs/http/ngx_http_map_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">news</a><br><a href="../../../en/">about</a><br><a href="../../../en/download.html">download</a><br><a href="../../../en/security_advisories.html">security advisories</a><br><a href="../../../en/docs/">documentation</a><br><a href="../../../en/pgp_keys.html">pgp keys</a><br><a href="../../../en/docs/faq.html">faq</a><br><a href="../../../en/links.html">links</a><br><a href="../../../en/books.html">books</a><br><a href="../../../en/support.html">support</a><br><a href="../../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Example Configuration</a><br><a href="#directives">Directives</a><br>     <a href="#map">map</a><br>     <a href="#map_hash_bucket_size">map_hash_bucket_size</a><br>     <a href="#map_hash_max_size">map_hash_max_size</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+The <code>ngx_http_map_module</code> module creates variables
+whose values depend on values of other variables.
+</p>
+
+
+<a name="example"></a><center><h4>Example Configuration</h4></center><p>
+</p> <blockquote class="example"><pre>
+map $http_host $name {
+    hostnames;
+
+    default       0;
+
+    example.com   1;
+    *.example.com 1;
+    example.org   2;
+    *.example.org 2;
+    .example.net  3;
+    wap.*         4;
+}
+
+map $http_user_agent $mobile {
+    default       0;
+    "~Opera Mini" 1;
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Directives</h4></center><a name="map"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>map</strong> 
+    <code><i>string</i></code>
+    <code><i>$variable</i></code> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Creates a new variable whose value
+depends on values of one or more of the source variables
+specified in the first parameter.
+</p> <blockquote class="note">
+Before version 0.9.0 only a single variable could be
+specified in the first parameter.
+</blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+Since variables are evaluated only when used, the mere existence
+of even a large number of declared “<code>map</code>” variables
+does not incur any extra costs for request processing.
+</blockquote><p> 
+</p><p>
+Parameters inside the <code>map</code> block specify a mapping
+between source and resulting values.
+</p><p>
+Source values are specified as strings or regular expressions (0.9.6).
+</p><p>
+A regular expression should either start from the “<code>~</code>”
+symbol for a case-sensitive matching, or from the “<code>~*</code>”
+symbols (1.0.4) for case-insensitive matching.
+A regular expression can contain named and positional captures
+that can later be used in other directives along with the
+resulting variable.
+</p><p>
+If a source value matches one of the names of special parameters
+described below, it should be prefixed with the “<code>\</code>” symbol.
+</p><p>
+The resulting value can be a string
+or another variable (0.9.0).
+</p><p>
+The directive also supports three special parameters:
+</p> <dl class="compact">
+<dt><code>default</code> <code><i>value</i></code></dt>
+<dd>
+sets the resulting value if the source value matches none
+of the specified variants.
+When <code>default</code> is not specified, the default
+resulting value will be an empty string.
+</dd>
+
+<dt><code>hostnames</code></dt>
+<dd>
+allows to specify hostnames with a prefix or suffix mask, as source
+values, for example,
+<blockquote class="example"><pre>
+*.example.com 1;
+example.*     1;
+</pre></blockquote>
+The following two records
+<blockquote class="example"><pre>
+example.com   1;
+*.example.com 1;
+</pre></blockquote>
+can be combined:
+<blockquote class="example"><pre>
+.example.com  1;
+</pre></blockquote>
+This parameter should be specified before the list of values.
+</dd>
+
+<dt><code>include</code> <code><i>file</i></code></dt>
+<dd>
+includes a file with values.
+There can be several inclusions.
+</dd>
+
+</dl><p> 
+</p><p>
+If the source value matches more than one of the specified variants,
+e.g. both mask and regular expression match, the first matching
+variant will be chosen, in the following order of precedence:
+</p> <ol class="compact">
+
+<li>
+string value without a mask
+</li>
+
+<li>
+longest string value with a prefix mask,
+e.g. “<code>*.example.com</code>”
+</li>
+
+<li>
+longest string value with a suffix mask,
+e.g. “<code>mail.*</code>”
+</li>
+
+<li>
+first matching regular expression
+(in order of appearance in a configuration file)
+</li>
+
+<li>
+default value
+</li>
+
+</ol><p> 
+</p><a name="map_hash_bucket_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>map_hash_bucket_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>map_hash_bucket_size 32|64|128;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Sets the bucket size for the <a href="#map">map</a> variables hash tables.
+Default value depends on the size of the processor’s cache line.
+Details of setting up hash tables are provided in a separate
+<a href="../hash.html">document</a>.
+</p><a name="map_hash_max_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>map_hash_max_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>map_hash_max_size 2048;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Sets the maximum <code><i>size</i></code> of the <a href="#map">map</a> variables
+hash tables.
+Details of setting up hash tables are provided in a separate
+<a href="../hash.html">document</a>.
+</p>
+
+</td></tr></table></body></html>

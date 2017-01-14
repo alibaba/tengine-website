@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Модуль ngx_http_geo_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Модуль ngx_http_geo_module</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_geo_module.html">english</a><br>русский<br><br><a href="../../../cn/docs/http/ngx_http_geo_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">новости</a> [en]<br><a href="../../../ru/">об nginx</a><br><a href="../../../ru/download.html">скачать</a><br><a href="../../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="../../../ru/docs/">документация</a><br><a href="../../../ru/docs/faq.html">faq</a><br><a href="../../../en/links.html">ссылки</a> [en]<br><a href="../../../en/books.html">книги</a> [en]<br><a href="../../../ru/support.html">поддержка</a><br><a href="../../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Пример конфигурации</a><br><a href="#directives">Директивы</a><br>     <a href="#geo">geo</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+Модуль <code>ngx_http_geo_module</code> создаёт переменные,
+значения которых зависят от IP-адреса клиента.
+</p>
+
+
+<a name="example"></a><center><h4>Пример конфигурации</h4></center><p>
+</p> <blockquote class="example"><pre>
+geo $geo {
+    default        0;
+
+    127.0.0.1      2;
+    192.168.1.0/24 1;
+    10.1.0.0/16    1;
+
+    ::1            2;
+    2001:0db8::/32 1;
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Директивы</h4></center><a name="geo"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>geo</strong> [<code><i>$адрес</i></code>] <code><i>$переменная</i></code> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Описывает для указанной переменной зависимость значения от
+IP-адреса клиента.
+По умолчанию адрес берётся из переменной <code>$remote_addr</code>,
+но его также можно получить из другой переменной (0.7.27), например:
+</p> <blockquote class="example"><pre>
+geo $arg_remote_addr $geo {
+    ...;
+}
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+Поскольку переменные вычисляются только в момент использования,
+само по себе наличие даже большого числа объявлений переменных
+“<code>geo</code>” не влечёт за собой никаких дополнительных
+расходов на обработку запросов.
+</blockquote><p> 
+</p><p>
+Если значение переменной не представляет из себя правильный IP-адрес,
+то используется адрес “<code>255.255.255.255</code>”.
+</p><p>
+Адреса задаются либо префиксами в формате CIDR
+(включая одиночные адреса), либо в виде диапазонов (0.7.23).
+</p> <blockquote class="note">
+IPv6-префиксы поддерживаются начиная с версии 1.3.10.
+</blockquote><p> 
+</p><p>
+Также поддерживаются следующие специальные параметры:
+</p> <dl class="compact">
+
+<dt><code>delete</code></dt>
+<dd>
+удаляет описанную сеть (0.7.23).
+</dd>
+
+<dt><code>default</code></dt>
+<dd>
+значение переменной, если адрес клиента не соответствует
+ни одному из заданных адресов.
+При задании адресов в формате CIDR
+вместо <code>default</code> можно использовать
+“<code>0.0.0.0/0</code>” и “<code>::/0</code>”.
+Если параметр <code>default</code> не указан, значением
+по умолчанию будет пустая строка.
+</dd>
+
+<dt><code>include</code></dt>
+<dd>
+включает файл с адресами и значениями.
+Включений может быть несколько.
+</dd>
+
+<dt><code>proxy</code></dt>
+<dd>
+задаёт доверенные адреса (0.8.7, 0.7.63),
+при запросе с которых будет использоваться адрес в переданном
+поле заголовка запроса “X-Forwarded-For”.
+В отличие от обычных адресов, доверенные адреса проверяются
+последовательно.
+<blockquote class="note">
+Доверенные IPv6-адреса поддерживаются начиная с версий 1.3.0 и 1.2.1.
+</blockquote>
+</dd>
+
+<dt><code>proxy_recursive</code></dt>
+<dd>
+включает рекурсивный поиск адреса (1.3.0, 1.2.1).
+При выключенном рекурсивном поиске вместо исходного адреса клиента,
+совпадающего с одним из доверенных адресов, будет использоваться последний
+адрес, переданный в “X-Forwarded-For”.
+При включённом рекурсивном поиске вместо исходного адреса клиента,
+совпадающего с одним из доверенных адресов, будет использоваться последний
+не доверенный адрес, переданный в “X-Forwarded-For”.
+</dd>
+
+<dt><code>ranges</code></dt>
+<dd>
+указывает, что адреса задаются в виде диапазонов (0.7.23).
+Этот параметр должен быть первым.
+Для ускорения загрузки гео-базы нужно располагать адреса в порядке возрастания.
+</dd>
+
+</dl><p> 
+</p><p>
+Пример:
+</p> <blockquote class="example"><pre>
+geo $country {
+    default        ZZ;
+    include        conf/geo.conf;
+    delete         127.0.0.0/16;
+    proxy          192.168.100.0/24;
+    proxy          2001:0db8::/32;
+
+    127.0.0.0/24   US;
+    127.0.0.1/32   RU;
+    10.1.0.0/16    RU;
+    192.168.1.0/24 UK;
+}
+</pre></blockquote><p> 
+</p><p>
+В файле <code>conf/geo.conf</code> могут быть такие строки:
+</p> <blockquote class="example"><pre>
+10.2.0.0/16    RU;
+192.168.2.0/24 RU;
+</pre></blockquote><p> 
+</p><p>
+В качестве значения выбирается максимальное совпадение, например,
+для адреса 127.0.0.1 будет выбрано значение “<code>RU</code>”,
+а не “<code>US</code>”.
+</p><p>
+Пример описания диапазонов:
+</p> <blockquote class="example"><pre>
+geo $country {
+    ranges;
+    default                   ZZ;
+    127.0.0.0-127.0.0.0       US;
+    127.0.0.1-127.0.0.1       RU;
+    127.0.0.2-127.0.0.255     US;
+    10.1.0.0-10.1.255.255     RU;
+    192.168.1.0-192.168.1.255 UK;
+}
+</pre></blockquote><p> 
+</p>
+
+</td></tr></table></body></html>

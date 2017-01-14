@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>nginx for Windows</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>nginx for Windows</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../../ru/docs/windows.html">русский</a><br><br><a href="../../cn/docs/windows.html">简体中文</a><br><a href="../../he/docs/windows.html">עברית</a><br><a class="notrans">日本語</a><br><a href="../../tr/docs/windows.html">türkçe</a><br><br><a href="../../">news</a><br><a href="../../en/">about</a><br><a href="../../en/download.html">download</a><br><a href="../../en/security_advisories.html">security advisories</a><br><a href="./">documentation</a><br><a href="../../en/pgp_keys.html">pgp keys</a><br><a href="faq.html">faq</a><br><a href="../../en/links.html">links</a><br><a href="../../en/books.html">books</a><br><a href="../../en/support.html">support</a><br><a href="../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#known_issues">Known issues</a><br><a href="#possible_future_enhancements">Possible future enhancements</a><br></td></tr></table><p>
+Version of nginx for Windows uses the native Win32 API (not the Cygwin emulation
+layer).
+Only the <code>select()</code> connection processing method is currently used,
+so high performance and scalability should not be expected.
+Due to this and some other known issues version of nginx for Windows
+is considered to be a <i>beta</i> version.
+At this time, it provides almost the same functionality as a UNIX version
+of nginx except for
+XSLT filter, image filter, GeoIP module, and embedded Perl language.
+</p><p>
+To install nginx/Windows, <a href="../download.html">download</a>
+the latest development version distribution (1.3.11),
+since the development branch of nginx contains all known fixes.
+Then unpack the distribution, go to the
+nginx-1.3.11
+directory, and run <code>nginx</code>.
+Here is an example for the drive C: root directory:
+
+</p> <blockquote class="example"><pre>
+cd c:\
+unzip nginx-1.3.11.zip
+cd nginx-1.3.11
+start nginx
+</pre></blockquote><p> 
+
+Run the <code>tasklist</code> command-line utility
+to see nginx processes:
+
+</p> <blockquote class="example"><pre>
+C:\nginx-1.3.11&gt;tasklist /fi "imagename eq nginx.exe"
+
+Image Name           PID Session Name     Session#    Mem Usage
+=============== ======== ============== ========== ============
+nginx.exe            652 Console                 0      2 780 K
+nginx.exe           1332 Console                 0      3 112 K
+</pre></blockquote><p> 
+
+One of the processes is the master process and another is the worker process.
+If nginx does not start, look for the reason in
+the error log file <code>logs\error.log</code>.
+If the log file has not been created, the reason for this should be reported
+in the Windows Event Log.
+If an error page is displayed instead of the expected page, also look
+for the reason in the <code>logs\error.log</code> file.
+</p><p>
+nginx/Windows uses the directory where it has been run as the prefix
+for relative paths in the configuration.
+In the example above, the prefix is
+<code>C:\nginx-1.3.11\</code>.
+Paths in a configuration file must be specified in UNIX-style using
+forward slashes:
+
+</p> <blockquote class="example"><pre>
+access_log   logs/site.log;
+root         C:/web/html;
+</pre></blockquote><p> 
+</p><p>
+nginx/Windows runs as a standard console application (not a service),
+and it can be managed using the following commands:
+
+<blockquote><table width="100%">
+
+<tr>
+<td width="20%">nginx -s stop</td>
+<td>fast shutdown</td>
+</tr>
+
+<tr>
+<td>nginx -s quit</td>
+<td>graceful shutdown</td>
+</tr>
+
+<tr>
+<td>nginx -s reload</td>
+<td>
+changing configuration,
+starting new worker processes with a new configuration,
+graceful shutdown of old worker processes
+</td>
+</tr>
+
+<tr>
+<td>nginx -s reopen</td>
+<td>re-opening log files</td>
+</tr>
+
+</table></blockquote>
+</p><a name="known_issues"></a><center><h4>Known issues</h4></center><ul class="compact">
+
+<li>
+Although several workers can be started, only one of them
+actually does any work.
+</li>
+
+<li>
+A worker can handle no more than 1024 simultaneous connections.
+</li>
+
+<li>
+The cache and other modules which require shared memory support do not work
+on Windows Vista and later versions due to
+address space layout randomization being enabled in these Windows versions.
+</li>
+
+</ul><a name="possible_future_enhancements"></a><center><h4>Possible future enhancements</h4></center><ul class="compact">
+
+<li>
+Running as a service.
+</li>
+
+<li>
+Using the I/O completion ports as a connection processing method.
+</li>
+
+<li>
+Using multiple worker threads inside a single worker process.
+</li>
+
+</ul></td></tr></table></body></html>

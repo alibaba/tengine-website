@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>nginx</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>nginx</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../en/">english</a><br><a href="../ru/">русский</a><br><br><a href="../cn/">简体中文</a><br><a href="../he/">עברית</a><br><a href="../ja/">日本語</a><br>türkçe<br><br><a href="../">haberler</a> [ing]<br>hakkında<br><a href="../en/download.html">indir</a> [ing]<br><a href="../en/security_advisories.html">güvenlik tavsiyeleri</a> [ing]<br><a href="docs/">dökümantasyon</a><br><a href="docs/faq.html">sss</a><br><a href="../en/links.html">bağlantılar</a> [ing]<br><a href="../en/books.html">kitaplar</a> [ing]<br><a href="../en/support.html">destek</a> [ing]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">This translation may be out of date.
+Check the <a href="../en/index.html">English version</a>
+for recent changes.</blockquote></span><table width="100%"><tr><td align="left"><a href="#basic_http_features">Temel HTTP özellikleri</a><br><a href="#other_http_features">Diğer HTTP özellikleri</a><br><a href="#mail_proxy_server_features">Mail proxy sunucu özellikleri</a><br><a href="#architecture_and_scalability">Yapı ve ölçeklenebilirlik</a><br><a href="#tested_os_and_platforms">Test edilen işletim sistemleri ve platformlar</a><br></td></tr></table><p>
+nginx [engine x], <a href="http://sysoev.ru/en/">Igor Sysoev</a> tarafından yazılan bir HTTP, reverse proxy ve mail proxy sunucusudur. 5 yıldır, özellikle Rus sitelerinde yoğun bir şekilde kullanılmaktadır. Örneğin;
+<a href="http://www.rambler.ru">Rambler</a>
+(<a href="http://ramblermedia.com">RamblerMedia.com</a>).
+Netcraft'a göre, nginx, <a href="http://news.netcraft.com/archives/2010/04/15/april_2010_web_server_survey.html">Nisan 2010 itibari ile %4.70</a> oranında kullanılmaktadır.
+Bazı başarı hikayeleri (İngilizce):
+<a href="http://blog.fastmail.fm/2007/01/04/webimappop-frontend-proxies-changed-to-nginx/">FastMail.FM</a>,
+<a href="http://barry.wordpress.com/2008/04/28/load-balancer-update/">Wordpress.com</a>.
+</p><p>
+Kaynak kodu, <a href="/LICENSE">2-clause BSD-like license</a> lisansı altındadır.
+</p><a name="basic_http_features"></a><center><h4>Temel HTTP özellikleri</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Statik ve index dosyalarının sunumu, otomatik indeksleme;
+açık dosya açıklayıcı önbellek;
+</li>
+
+<li>
+Önbellek ile hızlandırılmış reverse proxying;
+basit yük dengeleme ve hata toleransı;
+</li>
+
+<li>
+Uzak FastCgi sunucularının önbelleklenmesi ile hızlandırılmış destek;
+basit yük dengeleme ve hata toleransı;
+</li>
+
+<li>
+Modüler yapı.
+Gzip, byte aralıkları, yığın cevaplar (chunked responses), XSLT, SSI, imaj boyutlandırma gibi filtreler.
+FastCGI veya proksilenmiş sunucular ile tek bir sayfada çoklu SSI içermelerinin paralel işlenmesi.
+</li>
+
+<li>
+SSL ve TLS SNI desteği.
+</li>
+
+</ul><p> 
+</p><a name="other_http_features"></a><center><h4>Diğer HTTP özellikleri</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Ad ve IP tabanlı sanal sunucular;
+</li>
+
+<li>
+Keep-alive ve pipelined bağlantı desteği;
+</li>
+
+<li>
+Esnek yapılandırma;
+</li>
+
+<li>
+İstemci işlemlerinde kopma olmadan yeniden yapılandırma ve online güncelleme;
+</li>
+
+<li>
+Erişim kayıt (log) formatları, tamponlanmış kayıt yazımı ve hızlı kayıt devri;
+</li>
+
+<li>
+3xx-5xx hata kod yönlendirmeleri;
+</li>
+
+<li>
+rewrite modülü;
+</li>
+
+<li>
+İstemcinin IP adresine dayalı erişim kontrolü ve HTTP temel kimlik denetleme;
+</li>
+
+<li>
+PUT, DELETE, MKCOL, COPY ve MOVE methodları;
+</li>
+
+<li>
+FLV streaming;
+</li>
+
+<li>
+Hız sınırlandırma;
+</li>
+
+<li>
+Bir adresten gelen eşzamanlı bağlantı ve talepleri sınırlandırma.
+</li>
+
+<li>
+Gömülü perl.
+</li>
+
+</ul><p> 
+</p><a name="mail_proxy_server_features"></a><center><h4>Mail proxy sunucu özellikleri</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Harici bir HTTP kimlik denetleme sunucusunu kullanarak, kullanıcıyı IMAP/POP3 backend'ine yönlendirme;
+</li>
+
+<li>
+Harici bir HTTP kimlik denetleme sunucusunu kullanarak, kullanıcıyı SMTP backend'ine yönlendirme ve kullanıcı kimlik denetlemesi;
+</li>
+
+<li>
+Kimlik denetleme methodları:
+
+<ul class="compact">
+
+<li>
+POP3: USER/PASS, APOP, AUTH LOGIN/PLAIN/CRAM-MD5;
+</li>
+
+<li>
+IMAP: LOGIN, AUTH LOGIN/PLAIN/CRAM-MD5;
+</li>
+
+<li>
+SMTP: AUTH LOGIN/PLAIN/CRAM-MD5;
+</li>
+
+</ul>
+</li>
+
+<li>
+SSL desteği;
+</li>
+
+<li>
+STARTTLS ve STLS desteği.
+</li>
+
+</ul><p> 
+</p><a name="architecture_and_scalability"></a><center><h4>Yapı ve ölçeklenebilirlik</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Bir ana işlem (main process) ve çok sayıda işçi işlemleri (workers).
+İşçiler, imtiyazsız kullanıcı olarak yürütülürler;
+</li>
+
+<li>
+Uyarı methodları: kqueue (FreeBSD 4.1+),
+epoll (Linux 2.6+), rt signals (Linux 2.2.19+),
+/dev/poll (Solaris 7 11/99+), event ports (Solaris 10),
+select ve poll;
+</li>
+
+<li>
+Çeşitli kqueue özellikleri desteği: EV_CLEAR, EV_DISABLE
+(event'i geçici olarak etkisizleştirir), NOTE_LOWAT, EV_EOF, olanaklı data sayısı,
+hata kodları;
+</li>
+
+<li>
+sendfile (FreeBSD 3.1+, Linux 2.2+, Mac OS X 10.5), sendfile64 (Linux 2.4.21+),
+ve sendfilev (Solaris 8 7/01+) desteği;
+</li>
+
+<li>
+File AIO (FreeBSD 4.3+, Linux 2.6.22+);
+</li>
+
+<li>
+Accept-filters (FreeBSD 4.1+) ve TCP_DEFER_ACCEPT (Linux 2.4+) desteği;
+</li>
+
+<li>
+10,000 inaktif HTTP keep-alive bağlantısı yaklaşık 2.5M hafıza kullanır;
+</li>
+
+<li>
+Data kopyalama operasyonları minimum düzeydedir.
+</li>
+
+</ul><p> 
+</p><a name="tested_os_and_platforms"></a><center><h4>Test edilen işletim sistemleri ve platformlar</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+FreeBSD 3 — 8 / i386; FreeBSD 5 — 8 / amd64;
+</li>
+
+<li>
+Linux 2.2 — 2.6 / i386; Linux 2.6 / amd64;
+</li>
+
+<li>
+Solaris 9 / i386, sun4u; Solaris 10 / i386, amd64, sun4v;
+</li>
+
+<li>
+MacOS X / ppc, i386;
+</li>
+
+<li>
+Windows XP, Windows Server 2003.
+</li>
+
+</ul><p> 
+</p></td></tr></table></body></html>

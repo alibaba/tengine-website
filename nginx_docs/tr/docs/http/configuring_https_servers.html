@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>HTTPS sunucularının yapılandırılması</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>HTTPS sunucularının yapılandırılması</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/configuring_https_servers.html">english</a><br><a href="../../../ru/docs/http/configuring_https_servers.html">русский</a><br><br><a href="../../../cn/docs/http/configuring_https_servers.html">简体中文</a><br><a class="notrans">עברית</a><br><a href="../../../ja/docs/http/configuring_https_servers.html">日本語</a><br>türkçe<br><br><a href="../../../">haberler</a> [ing]<br><a href="../../../tr/">hakkında</a><br><a href="../../../en/download.html">indir</a> [ing]<br><a href="../../../en/security_advisories.html">güvenlik tavsiyeleri</a> [ing]<br><a href="../../../tr/docs/">dökümantasyon</a><br><a href="../../../tr/docs/faq.html">sss</a><br><a href="../../../en/links.html">bağlantılar</a> [ing]<br><a href="../../../en/books.html">kitaplar</a> [ing]<br><a href="../../../en/support.html">destek</a> [ing]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">This translation may be out of date.
+Check the <a href="../../../en/docs/http/configuring_https_servers.html">English version</a>
+for recent changes.</blockquote></span><table width="100%"><tr><td align="left"><a href="#optimization">HTTPS sunucu optimizasyonu</a><br><a href="#chains">SSL sertifika zincirleri</a><br><a href="#single_http_https_server">Tekil HTTP/HTTPS sunucusu</a><br><a href="#name_based_https_servers">Ad tabanlı HTTPS sunucuları</a><br><a href="#certificate_with_several_names">Birçok ad içeren SSL sertifikası</a><br><a href="#sni">Server Name Indication</a><br><a href="#compatibility">Uygunluk</a><br></td></tr></table><p>
+Bir HTTPS sunucusunu yapılandırmak için, server bloğu içerisinde SSL’i etkin hale getirmeli ve sunucu sertifikası ve özel anahtar dosyaları belirtmelisiniz:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen               443;
+    server_name          www.example.com;
+    ssl                  on;
+    ssl_certificate      www.example.com.crt;
+    ssl_certificate_key  www.example.com.key;
+    ssl_protocols        SSLv3 TLSv1;
+    ssl_ciphers          HIGH:!ADH:!MD5;
+    ...
+}
+</pre></blockquote><p> 
+
+Sunucu sertifikası herkese açık bir birimdir. Sunucuya bağlanan her istemciye gönderilir. Özel anahtar ise gizli bir birimdir ve erişimi engellenmiş bir alanda saklanır. Ancak nginx’in ana işlemi tarafından okunabilir olmalıdır. Özel anahtar, alternatif olarak sertifika ile aynı dosya içerisinde saklanabilir:
+
+</p> <blockquote class="example"><pre>
+    ssl_certificate      www.example.com.cert;
+    ssl_certificate_key  www.example.com.cert;
+</pre></blockquote><p> 
+
+Bu durumda dosya erişimi kısıtlanmalıdır. Aynı dosyada yer alsalar da istemciye sadece sertifika gönderilir.
+</p><p>
+<code>ssl_protocols</code> ve <code>ssl_ciphers</code> yönergeleri, güçlü SSL protokol ve şifrelere (cipher) yapılan bağlantılara limit koymak için kullanılır. Versiyon 0.8.20 ile birlikte nginx, <code>ssl_protocols SSLv3 TLSv1</code> ve <code>ssl_ciphers HIGH:!ADH:!MD5</code> yönergelerini varsayılan olarak kullanır, bu nedenle sadece daha önceki versiyonlarda yapılandırmaya eklenmelidir.
+</p><a name="optimization"></a><center><h4>HTTPS sunucu optimizasyonu</h4></center><p>
+SSL işlemleri ekstra işlemci (CPU) kaynakları tüketir. Çok-işlemcili sistemlerde birçok işçi işlemler yürütmelisiniz: Mevcut işlemci çekirdek sayısından az olmamalı. En yoğun işlemci-yoğun işlem SSL el sıkışmalarıdır (ÇN: SSL Handshake, kısaca sunucuda bulunan sertifikanın istemci bilgisayar tarafından onaylanması ve tekrar sunucuya bildirilmesi sürecidir). Her bir istemci için mevcut bu işlemlerin sayısını azaltmanın iki yolu vardır: İlki, keep-alive bağlantıları olanaklı kılarak bir çok talebi sadece bir bağlantı ile göndermek ve ikincisi ise SSL oturum parametrelerini tekrar kullanarak paralel ve izleyen (subsequent) bağlantılar için SSL el sıkışmalarından kaçınmaktır.
+
+Oturumlar, bir <code>ssl_session_cache</code> yönergesi tarafından yapılandırılan ve işçiler arasında paylaştırılmış bir SSL oturum önbelleğinde yer alır. Bir megabyte önbellek yaklaşık 4000 oturum içerir. Varsayılan önbellek zaman aşımı 5 dakikadır. <code>ssl_session_timeout</code> yönergesi ile bu süre arttırılabilir. 10M paylaşımlı oturum önbelleğine sahip bir quad core sistem için örnek yapılandırma:
+
+</p> <blockquote class="example"><pre>
+<b>worker_processes  4</b>;
+
+http {
+    <b>ssl_session_cache    shared:SSL:10m</b>;
+    <b>ssl_session_timeout  10m</b>;
+
+    server {
+        listen               443;
+        server_name          www.example.com;
+        <b>keepalive_timeout    70</b>;
+
+        ssl                  on;
+        ssl_certificate      www.example.com.crt;
+        ssl_certificate_key  www.example.com.key;
+        ssl_protocols        SSLv3 TLSv1;
+        ssl_ciphers          HIGH:!ADH:!MD5;
+        ...
+</pre></blockquote><p> 
+</p><a name="chains"></a><center><h4>SSL sertifika zincirleri</h4></center><p>
+Bazı tarayıcılar popüler bir sertifika otoritesi tarafından imzalanmış sertifikaları sorunsuz kabul ederken, diğerleri sorun çıkarabilir. Bunun nedeni sertifika otoritesinin, sunucu sertifikasını, güvenilir sertifika veri tabanında yer almayan aracı bir sertifikayı kullanarak imzalamış olmasıdır. Bu durumda otorite, imzalanmış sertifikaya art arda bağlanması gereken bir dizi sertifika zinciri sunar. Bir araya geldikleri dosyada ilk önce sunucu sertifikası daha sonra zincirlenmiş sertifikalar yer almalıdır:
+
+</p> <blockquote class="example"><pre>
+$ cat www.example.com.crt bundle.crt &gt; www.example.com.chained.crt
+</pre></blockquote><p> 
+
+Oluşan dosya <code>ssl_certificate</code> yönergesi içinde kullanılmalıdır:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen               443;
+    server_name          www.example.com;
+    ssl                  on;
+    ssl_certificate      www.example.com.chained.crt;
+    ssl_certificate_key  www.example.com.key;
+    ...
+}
+</pre></blockquote><p> 
+
+Eğer bu art arda diziliş yanlış yapılmış olursa, nginx başlamayacak ve aşağıdakine benzer bir hata mesajını verecektir:
+
+</p> <blockquote class="example"><pre>
+SSL_CTX_use_PrivateKey_file(" ... /www.example.com.key") failed
+   (SSL: error:0B080074:x509 certificate routines:
+    X509_check_private_key:key values mismatch)
+</pre></blockquote><p> 
+
+Bu durum, nginx’in sunucu sertifikası yerine zincirlenmiş sertifikaların ilkinin özel anahtarını kullanmaya çalışması sonucu oluşur.
+</p><p>
+Tarayıcılar, güvenilir otoriteler tarafından imzalanmış aracı sertifikaları genellikle depolarlar. Bu nedenle tarayıcı aracı sertifikaları daha önceden depolamış olabileceğinden zincirlenmiş sertifikalara ihtiyaç duymadan sertifika hakkında uyarı vermezler. Diğer taraftan sunucunun sertifika zincir dizisini tam olarak gönderdiğinden emin olmak için <code>openssl</code> komutunu kullanabilirsiniz:
+
+</p> <blockquote class="example"><pre>
+$ openssl s_client -connect www.godaddy.com:443
+...
+Certificate chain
+ 0 s:/C=US/ST=Arizona/L=Scottsdale/1.3.6.1.4.1.311.60.2.1.3=US
+     /1.3.6.1.4.1.311.60.2.1.2=AZ/O=GoDaddy.com, Inc
+     /OU=MIS Department/<b>CN=www.GoDaddy.com</b>
+     /serialNumber=0796928-7/2.5.4.15=V1.0, Clause 5.(b)
+   i:/C=US/ST=Arizona/L=Scottsdale/O=GoDaddy.com, Inc.
+     /OU=http://certificates.godaddy.com/repository
+     /CN=Go Daddy Secure Certification Authority
+     /serialNumber=07969287
+ 1 s:/C=US/ST=Arizona/L=Scottsdale/O=GoDaddy.com, Inc.
+     /OU=http://certificates.godaddy.com/repository
+     /CN=Go Daddy Secure Certification Authority
+     /serialNumber=07969287
+   i:/C=US/O=The Go Daddy Group, Inc.
+     /OU=Go Daddy Class 2 Certification Authority
+ 2 s:/C=US/O=The Go Daddy Group, Inc.
+     /OU=Go Daddy Class 2 Certification Authority
+   i:/L=ValiCert Validation Network/O=<b>ValiCert, Inc.</b>
+     /OU=ValiCert Class 2 Policy Validation Authority
+     /CN=http://www.valicert.com//emailAddress=info@valicert.com
+...
+</pre></blockquote><p> 
+
+Bu örnekte <code>www.GoDaddy.com</code> sunucu sertifikasının (server certificate #0) “<i>s</i>” ile belirtilen konusu (subject), “<i>i</i>” ile gösterilen ve aynı zamanda kendisi de sonraki sertifikanın (certificate #1) konusu (subject) olan, sertifikayı veren/yayınlayan (issuer) tarafından imzalanır. Sonraki sertifika (certificate #1) ise bir sonraki sertifika (certificate #2) tarafından imzalanmıştır ve bu son sertifika <i>ValiCert, Inc.</i> tarafından imzalanmıştır. Bu firmanın sertifikası, tarayıcının kurulumuyla gelen sertifika veritabanında bulunur.
+</p><p>
+Eğer sertifika dizisi eklemediyseniz, yalnızca bir sunucu sertifikası görürsünüz (server certificate #0).
+</p><a name="single_http_https_server"></a><center><h4>Tekil HTTP/HTTPS sunucusu</h4></center><p>
+En baştan HTTP ve HTTPS protokollerini ayrı yapılandırmak en iyisidir. Mevcut durumda fonksiyonellikleri aynı gözükmekle birlikte, bu gelecekte önemli bir şekilde değişebilir ve birleştirilmiş bir sunucu problemli olabilir. Ancak, eğer HTTP ve HTTPS sunucuları eşit ise ve geleceği düşünmek istemiyorsanız, <code>ssl on</code> yönergesini silerek ve *:443 portu için <code>ssl</code> parametresi ekleyerek, HTTP ve HTTPS taleplerini tutan yalnızca bir sunucu yapılandırabilirsiniz:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen               80;
+    listen               443  ssl;
+    server_name          www.example.com;
+    ssl_certificate      www.example.com.crt;
+    ssl_certificate_key  www.example.com.key;
+    ...
+}
+</pre></blockquote><p> 
+
+</p> <blockquote class="note">
+Versiyon 0.8.21 öncesi, nginx yalnızca <code>default</code> parametresine sahip listen soketlerinde <code>ssl</code> parametresinin eklenmesine izin veriyordu:
+<blockquote class="example"><pre>
+listen  443  default  ssl;
+</pre></blockquote>
+</blockquote><p> 
+</p><a name="name_based_https_servers"></a><center><h4>Ad tabanlı HTTPS sunucuları</h4></center><p>
+Bir IP adresini dinleyen iki veya daha fazla HTTPS sunucusunu yapılandırdığınız zaman genel bir problem ortaya çıkar:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen           443;
+    server_name      www.example.com;
+    ssl              on;
+    ssl_certificate  www.example.com.crt;
+    ...
+}
+
+server {
+    listen           443;
+    server_name      www.example.org;
+    ssl              on;
+    ssl_certificate  www.example.org.crt;
+    ...
+}
+</pre></blockquote><p> 
+
+Bu yapılandırmada, bir tarayıcı talep edilen sunucuya bakmadan, varsayılan sunucunun sertifikasını alır, örneğin: <code>www.example.com</code>. Bu SSL protokolüne özgü bir durumdan kaynaklanır. SSL bağlantısı, tarayıcının HTTP talebi göndermesinden önce kurulur ve nginx talep edilen sunucunun adını bilmez. Bu nedenle yalnızca varsayılan sunucunun sertifikasını önerir.
+</p><p>
+Bu problemi çözmenin en eski ve sağlam methodu HTTPS sunucularının her birine ayrı IP adresleri atamaktır:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen           192.168.1.1:443;
+    server_name      www.example.com;
+    ssl              on;
+    ssl_certificate  www.example.com.crt;
+    ...
+}
+
+server {
+    listen           192.168.1.2:443;
+    server_name      www.example.org;
+    ssl              on;
+    ssl_certificate  www.example.org.crt;
+    ...
+}
+</pre></blockquote><p> 
+</p><a name="certificate_with_several_names"></a><center><h4>Birçok ad içeren SSL sertifikası</h4></center><p>
+Bir tekil IP’yi birçok HTTPS sunucu arasında paylaştırmanın başka yolları da vardır, ancak bunların hepsi dezavantajlara sahiptir. Bunlardan biri, birçok ad içeren bir sertifikanın, SubjectAltName sertifika alanında kullanılmasıdır. Örneğin: <code>www.example.com</code> ve <code>www.example.org</code>. Ancak SubjectAltName alan uzunluğu sınırlandırılmıştır.
+</p><p>
+Diğer bir yol ise bir sertifikayı bir wildcard adı ile birlikte kullanmaktır. Örneğin: <code>*.example.org</code>. Bu sertifika <code>www.example.org</code> ile eşleşir ancak <code>example.org</code> ve <code>www.sub.example.org</code> ile eşleşmez. Bu iki method birlikte de kullanılabilir. Bir sertifika SubjectAltName alanı içerisinde gerçek ve wildcard adlarını içerebilir. Örneğin: <code>example.org</code> ve <code>*.example.org</code>.
+</p><p>
+Tüm sunuculardaki tekil hafıza kopyalarını devralması için, birçok ad içeren bir sertifika dosyası ve onun özel anahtar dosyasını, yapılandırmanın <i>http</i> düzeyinde bulundurmak en iyisidir:
+
+</p> <blockquote class="example"><pre>
+ssl_certificate      common.crt;
+ssl_certificate_key  common.key;
+
+server {
+    listen           443;
+    server_name      www.example.com;
+    ssl              on;
+    ...
+}
+
+server {
+    listen           443;
+    server_name      www.example.org;
+    ssl              on;
+    ...
+}
+</pre></blockquote><p> 
+</p><a name="sni"></a><center><h4>Server Name Indication</h4></center><p>
+Bir IP adresi üzerinde birçok HTTPS sunucusu yürütebilmenin en genel yollarından biri, bir SSL el sıkışması (handshake) sırasında, tarayıcının talep edilmiş bir sunucu adını iletmesine izin veren ve böylece sunucunun varsayılan bağlantı için hangi sertifikayı kullanacağını bilmesini sağlayan <a href="http://en.wikipedia.org/wiki/Server_Name_Indication">TLSv1.1 Server Name Indication eklentisidir</a> (SNI, RFC3546). Ancak SNI, kısıtlı bir tarayıcı desteğine sahiptir. Mevcut destekleyen tarayıcılar ve versiyonları:
+</p><ul class="compact">
+
+<li>
+Opera 8.0;
+</li>
+
+<li>
+MSIE 7.0 (sadece Windows Vista ve üstü);
+</li>
+
+<li>
+Firefox 2.0 ve Mozilla Platform rv:1.8.1 platformunu kullanan diğer tarayıcılar;
+</li>
+
+<li>
+Safari 3.2.1 (Windows Vista ve üstü);
+</li>
+
+<li>
+Chrome (Windows Vista ve üstü).
+</li>
+
+</ul><p>
+nginx içerisinde SNI kullanabilmek için, hem nginx ile birlikte yüklenen OpenSSL kütüphanesi hem de yürütüm süresi (run time) üzerinde dinamik olarak bağlatılanmış diğer kütüphaneler tarafından desteklenmiş olmalıdır. Versiyon 0.9.8f itibari ile <nobr>“--enable-tlsext”</nobr> yapılandırma opsiyonu ile birlikte OpenSSL, SNI desteği sunmaktadır. OpenSSL 0.9.8j itibari ile varsayılan olarak etkindir. Eğer nginx, SNI desteği ile yüklenirse “-V” anahtarını girdiğinizde aşağıdaki çıktı ile karşılaşırsınız:
+
+</p> <blockquote class="example"><pre>
+$ nginx -V
+...
+TLS SNI support enabled
+...
+</pre></blockquote><p> 
+
+Ama eğer SNI-etkin nginx, SNI desteği olmadan dinamik olarak OpenSSL’e bağlantılanırsa, aşağıdaki hata ile karşılaşırsınız:
+
+</p> <blockquote class="example"><pre>
+nginx was built with SNI support, however, now it is linked
+dynamically to an OpenSSL library which has no tlsext support,
+therefore SNI is not available
+</pre></blockquote><p> 
+</p><a name="compatibility"></a><center><h4>Uygunluk</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Versiyon 0.8.21 ve 0.7.62 ile birlikte SNI destek statüsü “-V” anahtarı ile birlikte görüntülenmeye başlandı.
+</li>
+
+<li>
+Versiyon 0.7.14 ile birlikte <code>listen</code> yönergesinin <code>ssl</code> parametresi desteklenmeye başlandı.
+</li>
+
+<li>
+Versiyon 0.5.32 ile birlikte SNI desteği gelmiştir.
+</li>
+
+<li>
+Versiyon 0.5.6 ile birlikte paylaşımlı SSL otorum önbelleği desteği gelmiştir.
+</li>
+
+</ul><p> 
+</p><p>
+</p> <ul class="compact">
+
+<li>
+Versiyon 0.7.65, 0.8.19 ve sonrası varsayılan SSL protokolleri: SSLv3 ve TLSv1.
+</li>
+
+<li>
+Versiyon 0.7.64, 0.8.18 ve öncesi varsayılan SSL protokolleri: SSLv2, SSLv3 ve TLSv1.
+</li>
+
+</ul><p> 
+</p><p>
+</p> <ul class="compact">
+
+<li>
+Versiyon 0.7.65, 0.8.20 ve sonrası varsayılan SSL şifreleri (cipher):
+<code>HIGH:!ADH:!MD5</code>.
+</li>
+
+<li>
+Versiyon 0.8.19: varsayılan SSL şifreleri:
+<code>ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM</code>.
+</li>
+
+<li>
+Versiyon 0.7.64, 0.8.18 ve öncesi varsayılan SSL şifreleri:<br>
+<code>ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>.
+</li>
+
+</ul><p> 
+</p><table width="100%"><tr><td align="right">yazan: Igor Sysoev<br>çeviren: Altan Tanrıverdi<br></td></tr></table></td></tr></table></body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>我尝试打开Facebook，Yahoo!，Yandex，Tumblr，Google等等，但得到的是一个“Welcome to nginx!”的页面</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>我尝试打开Facebook，Yahoo!，Yandex，Tumblr，Google等等，但得到的是一个“Welcome to nginx!”的页面</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../en/docs/welcome_nginx_facebook.html">english</a><br><a class="notrans">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../">新闻</a> [en]<br><a href="../../cn/">nginx 介绍</a><br><a href="../../en/download.html">下载</a> [en]<br><a href="../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="./">文档</a><br><a href="faq.html">FAQ</a><br><a href="../../en/links.html">外部连接</a> [en]<br><a href="../../en/books.html">书籍</a> [en]<br><a href="../../en/support.html">支持</a> [en]<br><a href="../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><p>
+<span class="initial"><b>问：</b></span>
+我尝试打开Facebook，Yahoo!，Yandex，Tumblr，Google，或者其他一些知名网站时，但是得到的都是空白页，页面上有一条与nginx相关的信息：“Welcome to nginx!”或者是“404 Not Found / nginx”。
+</p><p>
+我怀疑出了什么问题，而且有可能有恶意的企图要把我引导到流氓页面去（为了黑掉我的电脑，钓鱼等等）。为什么？nginx跟我想连上Facebook（Yahoo!，Google等等）有什么关系？
+</p><p>
+ 
+</p><p>
+<span class="initial"><b>答：</b></span>
+第一，你看到的“Welcome to nginx!”不是我们的网站。nginx是我们开发和分发的一个<b>免费</b>的<a href="http://en.wikipedia.org/wiki/Open-source_software">开源</a>web服务器软件。“Welcome to nginx!”的页面只是任何一个运行nginx服务器的网站都会返回的诊断响应。目前，nginx是世界上第二流行的开源web服务器，它被70,000,000网站（因特网的10%）所使用。这些网站中绝大多数都是合法的，但也有一些不是。我们的软件是本着让因特网上具备高性能和高扩展性的好意而创造的，它遵循<a href="http://nginx.org/LICENSE">流行的开源许可</a>，本质上与任何威胁和恶意行为都没有任何关系————nginx不是恶意软件，它也不在你的电脑上。但是某些恶意软件确实会篡改你的电脑或者路由器，把你引导到某个欺诈的因特网服务器上。
+</p><p>
+(免责声明: 对于下列行为造成的任何负面影响和效果，nginx不承担任何责任。按下面建议进行操作时，您需要自行承担风险。尤其是您对您的操作系统和/或因特网应用不是很有经验时，这点非常重要。对任何直接的，间接的，偶然的，特殊的，典型的，或者继发的损害，包括但不限于使用、数据、收益方面的损失，或者营业中断，nginx不负有任何责任）。
+</p><p>
+</p> <ul>
+<li>
+检查你的TCP/IP设置，查看DNS配置是否合法（请咨询ISP或IT支持人员）
+</li>
+
+<li>
+使用<a href="http://code.google.com/speed/public-dns/">Google
+Public DNS</a>, 尝试修复这个问题。Google Public DNS的描述是：“Google Public DNS是一款免费的全球域名系统（DNS）解析服务，您可以使用它替代您当前的DNS供应服务。[..]使用Google Public DNS，你可以：加速您的浏览体验。<b>提升你的安全性</b>。”
+</li>
+
+<li>
+清除您的DNS解析缓存。在微软Windos XP上，运行“开始” &gt; “运行”，然后输入下面指令：“ipconfig /flushdns”。在微软Vista, Windows 7和Windows 8上，点击“开始”图标，找到“所有应用” &gt; “附件” &gt; “命令提示符”，右击，选择“以管理员身份运行”，再输入“ipconfig /flushdns”，敲回车键。
+</li>
+
+<li>
+点击浏览器上的“刷新”按钮。清空浏览器的数据（缓存，cookie等等）。比如，使用Chrome浏览器，找到并点击“清除浏览数据”（设置 &gt; 显示高级设置）。使用IE浏览器，找到“工具” &gt; “Interner选项” &gt; “常规”）。<b>注意：</b>您在这里可能删除您保存的密码信心，所以请仔细操作并检查您正在进行的究竟是何种操作。
+</li>
+
+<li>
+检查“hosts”文件中是否不包含除“127.0.0.1 localhost”以外的其他项；如果不是，那么这些项中是否有您要访问的网站。“hosts”文件位于C:\WINDOWS\system32\drivers\etc文件夹下。通常文件中应该只有一项“127.0.0.1 localhost”。“hosts”文件可以使用记事本查看和编辑。
+</li>
+
+<li>
+检查安装到您的浏览器中的插件和扩展。重新安装您的浏览器或者如果可能的话，使用其他浏览器替代。
+</li>
+</ul><p> 
+</p><p>
+当你尝试访问一些知名网站的时候，得到的不是熟悉的页面反而是“Welcome to nginx!”的时候，你的<b>操作系统</b>设置，<b>家用路由器</b>设置，或者<b>浏览器</b>设置一定有问题。如果你的电脑是干净且安全的，就不应该出现这种情况。
+</p><p>
+如果将DNS服务器换成Google Public DNS，刷新DNS解析缓存，修复您的浏览器配置，或者清理“hosts”文件（适当的）确实解决了问题，那么您的电脑上或者周边网络中可能存在着恶意软件。使用您偏好的杀毒软件和恶意软件清除工具找出并清除它们。
+</p><p>
+其他可能有用的文章：
+</p><p>
+DCWG.org:
+</p><p>
+<a href="http://www.dcwg.org/detect/">
+如何发现您的电脑是否已经被DNS Changer侵犯和感染？</a>
+</p><p>
+<a href="http://www.dcwg.org/fix/">
+如何清理或修复恶意软件DNS Changer</a>
+</p><p>
+Microsoft:
+</p><p>
+<a href="http://www.microsoft.com/security/pc-security/malware-removal.aspx">
+恶意软件删除工具</a>
+</p><p>
+<a href="http://support.microsoft.com/kb/972034">
+如何将主机文件重置回默认值？</a>
+</p><p>
+<a href="http://support.microsoft.com/kb/299357">
+如何重置 Internet 协议 (TCP/IP)</a>
+</p><p>
+Tech-Recipes:
+</p><p>
+<a href="http://www.tech-recipes.com/rx/1600/vista_dns_cache_flush/">
+在Vista，Windows 7和Windows 8系统中刷新，清除，重置DNS缓存</a>
+</p></td></tr></table></body></html>

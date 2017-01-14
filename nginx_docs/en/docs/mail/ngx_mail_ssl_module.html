@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Module ngx_mail_ssl_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Module ngx_mail_ssl_module</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../../../ru/docs/mail/ngx_mail_ssl_module.html">русский</a><br><br><a href="../../../cn/docs/mail/ngx_mail_ssl_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">news</a><br><a href="../../../en/">about</a><br><a href="../../../en/download.html">download</a><br><a href="../../../en/security_advisories.html">security advisories</a><br><a href="../../../en/docs/">documentation</a><br><a href="../../../en/pgp_keys.html">pgp keys</a><br><a href="../../../en/docs/faq.html">faq</a><br><a href="../../../en/links.html">links</a><br><a href="../../../en/books.html">books</a><br><a href="../../../en/support.html">support</a><br><a href="../../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#directives">Directives</a><br>     <a href="#ssl">ssl</a><br>     <a href="#ssl_certificate">ssl_certificate</a><br>     <a href="#ssl_certificate_key">ssl_certificate_key</a><br>     <a href="#ssl_prefer_server_ciphers">ssl_prefer_server_ciphers</a><br>     <a href="#ssl_protocols">ssl_protocols</a><br>     <a href="#ssl_session_cache">ssl_session_cache</a><br>     <a href="#ssl_session_timeout">ssl_session_timeout</a><br>     <a href="#starttls">starttls</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+The <code>ngx_mail_ssl_module</code> provides the necessary
+support for mail proxy server for the SSL/TLS protocol.
+</p><p>
+This module is not built by default, it should be enabled with
+the <code>--with-mail_ssl_module</code>
+configuration parameter.
+</p> <blockquote class="note">
+This module requires the <a href="http://www.openssl.org">OpenSSL</a>
+library.
+</blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Directives</h4></center><a name="ssl"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssl</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssl off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Enables the SSL/TLS protocol for the given server.
+</p><a name="ssl_certificate"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssl_certificate</strong> <code><i>file</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Specifies a file with a certificate in the PEM format for the given
+server.
+If intermediate certificates should be specified in addition to a primary
+certificate, they should be specified in the same file in the following
+order: the primary certificate comes first, then the intermediate certificates.
+A secret key in the PEM format may be placed in the same file.
+</p><a name="ssl_certificate_key"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssl_certificate_key</strong> <code><i>file</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Specifies a file with a secret key in the PEM format for the given
+server.
+</p><a name="ssl_prefer_server_ciphers"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssl_prefer_server_ciphers</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssl_prefer_server_ciphers off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Specifies that server ciphers should be preferred over client ciphers
+when using the SSLv3 and TLS protocols.
+</p><a name="ssl_protocols"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssl_protocols</strong> 
+    [<code>SSLv2</code>]
+    [<code>SSLv3</code>]
+    [<code>TLSv1</code>]
+    [<code>TLSv1.1</code>]
+    [<code>TLSv1.2</code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Enables the specified protocols.
+The parameters <code>TLSv1.1</code> and <code>TLSv1.2</code> work
+only when using the OpenSSL library version 1.0.1 and higher.
+</p> <blockquote class="note">
+The parameters <code>TLSv1.1</code> and <code>TLSv1.2</code> are
+supported starting from versions 1.1.13 and 1.0.12
+so when using OpenSSL version 1.0.1
+and higher on older nginx versions these protocols will work but could not
+be disabled.
+</blockquote><p> 
+</p><a name="ssl_session_cache"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssl_session_cache</strong> 
+    <code>off</code> |
+    <code>none</code> |
+    [<code>builtin</code>[:<code><i>size</i></code>]]
+    [<code>shared</code>:<code><i>name</i></code>:<code><i>size</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssl_session_cache none;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Sets types and sizes of caches that store session parameters.
+A cache can be any of the following types:
+</p> <dl class="compact">
+
+<dt><code>off</code></dt>
+<dd>
+the use of session cache is strictly prohibited:
+nginx explicitly tells a client that sessions may not be reused.
+</dd>
+
+<dt><code>none</code></dt>
+<dd>
+the use of session cache is gently disallowed:
+nginx tells a client that sessions may be reused, but does not
+actually do that.
+</dd>
+
+<dt><code>builtin</code></dt>
+<dd>
+a cache built in OpenSSL; used by one worker process only.
+The cache size is specified in sessions.
+If size is not given, it is equal to 20480 sessions.
+Use of the built-in cache can cause memory fragmentation.
+</dd>
+
+<dt><code>shared</code></dt>
+<dd>
+shared between all worker processes.
+The cache size is specified in bytes; one megabyte can store
+about 4000 sessions.
+Each shared cache should have an arbitrary name.
+A cache with the same name can be used in several
+servers.
+</dd>
+
+</dl><p> 
+</p><p>
+Both cache types can be used simultaneously, for example:
+</p> <blockquote class="example"><pre>
+ssl_session_cache builtin:1000 shared:SSL:10m;
+</pre></blockquote><p> 
+but using only shared cache without the built-in cache should
+be more efficient.
+</p><a name="ssl_session_timeout"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssl_session_timeout</strong> <code><i>time</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssl_session_timeout 5m;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Specifies a time during which a client may reuse the
+session parameters stored in a cache.
+</p><a name="starttls"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>starttls</strong> 
+  <code>on</code> |
+  <code>off</code> |
+  <code>only</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>starttls off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+</p> <dl class="compact">
+
+<dt><code>on</code></dt>
+<dd>
+Allow usage of <code>STLS</code> command for the POP3
+and <code>STARTTLS</code> command for the IMAP;
+</dd>
+
+<dt><code>off</code></dt>
+<dd>
+Deny usage of <code>STLS</code>
+and <code>STARTTLS</code> commands;
+</dd>
+
+<dt><code>only</code></dt>
+<dd>
+require preliminary TLS transition.
+</dd>
+
+</dl><p> 
+</p>
+
+</td></tr></table></body></html>

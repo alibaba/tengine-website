@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>ngx_http_charset_module模块</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>ngx_http_charset_module模块</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_charset_module.html">english</a><br><a href="../../../ru/docs/http/ngx_http_charset_module.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">新闻</a> [en]<br><a href="../../../cn/">nginx 介绍</a><br><a href="../../../en/download.html">下载</a> [en]<br><a href="../../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="../../../cn/docs/">文档</a><br><a href="../../../cn/docs/faq.html">FAQ</a><br><a href="../../../en/links.html">外部连接</a> [en]<br><a href="../../../en/books.html">书籍</a> [en]<br><a href="../../../en/support.html">支持</a> [en]<br><a href="../../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">配置示例</a><br><a href="#directives">指令</a><br>     <a href="#charset">charset</a><br>     <a href="#charset_map">charset_map</a><br>     <a href="#charset_types">charset_types</a><br>     <a href="#override_charset">override_charset</a><br>     <a href="#source_charset">source_charset</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+<code>ngx_http_charset_module</code>模块为响应头的“Content-Type”添加指定的字符集。 
+
+此外，这个模块可以把数据从一个字符集转换为另一个字符集，但也有以下限制：
+</p> <ul class="compact">
+
+<li>
+只能单向转换，即从服务端到客户端，
+</li>
+
+<li>
+只有单字节字符集能被转换
+</li>
+
+<li>
+或者单字节字符集和UTF-8之间的互相转换。
+</li>
+
+</ul><p> 
+</p>
+
+
+<a name="example"></a><center><h4>配置示例</h4></center><p>
+</p> <blockquote class="example"><pre>
+include        conf/koi-win;
+
+charset        windows-1251;
+source_charset koi8-r;
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>指令</h4></center><a name="charset"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>charset</strong> <code><i>charset</i></code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>charset off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code>, <code>if in location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+为响应头的“Content-Type”添加指定的字符集。
+如果这个字符集和<a href="#source_charset">source_charset</a>指令设置的字符集不同，就会进行转换。
+</p><p>
+参数<code>off</code> 表明不在响应头的“Content-Type”中添加字符集。
+</p><p>
+字符集可以当作变量来定义：
+</p> <blockquote class="example"><pre>
+charset $charset;
+</pre></blockquote><p> 
+这种情况下，一个变量所有可能的值，至少使用
+<a href="#charset_map">charset_map</a> <a href="#charset">charset</a>, 或者
+<a href="#source_charset">source_charset</a> 指令中的一种来配置。
+对于 <code>utf-8</code>, <code>windows-1251</code>, 和
+<code>koi8-r</code> 字符集，在配置中包含
+<code>conf/koi-win</code>, <code>conf/koi-utf</code>, 和
+<code>conf/win-utf</code>这些文件就足够了。
+对于其他字符集，简单地做一个虚构转换表就可以了，
+比如：
+</p> <blockquote class="example"><pre>
+charset_map iso-8859-5 _ { }
+</pre></blockquote><p> 
+</p><p>
+此外，字符集也可以在响应头的
+“X-Accel-Charset”中设置。
+这个功能可以使用
+<a href="ngx_http_proxy_module.html#proxy_ignore_headers">proxy_ignore_headers</a>
+和
+<a href="ngx_http_fastcgi_module.html#fastcgi_ignore_headers">fastcgi_ignore_headers</a>
+指令来禁用。
+</p><a name="charset_map"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>charset_map</strong> <code><i>charset1</i></code> <code><i>charset2</i></code> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+描述了从一个字符集到另一个字符集的转换表。
+反向转换表使用相同的数据来构建。
+字符代码用十六进制表示。
+在80-FF范围内不能表示的字符使用 “<code>?</code>”替换。
+当把UTF-8转换为其他字符集时, 单字节字符集中不能表示的字符使用 “<code>&amp;#XXXX;</code>”来替换。
+</p><p>
+示例：
+</p> <blockquote class="example"><pre>
+charset_map koi8-r windows-1251 {
+    C0 FE ; # small yu
+    C1 E0 ; # small a
+    C2 E1 ; # small b
+    C3 F6 ; # small ts
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+当描述一个UTF-8的转换表时，UTF-8的字符集代码应该放在第二列，比如：
+</p> <blockquote class="example"><pre>
+charset_map koi8-r utf-8 {
+    C0 D18E ; # small yu
+    C1 D0B0 ; # small a
+    C2 D0B1 ; # small b
+    C3 D186 ; # small ts
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+发行文件<code>conf/koi-win</code>,
+<code>conf/koi-utf</code>, and <code>conf/win-utf</code>中已经提供了从<code>koi8-r</code>到
+<code>windows-1251</code>，从<code>koi8-r</code>到<code>utf-8</code>，以及从
+<code>windows-1251</code>到<code>utf-8</code>的完整转换表。
+</p><a name="charset_types"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>charset_types</strong> <code><i>mime-type</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>charset_types text/html text/xml text/plain text/vnd.wap.wml
+application/x-javascript application/rss+xml;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>这个指令出现在版本 0.7.9.
+
+            </p></div><p>
+使模块在响应时能处理除了“<code>text/html</code>”之外其他指定的MIME类型。
+特殊值“<code>*</code>” 匹配任意的MIME类型(0.8.29)。
+</p><a name="override_charset"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>override_charset</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>override_charset off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code>, <code>if in location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+对于接收到的代理服务器或者FastCGI服务器的响应头中“Content-Type”已经带有字符集的情况，确定是否进行字符集转换。
+如果开启转换，接收到的响应中指定的字符集会被当作原始字符集。
+</p> <blockquote class="note">
+需要注意的是，如果在子请求中接收到的应答，始终会将应答的字符集转换为主请求的字符集，无论<code>override_charset</code>
+指令是否开启。
+</blockquote><p> 
+</p><a name="source_charset"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>source_charset</strong> <code><i>charset</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code>, <code>if in location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义响应中的原始字符集。
+如果这个字符集和<a href="#charset">charset</a>指令设置字符集的不同，就会进行转换。
+</p>
+
+<table width="100%"><tr><td align="right">翻译: WenMing<br></td></tr></table></td></tr></table></body></html>

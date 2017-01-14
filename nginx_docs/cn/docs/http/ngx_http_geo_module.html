@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>ngx_http_geo_module 模块</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>ngx_http_geo_module 模块</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_geo_module.html">english</a><br><a href="../../../ru/docs/http/ngx_http_geo_module.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">新闻</a> [en]<br><a href="../../../cn/">nginx 介绍</a><br><a href="../../../en/download.html">下载</a> [en]<br><a href="../../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="../../../cn/docs/">文档</a><br><a href="../../../cn/docs/faq.html">FAQ</a><br><a href="../../../en/links.html">外部连接</a> [en]<br><a href="../../../en/books.html">书籍</a> [en]<br><a href="../../../en/support.html">支持</a> [en]<br><a href="../../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">翻译内容可能已经过旧。
+你可以通过 <a href="../../../en/docs/http/ngx_http_geo_module.html">英文版本</a>
+查看最近的更新。</blockquote></span><table width="100%"><tr><td align="left"><a href="#example">配置示例</a><br><a href="#directives">指令</a><br>     <a href="#geo">geo</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+<code>ngx_http_geo_module</code> 模块创建变量，并根据客户端IP地址对变量赋值。
+</p>
+
+
+<a name="example"></a><center><h4>配置示例</h4></center><p>
+</p> <blockquote class="example"><pre>
+geo $geo {
+    default        0;
+    127.0.0.1/32   2;
+    192.168.1.0/24 1;
+    10.1.0.0/16    1;
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>指令</h4></center><a name="geo"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>geo</strong> [<code><i>$address</i></code>] <code><i>$variable</i></code> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义从指定的变量获取客户端的IP地址。默认情况下，nginx从<code>$remote_addr</code>变量取得客户端IP地址，但也可以从其他变量获得（0.7.27版），比如：
+</p> <blockquote class="example"><pre>
+geo $arg_remote_addr $geo {
+    ...;
+}
+</pre></blockquote><p> 
+如果该变量的值不能代表一个合法的IP地址，那么nginx将使用地址“<code>255.255.255.255</code>”。
+</p><p>
+nginx通过CIDR或者地址段（0.7.23版）来描述地址，同时支持下面的特殊参数：
+</p> <dl class="compact">
+
+<dt><code>delete</code></dt>
+<dd>
+删除指定网络（0.7.23版）。
+</dd>
+
+<dt><code>default</code></dt>
+<dd>
+如果客户端地址不能匹配任意一个定义的地址，nginx将使用此值。
+如果使用CIDR，可以用“<code>0.0.0.0/0</code>”代替<code>default</code>。
+</dd>
+
+<dt><code>include</code></dt>
+<dd>
+包含一个定义地址和值的文件。可以多次包含。
+</dd>
+
+<dt><code>proxy</code></dt>
+<dd>
+定义可信地址（0.8.7，0.7.63版）。
+如果请求来自可信地址，nginx将使用其“X-Forwarded-For”头来获得地址。
+相对于普通地址，可信地址是顺序检测的。
+<blockquote class="note">
+从1.3.0和1.2.1版本起，nginx开始支持IPv6地址。
+</blockquote>
+</dd>
+
+<dt><code>proxy_recursive</code></dt>
+<dd>
+开启递归查找地址（1.3.0，1.2.1版）。
+如果关闭递归查找，在客户端地址与某个可信地址匹配时，nginx将使用“X-Forwarded-For”中的最后一个地址来代替原始客户端地址。
+如果开启递归查找，在客户端地址与某个可信地址匹配时，nginx将使用“X-Forwarded-For”中最后一个与所有可信地址都不匹配的地址来代替原始客户端地址。
+</dd>
+
+<dt><code>ranges</code></dt>
+<dd>
+指示地址将定义为地址段的形式（0.7.23版）。这个参数应该第一个被定义。为了加速装载地址库，地址应按升序定义。
+</dd>
+
+</dl><p> 
+</p><p>
+举例：
+</p> <blockquote class="example"><pre>
+geo $country {
+    default        ZZ;
+    include        conf/geo.conf;
+    delete         127.0.0.0/16;
+    proxy          192.168.100.0/24;
+    proxy          2001:0db8::/32;
+
+    127.0.0.0/24   US;
+    127.0.0.1/32   RU;
+    10.1.0.0/16    RU;
+    192.168.1.0/24 UK;
+}
+</pre></blockquote><p> 
+</p><p>
+<code>conf/geo.conf</code>文件中可能包含下列文本行：
+</p> <blockquote class="example"><pre>
+10.2.0.0/16    RU;
+192.168.2.0/24 RU;
+</pre></blockquote><p> 
+</p><p>
+nginx将使用能最精确匹配客户端地址的配置中定义的值。比如，对于地址127.0.0.1，nginx会选取“<code>RU</code>”而非“<code>US</code>”，作为变量值。
+</p><p>
+地址段的例子：
+</p> <blockquote class="example"><pre>
+geo $country {
+    ranges;
+    default                   ZZ;
+    127.0.0.0-127.0.0.0       US;
+    127.0.0.1-127.0.0.1       RU;
+    127.0.0.1-127.0.0.255     US;
+    10.1.0.0-10.1.255.255     RU;
+    192.168.1.0-192.168.1.255 UK;
+}
+</pre></blockquote><p> 
+</p>
+
+<table width="100%"><tr><td align="right">翻译: cfsego<br></td></tr></table></td></tr></table></body></html>

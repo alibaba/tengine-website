@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Модуль ngx_http_limit_req_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Модуль ngx_http_limit_req_module</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_limit_req_module.html">english</a><br>русский<br><br><a href="../../../cn/docs/http/ngx_http_limit_req_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">новости</a> [en]<br><a href="../../../ru/">об nginx</a><br><a href="../../../ru/download.html">скачать</a><br><a href="../../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="../../../ru/docs/">документация</a><br><a href="../../../ru/docs/faq.html">faq</a><br><a href="../../../en/links.html">ссылки</a> [en]<br><a href="../../../en/books.html">книги</a> [en]<br><a href="../../../ru/support.html">поддержка</a><br><a href="../../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Пример конфигурации</a><br><a href="#directives">Директивы</a><br>     <a href="#limit_req">limit_req</a><br>     <a href="#limit_req_log_level">limit_req_log_level</a><br>     <a href="#limit_req_zone">limit_req_zone</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+Модуль <code>ngx_http_limit_req_module</code> (0.7.21) позволяет
+ограничить скорость обработки запросов по заданному ключу или,
+как частный случай, скорость обработки запросов, поступающих
+с одного IP-адреса.
+Ограничение обеспечивается с помощью метода “leaky bucket”.
+</p>
+
+
+<a name="example"></a><center><h4>Пример конфигурации</h4></center><p>
+</p> <blockquote class="example"><pre>
+http {
+    limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+
+    ...
+
+    server {
+
+        ...
+
+        location /search/ {
+            limit_req zone=one burst=5;
+        }
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Директивы</h4></center><a name="limit_req"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>limit_req</strong> 
+    <code>zone</code>=<code><i>название</i></code>
+    [<code>burst</code>=<code><i>число</i></code>]
+    [<code>nodelay</code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт зону разделяемой памяти (<code>zone</code>)
+и максимальный размер всплеска запросов (<code>burst</code>).
+Если скорость поступления запросов превышает описанную в зоне,
+то их обработка задерживается так, чтобы запросы обрабатывались
+с заданной скоростью.
+Избыточные запросы задерживаются до тех пор, пока их число
+не превысит максимальный размер всплеска.
+При превышении запрос завершается с ошибкой
+503 (Service Temporarily Unavailable).
+По умолчанию максимальный размер всплеска равен нулю.
+Например, директивы
+</p> <blockquote class="example"><pre>
+limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+
+server {
+    location /search/ {
+        limit_req zone=one burst=5;
+    }
+</pre></blockquote><p> 
+позволяют в среднем не более 1 запроса в секунду
+со всплесками не более 5 запросов.
+</p><p>
+Если же избыточные запросы в пределах лимита всплесков задерживать
+не требуется, то следует использовать параметр <code>nodelay</code>:
+</p> <blockquote class="example"><pre>
+limit_req zone=one burst=5 nodelay;
+</pre></blockquote><p> 
+</p><a name="limit_req_log_level"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>limit_req_log_level</strong> 
+<code>info</code> |
+<code>notice</code> |
+<code>warn</code> |
+<code>error</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>limit_req_log_level error;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 0.8.18.
+
+            </p></div><p>
+Задаёт желаемый уровень записи в лог
+случаев отказа в обработке запросов при превышении скорости
+и случаев задержек при обработке запроса.
+Задержки записываются в лог с уровнем на единицу меньшим, чем отказы,
+например, если указано “<code>limit_req_log_level notice</code>”,
+то задержки будут записываться в лог на уровне <code>info</code>.
+</p><a name="limit_req_zone"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>limit_req_zone</strong> 
+    <code><i>$переменная</i></code>
+    <code>zone</code>=<code><i>название</i></code>:<code><i>размер</i></code>
+    <code>rate</code>=<code><i>скорость</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт параметры зоны разделяемой памяти,
+которая хранит состояние для разных значений ключа.
+Состояние в частности хранит текущее число избыточных запросов.
+Ключом является любое непустое значение заданной переменной
+(пустые значения не учитываются).
+Пример использования:
+</p> <blockquote class="example"><pre>
+limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+</pre></blockquote><p> 
+</p><p>
+В данном случае состояния хранятся в зоне “one” размером 10 мегабайт,
+и средняя скорость обработки запросов для этой зоны не может превышать
+1 запроса в секунду.
+</p><p>
+В качестве ключа используется IP-адрес клиента.
+Обратите внимание, что вместо переменной <code>$remote_addr</code> используется
+переменная <code>$binary_remote_addr</code>, позволяющая уменьшить
+размер состояния до 64 байт.
+В зоне размером 1 мегабайт может разместиться около 16 тысяч состояний
+размером 64 байта.
+При переполнении зоны в ответ на последующие запросы сервер будет
+возвращать ошибку
+503 (Service Temporarily Unavailable).
+</p><p>
+Скорость задаётся в запросах в секунду (r/s).
+Если же нужна скорость меньше одного запроса в секунду,
+то она задаётся в запросах в минуту (r/m), например,
+ползапроса в секунду — это 30r/m.
+</p>
+
+</td></tr></table></body></html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Модуль ngx_http_ssl_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Модуль ngx_http_ssl_module</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_ssl_module.html">english</a><br>русский<br><br><a href="../../../cn/docs/http/ngx_http_ssl_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">новости</a> [en]<br><a href="../../../ru/">об nginx</a><br><a href="../../../ru/download.html">скачать</a><br><a href="../../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="../../../ru/docs/">документация</a><br><a href="../../../ru/docs/faq.html">faq</a><br><a href="../../../en/links.html">ссылки</a> [en]<br><a href="../../../en/books.html">книги</a> [en]<br><a href="../../../ru/support.html">поддержка</a><br><a href="../../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Пример конфигурации</a><br><a href="#directives">Директивы</a><br>     <a href="#ssl">ssl</a><br>     <a href="#ssl_certificate">ssl_certificate</a><br>     <a href="#ssl_certificate_key">ssl_certificate_key</a><br>     <a href="#ssl_ciphers">ssl_ciphers</a><br>     <a href="#ssl_client_certificate">ssl_client_certificate</a><br>     <a href="#ssl_crl">ssl_crl</a><br>     <a href="#ssl_dhparam">ssl_dhparam</a><br>     <a href="#ssl_prefer_server_ciphers">ssl_prefer_server_ciphers</a><br>     <a href="#ssl_protocols">ssl_protocols</a><br>     <a href="#ssl_session_cache">ssl_session_cache</a><br>     <a href="#ssl_session_timeout">ssl_session_timeout</a><br>     <a href="#ssl_stapling">ssl_stapling</a><br>     <a href="#ssl_stapling_file">ssl_stapling_file</a><br>     <a href="#ssl_stapling_responder">ssl_stapling_responder</a><br>     <a href="#ssl_stapling_verify">ssl_stapling_verify</a><br>     <a href="#ssl_trusted_certificate">ssl_trusted_certificate</a><br>     <a href="#ssl_verify_client">ssl_verify_client</a><br>     <a href="#ssl_verify_depth">ssl_verify_depth</a><br><a href="#errors">Обработка ошибок</a><br><a href="#variables">Встроенные переменные</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+Модуль <code>ngx_http_ssl_module</code> обеспечивает работу
+по протоколу HTTPS.
+</p><p>
+По умолчанию этот модуль не собирается, его сборку необходимо
+разрешить с помощью конфигурационного параметра
+<code>--with-http_ssl_module</code>.
+</p> <blockquote class="note">
+Для сборки и работы этого модуля нужна библиотека
+<a href="http://www.openssl.org">OpenSSL</a>.
+</blockquote><p> 
+</p>
+
+
+<a name="example"></a><center><h4>Пример конфигурации</h4></center><p>
+Для уменьшения загрузки процессора рекомендуется
+</p> <ul class="compact">
+
+<li>
+установить число рабочих процессов равным числу процессоров,
+</li>
+
+<li>
+разрешить keep-alive соединения,
+</li>
+
+<li>
+включить разделяемый кэш сессий,
+</li>
+
+<li>
+выключить встроенный кэш сессий
+</li>
+
+<li>
+и, возможно, увеличить время жизни сессии (по умолчанию 5 минут):
+</li>
+
+</ul><p> 
+
+</p> <blockquote class="example"><pre>
+<strong>worker_processes 2;</strong>
+
+http {
+
+    ...
+
+    server {
+        listen              443 ssl;
+        <strong>keepalive_timeout   70;</strong>
+
+        ssl_protocols       SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers         AES128-SHA:AES256-SHA:RC4-SHA:DES-CBC3-SHA:RC4-MD5;
+        ssl_certificate     /usr/local/nginx/conf/cert.pem;
+        ssl_certificate_key /usr/local/nginx/conf/cert.key;
+        <strong>ssl_session_cache   shared:SSL:10m;</strong>
+        <strong>ssl_session_timeout 10m;</strong>
+
+        ...
+    }
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Директивы</h4></center><a name="ssl"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Включает протокол HTTPS для данного виртуального сервера.
+</p> <blockquote class="note">
+Вместо этой директивы рекомендуется использовать параметр
+<code>ssl</code> директивы
+<a href="ngx_http_core_module.html#listen">listen</a>.
+</blockquote><p> 
+</p><a name="ssl_certificate"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_certificate</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Указывает <code><i>файл</i></code> с сертификатом в формате PEM
+для данного виртуального сервера.
+Если вместе с основным сертификатом нужно указать промежуточные,
+то они должны находиться в этом же файле в следующем порядке: сначала
+основной сертификат, а затем промежуточные.
+В этом же файле может находиться секретный ключ в формате PEM.
+</p><p>
+Нужно иметь в виду, что из-за ограничения протокола HTTPS
+виртуальные серверы должны слушать на разных IP-адресах:
+</p> <blockquote class="example"><pre>
+server {
+    listen          192.168.1.1:443;
+    server_name     one.example.com;
+    ssl_certificate /usr/local/nginx/conf/one.example.com.cert;
+    ...
+}
+
+server {
+    listen          192.168.1.2:443;
+    server_name     two.example.com;
+    ssl_certificate /usr/local/nginx/conf/two.example.com.cert;
+    ...
+}
+</pre></blockquote><p> 
+иначе для второго сайта будет выдаваться
+<a href="configuring_https_servers.html#name_based_https_servers">сертификат первого сервера</a>.
+</p><a name="ssl_certificate_key"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_certificate_key</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Указывает <code><i>файл</i></code> с секретным ключом в формате PEM
+для данного виртуального сервера.
+</p><a name="ssl_ciphers"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_ciphers</strong> <code><i>шифры</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_ciphers HIGH:!aNULL:!MD5;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Описывает разрешённые шифры.
+Шифры задаются в формате, поддерживаемом библиотекой
+OpenSSL, например:
+</p> <blockquote class="example"><pre>
+ssl_ciphers ALL:!aNULL:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+</pre></blockquote><p> 
+</p><p>
+Полный список можно посмотреть с помощью команды
+“<code>openssl ciphers</code>”.
+</p><p>
+</p> <blockquote class="note">
+В предыдущих версиях nginx по умолчанию использовались
+<a href="configuring_https_servers.html#compatibility">другие</a>
+шифры.
+</blockquote><p> 
+</p><a name="ssl_client_certificate"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_client_certificate</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Указывает <code><i>файл</i></code> с доверенными сертификатами CA в формате
+PEM, которые используются для проверки клиентских сертификатов и
+ответов OCSP, если включён <a href="#ssl_stapling">ssl_stapling</a>.
+</p><p>
+Список сертификатов будет отправляться клиентам.
+Если это нежелательно, можно воспользоваться директивой
+<a href="#ssl_trusted_certificate">ssl_trusted_certificate</a>.
+</p><a name="ssl_crl"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_crl</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 0.8.7.
+
+            </p></div><p>
+Указывает <code><i>файл</i></code> с отозванными сертификатами (CRL)
+в формате PEM, используемыми для проверки клиентских сертификатов.
+</p><a name="ssl_dhparam"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_dhparam</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 0.7.2.
+
+            </p></div><p>
+Указывает <code><i>файл</i></code> с параметрами для шифров с обменом EDH-ключами.
+</p><a name="ssl_prefer_server_ciphers"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_prefer_server_ciphers</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_prefer_server_ciphers off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Указывает, чтобы при использовании протоколов SSLv3 и TLS
+серверные шифры были более приоритетны, чем клиентские.
+</p><a name="ssl_protocols"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_protocols</strong> 
+    [<code>SSLv2</code>]
+    [<code>SSLv3</code>]
+    [<code>TLSv1</code>]
+    [<code>TLSv1.1</code>]
+    [<code>TLSv1.2</code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Разрешает указанные протоколы.
+Параметры <code>TLSv1.1</code> и <code>TLSv1.2</code> работают
+только при использовании библиотеки OpenSSL версии 1.0.1 и выше.
+</p> <blockquote class="note">
+Параметры <code>TLSv1.1</code> и <code>TLSv1.2</code> поддерживаются
+только начиная с версий 1.1.13 и 1.0.12,
+поэтому при использовании OpenSSL версии 1.0.1
+и выше на старых версиях nginx эти протоколы работать будут, однако их нельзя
+будет отключить.
+</blockquote><p> 
+</p><a name="ssl_session_cache"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_session_cache</strong> 
+    <code>off</code> |
+    <code>none</code> |
+    [<code>builtin</code>[:<code><i>размер</i></code>]]
+    [<code>shared</code>:<code><i>название</i></code>:<code><i>размер</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_session_cache none;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт тип и размеры кэшей для хранения параметров сессий.
+Тип кэша может быть следующим:
+</p> <dl class="compact">
+
+<dt><code>off</code></dt>
+<dd>
+жёсткое запрещение использования кэша сессий:
+nginx явно говорит клиенту, что сессии не могут использоваться повторно.
+</dd>
+
+<dt><code>none</code></dt>
+<dd>
+мягкое запрещение использования кэша сессий:
+nginx говорит клиенту, что сессии могут использоваться повторно, но
+на самом деле не используются.
+</dd>
+
+<dt><code>builtin</code></dt>
+<dd>
+встроенный в OpenSSL кэш, используется в рамках только одного рабочего процесса.
+Размер кэша задаётся в сессиях.
+Если размер не задан, то он равен 20480 сессиям.
+Использование встроенного кэша может вести к фрагментации памяти.
+</dd>
+
+<dt><code>shared</code></dt>
+<dd>
+разделяемый между всеми рабочими процессами.
+Размер кэша задаётся в байтах, в 1 мегабайт может поместиться
+около 4000 сессий.
+У каждого разделяемого кэша должно быть произвольное название.
+Кэш с одинаковым названием может использоваться в нескольких
+виртуальных серверах.
+</dd>
+
+</dl><p> 
+</p><p>
+Можно использовать одновременно оба типа кэша, например:
+</p> <blockquote class="example"><pre>
+ssl_session_cache builtin:1000 shared:SSL:10m;
+</pre></blockquote><p> 
+однако использование только разделяемого кэша без встроенного должно
+быть более эффективным.
+</p><a name="ssl_session_timeout"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_session_timeout</strong> <code><i>время</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_session_timeout 5m;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт время, в течение которого клиент может повторно
+использовать параметры сессии, хранящейся в кэше.
+</p><a name="ssl_stapling"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_stapling</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_stapling off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.3.7.
+
+            </p></div><p>
+Разрешает или запрещает
+<a href="http://tools.ietf.org/html/rfc4366#section-3.6">прикрепление
+OCSP-ответов</a> сервером.
+Пример:
+</p> <blockquote class="example"><pre>
+ssl_stapling on;
+resolver 192.0.2.1;
+</pre></blockquote><p> 
+</p><p>
+Для работы OCSP stapling’а должен быть известен сертификат издателя
+сертификата сервера.
+Если в заданном директивой <a href="#ssl_certificate">ssl_certificate</a>
+файле не содержится промежуточных сертификатов,
+то сертификат издателя сертификата сервера следует поместить в файл,
+заданный директивой <a href="#ssl_trusted_certificate">ssl_trusted_certificate</a>.
+</p><p>
+Для преобразования имени хоста OCSP responder’а в адрес необходимо
+дополнительно задать директиву
+<a href="ngx_http_core_module.html#resolver">resolver</a>.
+</p><a name="ssl_stapling_file"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_stapling_file</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.3.7.
+
+            </p></div><p>
+Если задано, то вместо опроса OCSP responder’а,
+указанного в сертификате сервера,
+ответ берётся из указанного <code><i>файла</i></code>.
+</p><p>
+Ответ должен быть в формате DER и может быть сгенерирован командой
+“<code>openssl ocsp</code>”.
+</p><a name="ssl_stapling_responder"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_stapling_responder</strong> <code><i>url</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.3.7.
+
+            </p></div><p>
+Переопределяет URL OCSP responder’а, указанный в расширении сертификата
+“<a href="http://tools.ietf.org/html/rfc5280#section-4.2.2.1">Authority
+Information Access</a>”.
+</p><p>
+Поддерживаются только “<code>http://</code>” OCSP responder’ы:
+</p> <blockquote class="example"><pre>
+ssl_stapling_responder http://ocsp.example.com/;
+</pre></blockquote><p> 
+</p><a name="ssl_stapling_verify"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_stapling_verify</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_stapling_verify off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.3.7.
+
+            </p></div><p>
+Разрешает или запрещает проверку сервером ответов OCSP.
+</p><p>
+Для работоспособности проверки сертификат издателя сертификата сервера,
+корневой сертификат и все промежуточные сертификаты должны быть указаны
+как доверенные с помощью директивы
+<a href="#ssl_trusted_certificate">ssl_trusted_certificate</a>.
+</p><a name="ssl_trusted_certificate"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_trusted_certificate</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.3.7.
+
+            </p></div><p>
+Задаёт <code><i>файл</i></code> с доверенными сертификатами CA в формате PEM,
+которые используются для проверки клиентских сертификатов и ответов OCSP,
+если включён <a href="#ssl_stapling">ssl_stapling</a>.
+</p><p>
+В отличие от <a href="#ssl_client_certificate">ssl_client_certificate</a>, список этих сертификатов
+не будет отправляться клиентам.
+</p><a name="ssl_verify_client"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_verify_client</strong> 
+    <code>on</code> | <code>off</code> |
+    <code>optional</code> | <code>optional_no_ca</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_verify_client off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Разрешает проверку клиентских сертификатов.
+Результат проверки доступен через переменную
+<code>$ssl_client_verify</code>.
+</p><p>
+Параметр <code>optional</code> (0.8.7+) запрашивает клиентский
+сертификат, и если сертификат был предоставлен, проверяет его.
+</p><p>
+Параметр <code>optional_no_ca</code> (1.3.8, 1.2.5)
+запрашивает сертификат
+клиента, но не требует, чтобы он был подписан доверенным сертификатом CA.
+Это предназначено для случаев, когда фактическая проверка сертификата
+осуществляется внешним по отношению к nginx’у сервисом.
+Содержимое сертификата доступно через переменную
+<code>$ssl_client_cert</code>.
+</p><a name="ssl_verify_depth"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_verify_depth</strong> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>ssl_verify_depth 1;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Устанавливает глубину проверки в цепочке клиентских сертификатов.
+</p>
+
+
+<a name="errors"></a><center><h4>Обработка ошибок</h4></center><p>
+Модуль <code>ngx_http_ssl_module</code> поддерживает несколько
+нестандартных кодов ошибок, которые можно использовать для
+перенаправления с помощью директивы
+<a href="ngx_http_core_module.html#error_page">error_page</a>:
+</p> <dl class="compact">
+
+<dt>495</dt>
+<dd>
+при проверке клиентского сертификата произошла ошибка;
+</dd>
+
+<dt>496</dt>
+<dd>
+клиент не предоставил требуемый сертификат;
+</dd>
+
+<dt>497</dt>
+<dd>
+обычный запрос был послан на порт HTTPS.
+</dd>
+
+</dl><p> 
+</p><p>
+Перенаправление делается после того, как запрос полностью разобран
+и доступны такие переменные, как <code>$request_uri</code>,
+<code>$uri</code>, <code>$args</code> и прочие.
+</p>
+
+
+<a name="variables"></a><center><h4>Встроенные переменные</h4></center><p>
+Модуль <code>ngx_http_ssl_module</code> поддерживает
+несколько встроенных переменных:
+</p> <dl class="compact">
+
+<dt><code>$ssl_cipher</code></dt>
+<dd>
+возвращает строку используемых шифров для установленного SSL-соединения;
+</dd>
+
+<dt><code>$ssl_client_cert</code></dt>
+<dd>
+возвращает клиентский сертификат
+для установленного SSL-соединения в формате PEM
+перед каждой строкой которого, кроме первой, вставляется символ табуляции;
+предназначена для использования в директиве
+<a href="ngx_http_proxy_module.html#proxy_set_header">proxy_set_header</a>;
+</dd>
+
+<dt><code>$ssl_client_raw_cert</code></dt>
+<dd>
+возвращает клиентский сертификат
+для установленного SSL-соединения в формате PEM;
+</dd>
+
+<dt><code>$ssl_client_serial</code></dt>
+<dd>
+возвращает серийный номер клиентского сертификата
+для установленного SSL-соединения;
+</dd>
+
+<dt><code>$ssl_client_s_dn</code></dt>
+<dd>
+возвращает строку “subject DN” клиентского сертификата
+для установленного SSL-соединения;
+</dd>
+
+<dt><code>$ssl_client_i_dn</code></dt>
+<dd>
+возвращает строку “issuer DN” клиентского сертификата
+для установленного SSL-соединения;
+</dd>
+
+<dt><code>$ssl_client_verify</code></dt>
+<dd>
+возвращает результат проверки клиентского сертификата:
+“<code>SUCCESS</code>”, “<code>FAILED</code>” и,
+если сертификат не был предоставлен — “<code>NONE</code>”;
+</dd>
+
+<dt><code>$ssl_protocol</code></dt>
+<dd>
+возвращает протокол установленного SSL-соединения;
+</dd>
+
+<dt><code>$ssl_session_id</code></dt>
+<dd>
+возвращает идентификатор сессии установленного SSL-соединения.
+</dd>
+
+</dl><p> 
+</p>
+
+</td></tr></table></body></html>

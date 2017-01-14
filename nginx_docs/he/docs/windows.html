@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>שימוש ב nginx במערכת ההפעלה חלונות</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }pre { text-align: left; direction: ltr; } code { direction: ltr; unicode-bidi: embed; } .ltr { direction: ltr; unicode-bidi: embed; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner" class="ltr"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="left"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>שימוש ב nginx במערכת ההפעלה חלונות</h3></center></td><td rowspan="2" align="left" valign="top"><br><a href="../../en/docs/windows.html">english</a><br><a href="../../ru/docs/windows.html">русский</a><br><br><a href="../../cn/docs/windows.html">简体中文</a><br>עברית<br><a class="notrans">日本語</a><br><a href="../../tr/docs/windows.html">türkçe</a><br><br><a href="../../">חדשות</a> [אנגלית]<br><a href="../../he/">אודות</a><br><a href="../../en/download.html">הורדה</a> [אנגלית]<br><a href="../../en/security_advisories.html">דיווחי אבטחה</a> [אנגלית]<br><a href="./">תיעוד</a><br><a href="../../en/docs/faq.html">שאלות נפוצות</a> [אנגלית]<br><a href="../../en/links.html">קישורים</a> [אנגלית]<br><a href="../../en/support.html">תמיכה</a> [אנגלית]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span class="ltr"><blockquote class="note">This translation may be out of date.
+Check the <a href="../../en/docs/windows.html">English version</a>
+for recent changes.</blockquote></span><table width="100%"><tr><td align="right"><a href="#known_issues">בעיות ידועות</a><br><a href="#possible_future_enhancements">שיפורים עתידיים אפשריים</a><br></td></tr></table><p>
+nginx/Windows משתמש ב API הטבעי של חלונות, Win32 API (ולא בשכבת אמולציה של Cygwin).
+נכון למועד כתיבת שורות אלה, שיטת היידוע <i>select</i> היא זו שנמצאת בשימוש,
+ולכן אין לצפות לרמת ביצועים גבוהה וליכולת גידול.
+עקב כך וגם בעקבות בעיות ידועות אחרות, nginx/Windows נחשבת כגירסת <i>בטא</i>.
+ישנה פונקציונליות כמעט מלאה ב nginx/Windows ביחס לגירסת Unix, חוץ מפילטר XSLT,
+פילטר תמונות, מודול GeoIP ושפת Perl משובצת.</p><p>
+כדי להתקין את nginx/Windows, יש <a href="../../en/download.html">להוריד</a>
+את קובץ הזיפ של גירסת הפיתוח האחרונה 1.3.11,
+כיוון שענף הפיתוח מכיל את כל התיקונים הידועים, בייחוד אלו הקשורים לחלונות.
+אחרי ההורדה, יש לפרוס את קובץ הזיפ,
+להיכנס לתיקיה nginx-1.3.11, ולהריץ את nginx.
+הנה דוגמא עבור תיקיית השורש של כונן C:
+
+</p> <blockquote class="example"><pre>
+cd c:\
+unzip nginx-1.3.11.zip
+cd nginx-1.3.11
+start nginx
+</pre></blockquote><p> 
+
+תוכלו להריץ את כלי שורת הפקודה <code>tasklist</code> כדי לראות תהליכים
+של nginx:
+
+</p> <blockquote class="example"><pre>
+C:\nginx-1.3.11&gt;tasklist /fi "imagename eq nginx.exe"
+
+Image Name           PID Session Name     Session#    Mem Usage
+=============== ======== ============== ========== ============
+nginx.exe            652 Console                 0      2 780 K
+nginx.exe           1332 Console                 0      3 112 K
+</pre></blockquote><p> 
+
+אחד מהתהליכים הוא התהליך הראשי (מנהל), והאחר הוא תהליך עובד.
+אם nginx לא מתחיל לפעול, יש לעיין בקובץ <code>logs\error.log</code> כדי לבדוק את הסיבה.
+אם קובץ הלוג לא נוצר, הסיבה צריכה להיות מדווחת ב Event Log של חלונות.
+אם הנכם מקבלים דף שגיאה במקום העמוד הרצוי, עליכם לעיין בקובץ  <code>logs\error.log</code> גם כן,
+כדי לראות מה הסיבה.
+</p><p>
+nginx/Windows משתמש בתיקייה שממנה הוא הופעל בתור תיקיית הקידומת לכל
+הנתיבים היחסיים שבקובץ התצורה.
+בדוגמה שלעיל, תיקיית הקידומת תהיה
+<code>C:\nginx-1.3.11\</code>.
+על נתיבים בקובץ התצורה להיות בסגנון Unix בלבד, באמצעות לוכסנים קדמיים:
+
+</p> <blockquote class="example"><pre>
+access_log   logs/site.log;
+root         C:/web/html;
+</pre></blockquote><p> 
+</p><p>
+nginx/Windows רץ כיישום קונסול סטנדרטי, ולא כשירות (service) במערכת,
+וניתן לנהלו באמצעות הפקודות הבאות:
+<blockquote><table width="100%">
+
+<tr>
+<td width="20%">nginx -s stop</td>
+<td>יציאה מהירה</td>
+</tr>
+
+<tr>
+<td>nginx -s quit</td>
+<td>יציאה מסודרת</td>
+</tr>
+
+<tr>
+<td>nginx -s reload</td>
+<td>
+שינוי תצורה,
+הפעלת תהליך עובד חדש,
+סגירת תהליך עובד ישן באופן מסודר
+</td>
+</tr>
+
+<tr>
+<td>nginx -s reopen</td>
+<td>פתיחה מחדש של קובצי הלוג</td>
+</tr>
+
+</table></blockquote>
+</p><a name="known_issues"></a><center><h4>בעיות ידועות</h4></center><ul class="compact">
+
+<li>
+למרות שניתן להפעיל מספר תהליכים עובדים, רק אחד מהם עושה בפועל את העבודה.
+</li>
+
+<li>
+תהליך עובד לא יכול לטפל ביותר מ 1024 חיבורים פעילים בו זמנית.
+</li>
+
+<li>
+מודול המטמון ומודולים אחרים אשר דורשים תמיכה בזיכרון משותף, לא עובדים בחלונות
+ויסטה או גירסאות מאוחרות יותר, עקב הפעלת טכניקת address space layout randomization
+המופעלת בגירסאות אלה של חלונות.
+</li>
+
+</ul><a name="possible_future_enhancements"></a><center><h4>שיפורים עתידיים אפשריים</h4></center><ul class="compact">
+
+<li>
+הרצה כשירות במערכת (Service).
+</li>
+
+<li>
+שימוש ב I/O completion ports כשיטת יידוע.
+</li>
+
+<li>
+שימוש במספר נימי עובדים בתוך תהליך עובד אחד.
+</li>
+
+</ul></td></tr></table></body></html>

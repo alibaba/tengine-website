@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>nginx</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>nginx</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../ru/">русский</a><br><br><a href="../cn/">简体中文</a><br><a href="../he/">עברית</a><br><a href="../ja/">日本語</a><br><a href="../tr/">türkçe</a><br><br><a href="../">news</a><br>about<br><a href="download.html">download</a><br><a href="security_advisories.html">security advisories</a><br><a href="docs/">documentation</a><br><a href="pgp_keys.html">pgp keys</a><br><a href="docs/faq.html">faq</a><br><a href="links.html">links</a><br><a href="books.html">books</a><br><a href="support.html">support</a><br><a href="donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#basic_http_features">Basic HTTP server features</a><br><a href="#other_http_features">Other HTTP server features</a><br><a href="#mail_proxy_server_features">Mail proxy server features</a><br><a href="#architecture_and_scalability">Architecture and scalability</a><br><a href="#tested_os_and_platforms">Tested OS and platforms</a><br></td></tr></table><p>
+nginx [engine x] is an HTTP and reverse proxy server,
+as well as a mail proxy server,
+written by <a href="http://sysoev.ru/en/">Igor Sysoev</a>.
+For a long time, it has been running
+on many heavily loaded Russian sites including
+<a href="http://www.yandex.ru">Yandex</a>,
+<a href="http://www.mail.ru">Mail.Ru</a>,
+<a href="http://vkontakte.ru">VKontakte</a>, and
+<a href="http://www.rambler.ru">Rambler</a>.
+According to Netcraft nginx served or proxied
+<a href="http://news.netcraft.com/archives/2013/01/07/january-2013-web-server-survey-2.html">12.77%
+busiest sites in January 2013</a>.
+Here are some of the success stories:
+<a href="https://signup.netflix.com/openconnect/software">Netflix</a>,
+<a href="http://www.nginx.com/cs/nginx-automattic.html">Wordpress.com</a>,
+<a href="http://blog.fastmail.fm/2007/01/04/webimappop-frontend-proxies-changed-to-nginx/">FastMail.FM</a>.
+</p><p>
+The sources and documentation are distributed under the
+<a href="../LICENSE">2-clause BSD-like license</a>.
+</p><a name="basic_http_features"></a><center><h4>Basic HTTP server features</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Serving static and
+<a href="docs/http/ngx_http_index_module.html">index</a>
+files,
+<a href="docs/http/ngx_http_autoindex_module.html">autoindexing</a>;
+<a href="docs/http/ngx_http_core_module.html#open_file_cache">open file descriptor cache</a>;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_proxy_module.html">Accelerated
+reverse proxying with caching</a>;
+<a href="docs/http/ngx_http_upstream_module.html">simple
+load balancing and fault tolerance</a>;
+</li>
+
+<li>
+Accelerated support with caching of
+<a href="docs/http/ngx_http_fastcgi_module.html">FastCGI</a>,
+uwsgi, SCGI, and
+<a href="docs/http/ngx_http_memcached_module.html">memcached</a>
+servers;
+<a href="docs/http/ngx_http_upstream_module.html">simple
+load balancing and fault tolerance</a>;
+</li>
+
+<li>
+Modular architecture.
+Filters include
+<a href="docs/http/ngx_http_gzip_module.html">gzipping</a>,
+byte ranges, chunked responses,
+<a href="docs/http/ngx_http_xslt_module.html">XSLT</a>,
+<a href="docs/http/ngx_http_ssi_module.html">SSI</a>,
+and <a href="docs/http/ngx_http_image_filter_module.html">image
+transformation</a> filter.
+Multiple SSI inclusions within a single page can be processed in
+parallel if they are handled by proxied or FastCGI servers;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_ssl_module.html">SSL and
+TLS SNI support</a>.
+</li>
+
+</ul><p> 
+</p><a name="other_http_features"></a><center><h4>Other HTTP server features</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+Name-based and IP-based
+<a href="docs/http/request_processing.html">virtual servers</a>;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_core_module.html#keepalive_timeout">Keep-alive</a>
+and pipelined connections support;
+</li>
+
+<li>
+Flexible configuration;
+</li>
+
+<li>
+<a href="docs/control.html#reconfiguration">Reconfiguration</a>
+and <a href="docs/control.html#upgrade">upgrade of an
+executable</a> without interruption of the client servicing;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_log_module.html#log_format">Access
+log formats</a>,
+<a href="docs/http/ngx_http_log_module.html#access_log">buffered
+log writing</a>, and
+<a href="docs/control.html#logs">fast log rotation</a>;
+</li>
+
+<li>
+3xx-5xx error codes
+<a href="docs/http/ngx_http_core_module.html#error_page">redirection</a>;
+</li>
+
+<li>
+The rewrite module:
+<a href="docs/http/ngx_http_rewrite_module.html">URI changing
+using regular expressions</a>;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_rewrite_module.html#if">Executing
+different functions</a> depending on the
+<a href="docs/http/ngx_http_geo_module.html">client address</a>;
+</li>
+
+<li>
+Access control based on
+<a href="docs/http/ngx_http_access_module.html">client IP address</a>
+and <a href="docs/http/ngx_http_auth_basic_module.html">HTTP
+Basic authentication</a>;
+</li>
+
+<li>
+Validation of
+<a href="docs/http/ngx_http_referer_module.html">HTTP referer</a>;
+</li>
+
+<li>
+The <a href="docs/http/ngx_http_dav_module.html">PUT, DELETE, MKCOL, COPY,
+and MOVE</a> methods;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_flv_module.html">FLV</a>
+and
+<a href="docs/http/ngx_http_mp4_module.html">MP4</a>
+streaming;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_core_module.html#limit_rate">Response rate limiting</a>;
+</li>
+
+<li>
+Limiting the number of simultaneous
+<a href="docs/http/ngx_http_limit_conn_module.html">connections</a>
+or
+<a href="docs/http/ngx_http_limit_req_module.html">requests</a>
+coming from one address;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_perl_module.html">Embedded Perl</a>.
+</li>
+
+</ul><p> 
+</p><a name="mail_proxy_server_features"></a><center><h4>Mail proxy server features</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+User redirection to
+<a href="docs/mail/ngx_mail_imap_module.html">IMAP</a>
+or
+<a href="docs/mail/ngx_mail_pop3_module.html">POP3</a>
+server using an external HTTP
+<a href="docs/mail/ngx_mail_auth_http_module.html">authentication</a>
+server;
+</li>
+
+<li>
+User authentication using an external HTTP
+<a href="docs/mail/ngx_mail_auth_http_module.html">authentication</a>
+server and connection redirection to an internal
+<a href="docs/mail/ngx_mail_smtp_module.html">SMTP</a> server;
+</li>
+
+<li>
+Authentication methods:
+
+<ul class="compact">
+
+<li>
+<a href="docs/mail/ngx_mail_pop3_module.html#pop3_auth">POP3</a>:
+USER/PASS, APOP, AUTH LOGIN/PLAIN/CRAM-MD5;
+</li>
+
+<li>
+<a href="docs/mail/ngx_mail_imap_module.html#imap_auth">IMAP</a>:
+LOGIN, AUTH LOGIN/PLAIN/CRAM-MD5;
+</li>
+
+<li>
+<a href="docs/mail/ngx_mail_smtp_module.html#smtp_auth">SMTP</a>:
+AUTH LOGIN/PLAIN/CRAM-MD5;
+</li>
+
+</ul>
+</li>
+
+<li>
+<a href="docs/mail/ngx_mail_ssl_module.html">SSL</a> support;
+</li>
+
+<li>
+<a href="docs/mail/ngx_mail_ssl_module.html#starttls">STARTTLS
+and STLS</a> support.
+</li>
+
+</ul><p> 
+</p><a name="architecture_and_scalability"></a><center><h4>Architecture and scalability</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+One master and several worker processes;
+worker processes run under an unprivileged user;
+</li>
+
+<li>
+<a href="docs/events.html">Support</a> for
+kqueue (FreeBSD 4.1+),
+epoll (Linux 2.6+), rt signals (Linux 2.2.19+),
+/dev/poll (Solaris 7 11/99+), event ports (Solaris 10),
+select, and poll;
+</li>
+
+<li>
+The support of the various kqueue features including EV_CLEAR, EV_DISABLE
+(to temporarily disable events), NOTE_LOWAT, EV_EOF, number of available data,
+error codes;
+</li>
+
+<li>
+sendfile (FreeBSD 3.1+, Linux 2.2+, Mac OS X 10.5+), sendfile64 (Linux 2.4.21+),
+and sendfilev (Solaris 8 7/01+) support;
+</li>
+
+<li>
+<a href="docs/http/ngx_http_core_module.html#aio">File AIO</a>
+(FreeBSD 4.3+, Linux 2.6.22+);
+</li>
+
+<li>
+<a href="docs/http/ngx_http_core_module.html#directio">DIRECTIO</a>
+(FreeBSD 4.4+, Linux 2.4+, Solaris 2.6+, Mac OS X);
+</li>
+
+<li>
+Accept-filters (FreeBSD 4.1+, NetBSD 5.0+) and TCP_DEFER_ACCEPT (Linux 2.4+)
+<a href="docs/http/ngx_http_core_module.html#listen">support</a>;
+</li>
+
+<li>
+10,000 inactive HTTP keep-alive connections take about 2.5M memory;
+</li>
+
+<li>
+Data copy operations are kept to a minimum.
+</li>
+
+</ul><p> 
+</p><a name="tested_os_and_platforms"></a><center><h4>Tested OS and platforms</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+FreeBSD 3 — 10 / i386; FreeBSD 5 — 10 / amd64;
+</li>
+
+<li>
+Linux 2.2 — 3 / i386; Linux 2.6 — 3 / amd64;
+</li>
+
+<li>
+Solaris 9 / i386, sun4u; Solaris 10 / i386, amd64, sun4v;
+</li>
+
+<li>
+AIX 7.1 / powerpc;
+</li>
+
+<li>
+HP-UX 11.31 / ia64;
+</li>
+
+<li>
+Mac OS X / ppc, i386;
+</li>
+
+<li>
+Windows XP, Windows Server 2003.
+</li>
+
+</ul><p> 
+</p></td></tr></table></body></html>

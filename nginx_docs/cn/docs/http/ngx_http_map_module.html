@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Module ngx_http_map_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Module ngx_http_map_module</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_map_module.html">english</a><br><a href="../../../ru/docs/http/ngx_http_map_module.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">新闻</a> [en]<br><a href="../../../cn/">nginx 介绍</a><br><a href="../../../en/download.html">下载</a> [en]<br><a href="../../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="../../../cn/docs/">文档</a><br><a href="../../../cn/docs/faq.html">FAQ</a><br><a href="../../../en/links.html">外部连接</a> [en]<br><a href="../../../en/books.html">书籍</a> [en]<br><a href="../../../en/support.html">支持</a> [en]<br><a href="../../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">翻译内容可能已经过旧。
+你可以通过 <a href="../../../en/docs/http/ngx_http_map_module.html">英文版本</a>
+查看最近的更新。</blockquote></span><table width="100%"><tr><td align="left"><a href="#example">配置范例</a><br><a href="#directives">指令</a><br>     <a href="#map">map</a><br>     <a href="#map_hash_bucket_size">map_hash_bucket_size</a><br>     <a href="#map_hash_max_size">map_hash_max_size</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+模块 <code>ngx_http_map_module</code> 可以创建一些和另外变量相关联的变量。
+</p>
+
+
+<a name="example"></a><center><h4>配置范例</h4></center><p>
+</p> <blockquote class="example"><pre>
+map $http_host $name {
+    hostnames;
+
+    default       0;
+
+    example.com   1;
+    *.example.com 1;
+    example.org   2;
+    *.example.org 2;
+    .example.net  3;
+    wap.*         4;
+}
+
+map $http_user_agent $mobile {
+    default       0;
+    "~Opera Mini" 1;
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>指令</h4></center><a name="map"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>map</strong> 
+    <code><i>string</i></code>
+    <code><i>$variable</i></code> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+在配置的参数中，第一个是要创建新的变量，它的值取决于后面一个或多个源变量。
+</p> <blockquote class="note">
+在0.9.0版本之前，这里只支持一个变量。
+</blockquote><p> 
+</p><p>
+在 <code>map</code> 块里的参数指定了源变量值和结果值的对应关系。
+</p><p>
+源变量值可以使用字符串或者正则表达式 (0.9.6)。
+</p><p>
+一个正则表达式如果以 “<code>~</code>” 开头，这个正则表达式对大小写敏感；
+若以 “<code>~*</code>”开头 (1.0.4)，这个正则表达式对大小写不敏感。
+且正则表达式里可以包含命名捕获和位置捕获，这些变量可以跟结果变量一起被其它指令使用。
+</p><p>
+如果源变量的值正好跟特殊参数同名（看下面），它要以 “<code>\</code>” 字符作为前缀。
+</p><p>
+结果变量可以是一个字符串也可以是另外一个变量 (0.9.0)。
+</p><p>
+这个指令也支持三个特殊参数。
+</p> <dl class="compact">
+<dt><code>default</code> <code><i>value</i></code></dt>
+<dd>
+如果源变量值没有匹配到任何变量，则设置一个默认值作为结果。
+当没有设置 <code>default</code>，将会用一个空的字符串作为默认的结果。
+</dd>
+
+<dt><code>hostnames</code></dt>
+<dd>
+允许用前缀或者后缀掩码指定域名作为源变量值，举个例子，
+<blockquote class="example"><pre>
+*.example.com 1;
+example.*     1;
+</pre></blockquote>
+这两条记录
+<blockquote class="example"><pre>
+example.com   1;
+*.example.com 1;
+</pre></blockquote>
+可以被合并为：
+<blockquote class="example"><pre>
+.example.com  1;
+</pre></blockquote>
+这个参数必须写在值映射列表的最前面。
+</dd>
+
+<dt><code>include</code> <code><i>file</i></code></dt>
+<dd>
+包含一个或者多个存有映射值的文件。
+</dd>
+
+</dl><p> 
+</p><p>
+如果源值匹配了多余一个的指定变量，例如掩码和正则同时匹配，那么将会按照下面的顺序进行优先选择：
+</p> <ol class="compact">
+
+<li>
+没有掩码的字符串
+</li>
+
+<li>
+最长的带前缀的字符串，例如: “<code>*.example.com</code>”
+</li>
+
+<li>
+最长的带后缀的字符串，例如：“<code>mail.*</code>”
+</li>
+
+<li>
+按顺序第一个先匹配的正则表达式 （在配置文件中体现的顺序）
+</li>
+
+<li>
+默认值
+</li>
+
+</ol><p> 
+</p><a name="map_hash_bucket_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>map_hash_bucket_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>map_hash_bucket_size 32|64|128;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+为 <a href="#map">map</a> 的变量哈稀表设置桶大小。
+默认值取决于处理器cache line的大小。
+可以从这里获取到更多参考信息：
+<a href="../hash.html">设置哈稀表</a>.
+</p><a name="map_hash_max_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>map_hash_max_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>map_hash_max_size 2048;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+设置 <a href="#map">map</a> 变量哈稀表<code><i>大小</i></code>的上限。
+可以从这里获取到更多参考信息：
+<a href="../hash.html">设置哈稀表</a>.
+</p>
+
+<table width="100%"><tr><td align="right">翻译: yzprofile<br></td></tr></table></td></tr></table></body></html>

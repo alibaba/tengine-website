@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>ngx_http_upstream_module模块</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>ngx_http_upstream_module模块</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_upstream_module.html">english</a><br><a href="../../../ru/docs/http/ngx_http_upstream_module.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">新闻</a> [en]<br><a href="../../../cn/">nginx 介绍</a><br><a href="../../../en/download.html">下载</a> [en]<br><a href="../../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="../../../cn/docs/">文档</a><br><a href="../../../cn/docs/faq.html">FAQ</a><br><a href="../../../en/links.html">外部连接</a> [en]<br><a href="../../../en/books.html">书籍</a> [en]<br><a href="../../../en/support.html">支持</a> [en]<br><a href="../../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">翻译内容可能已经过旧。
+你可以通过 <a href="../../../en/docs/http/ngx_http_upstream_module.html">英文版本</a>
+查看最近的更新。</blockquote></span><table width="100%"><tr><td align="left"><a href="#example">配置例子</a><br><a href="#directives">指令</a><br>     <a href="#upstream">upstream</a><br>     <a href="#server">server</a><br>     <a href="#ip_hash">ip_hash</a><br>     <a href="#keepalive">keepalive</a><br>     <a href="#least_conn">least_conn</a><br><a href="#variables">嵌入的变量</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+<code>ngx_http_upstream_module</code>模块
+允许定义一组服务器。它们可以在指令<a href="ngx_http_proxy_module.html#proxy_pass">proxy_pass</a>、
+<a href="ngx_http_fastcgi_module.html#fastcgi_pass">fastcgi_pass</a>和
+<a href="ngx_http_memcached_module.html#memcached_pass">memcached_pass</a>中被引用到。
+</p>
+
+
+<a name="example"></a><center><h4>配置例子</h4></center><p>
+</p> <blockquote class="example"><pre>
+upstream <strong>backend</strong> {
+    server backend1.example.com       weight=5;
+    server backend2.example.com:8080;
+    server unix:/tmp/backend3;
+
+    server backup1.example.com:8080   backup;
+    server backup2.example.com:8080   backup;
+}
+
+server {
+    location / {
+        proxy_pass http://<strong>backend</strong>;
+    }
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>指令</h4></center><a name="upstream"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>upstream</strong> <code><i>name</i></code> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义一组服务器。
+这些服务器可以监听不同的端口。
+而且，监听在TCP和UNIX域套接字的服务器可以混用。
+</p><p>
+例子：
+</p> <blockquote class="example"><pre>
+upstream backend {
+    server backend1.example.com weight=5;
+    server 127.0.0.1:8080       max_fails=3 fail_timeout=30s;
+    server unix:/tmp/backend3;
+}
+</pre></blockquote><p> 
+</p><p>
+默认情况下，nginx按加权轮转的方式将请求分发到各服务器。
+在上面的例子中，每7个请求会通过以下方式分发：
+5个请求分到<code>backend1.example.com</code>，
+一个请求分到第二个服务器，一个请求分到第三个服务器。
+与服务器通信的时候，如果出现错误，请求会被传给下一个服务器，直到所有可用的服务器都被尝试过。
+如果所有服务器都返回失败，客户端将会得到最后通信的那个服务器的（失败）响应结果。
+</p><a name="server"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>server</strong> <code><i>address</i></code> [<code><i>parameters</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>upstream</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义服务器的地址<code><i>address</i></code>和其他参数<code><i>parameters</i></code>。
+地址可以是域名或者IP地址，端口是可选的，或者是指定“<code>unix:</code>”前缀的UNIX域套接字的路径。如果没有指定端口，就使用80端口。
+如果一个域名解析到多个IP，本质上是定义了多个server。
+</p><p>
+你可以定义下面的参数：
+</p> <dl class="compact">
+
+<dt><code>weight</code>=<code><i>number</i></code></dt>
+<dd>
+设定服务器的权重，默认是1。
+</dd>
+
+<dt><code>max_fails</code>=<code><i>number</i></code></dt>
+<dd>
+设定Nginx与服务器通信的尝试失败的次数。在<code>fail_timeout</code>参数定义的时间段内，如果失败的次数达到此值，Nginx就认为服务器不可用。在下一个<code>fail_timeout</code>时间段，服务器不会再被尝试。
+失败的尝试次数默认是1。设为0就会停止统计尝试次数，认为服务器是一直可用的。
+你可以通过指令<a href="ngx_http_proxy_module.html#proxy_next_upstream">proxy_next_upstream</a>、
+<a href="ngx_http_fastcgi_module.html#fastcgi_next_upstream">fastcgi_next_upstream</a>和
+<a href="ngx_http_memcached_module.html#memcached_next_upstream">memcached_next_upstream</a>来配置什么是失败的尝试。
+默认配置时，<code>http_404</code>状态不被认为是失败的尝试。
+</dd>
+
+<dt><code>fail_timeout</code>=<code><i>time</i></code></dt>
+<dd>
+设定
+<ul class="compact">
+
+<li>
+统计失败尝试次数的时间段。在这段时间中，服务器失败次数达到指定的尝试次数，服务器就被认为不可用。
+</li>
+
+<li>
+服务器被认为不可用的时间段。
+</li>
+
+</ul>
+默认情况下，该超时时间是10秒。
+</dd>
+
+<dt><code>backup</code></dt>
+<dd>
+标记为备用服务器。当主服务器不可用以后，请求会被传给这些服务器。
+</dd>
+
+<dt><code>down</code></dt>
+<dd>
+标记服务器永久不可用，可以跟<a href="#ip_hash">ip_hash</a>指令一起使用。
+</dd>
+
+</dl><p> 
+</p><p>
+Example:
+</p> <blockquote class="example"><pre>
+upstream backend {
+    server backend1.example.com     weight=5;
+    server 127.0.0.1:8080           max_fails=3 fail_timeout=30s;
+    server unix:/tmp/backend3;
+
+    server backup1.example.com:8080 backup;
+}
+</pre></blockquote><p> 
+</p><a name="ip_hash"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>ip_hash</strong>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>upstream</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+指定服务器组的负载均衡方法，请求基于客户端的IP地址在服务器间进行分发。
+IPv4地址的前三个字节或者IPv6的整个地址，会被用来作为一个散列key。
+这种方法可以确保从同一个客户端过来的请求，会被传给同一台服务器。除了当服务器被认为不可用的时候，这些客户端的请求会被传给其他服务器，而且很有可能也是同一台服务器。
+</p> <blockquote class="note">
+从1.3.2和1.2.2版本开始支持IPv6地址。
+</blockquote><p> 
+</p><p>
+如果其中一个服务器想暂时移除，应该加上<code>down</code>参数。这样可以保留当前客户端IP地址散列分布。
+</p><p>
+例子：
+</p> <blockquote class="example"><pre>
+upstream backend {
+    ip_hash;
+
+    server backend1.example.com;
+    server backend2.example.com;
+    server backend3.example.com <strong>down</strong>;
+    server backend4.example.com;
+}
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+从1.3.1和1.2.2版本开始，<code>ip_hash</code>的负载均衡方法才支持设置服务器权重值。
+</blockquote><p> 
+</p><a name="keepalive"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>keepalive</strong> <code><i>connections</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>upstream</code><br>
+                </td>
+                </tr>
+            </table><p>这个指令出现在版本 1.1.4.
+
+            </p></div><p>
+激活对上游服务器的连接进行缓存。
+</p><p>
+<code><i>connections</i></code>参数设置每个worker进程与后端服务器保持连接的最大数量。这些保持的连接会被放入缓存。
+如果连接数大于这个值时，最久未使用的连接会被关闭。
+</p> <blockquote class="note">
+需要注意的是，<code>keepalive</code>指令不会限制Nginx进程与上游服务器的连接总数。
+新的连接总会按需被创建。
+<code><i>connections</i></code>参数应该稍微设低一点，以便上游服务器也能处理额外新进来的连接。
+</blockquote><p> 
+</p><p>
+配置memcached上游服务器连接keepalive的例子：
+</p> <blockquote class="example"><pre>
+upstream memcached_backend {
+    server 127.0.0.1:11211;
+    server 10.0.0.2:11211;
+
+    keepalive 32;
+}
+
+server {
+    ...
+
+    location /memcached/ {
+        set $memcached_key $uri;
+        memcached_pass memcached_backend;
+    }
+
+}
+</pre></blockquote><p> 
+</p><p>
+对于HTTP代理，<a href="ngx_http_proxy_module.html#proxy_http_version">proxy_http_version</a>指令应该设置为“<code>1.1</code>”，同时“Connection”头的值也应被清空。
+</p> <blockquote class="example"><pre>
+upstream http_backend {
+    server 127.0.0.1:8080;
+
+    keepalive 16;
+}
+
+server {
+    ...
+
+    location /http/ {
+        proxy_pass http://http_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        ...
+    }
+}
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+另外一种选择是，HTTP/1.0协议的持久连接也可以通过发送“Connection: Keep-Alive”头来实现。不过不建议这样用。
+</blockquote><p> 
+</p><p>
+对于FastCGI的服务器，需要设置
+<a href="ngx_http_fastcgi_module.html#fastcgi_keep_conn">fastcgi_keep_conn</a>
+指令来让连接keepalive工作： 
+</p> <blockquote class="example"><pre>
+upstream fastcgi_backend {
+    server 127.0.0.1:9000;
+
+    keepalive 8;
+}
+
+server {
+    ...
+
+    location /fastcgi/ {
+        fastcgi_pass fastcgi_backend;
+        fastcgi_keep_conn on;
+        ...
+    }
+}
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+当使用的负载均衡方法不是默认的轮转法时，必须在<code>keepalive</code> 指令之前配置。
+</blockquote><p> 
+
+</p> <blockquote class="note">
+针对SCGI和uwsgi协议，还没有实现其keepalive连接的打算。
+</blockquote><p> 
+</p><a name="least_conn"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>least_conn</strong>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>upstream</code><br>
+                </td>
+                </tr>
+            </table>
+                        <p>
+                    这个指令出现在版本 1.3.1 和 1.2.2.
+                  
+                        </p>
+                    </div><p>
+指定服务器组的负载均衡方法，根据其权重值，将请求发送到活跃连接数最少的那台服务器。
+如果这样的服务器有多台，那就采取有权重的轮转法进行尝试。
+</p>
+
+
+<a name="variables"></a><center><h4>嵌入的变量</h4></center><p>
+<code>ngx_http_upstream_module</code>模块支持以下嵌入变量：
+
+</p> <dl class="compact">
+
+<dt><code>$upstream_addr</code></dt>
+<dd>
+保存服务器的IP地址和端口或者是UNIX域套接字的路径。
+在请求处理过程中，如果有多台服务器被尝试了，它们的地址会被拼接起来，以逗号隔开，比如：
+“<code>192.168.1.1:80, 192.168.1.2:80, unix:/tmp/sock</code>”。
+如果在服务器之间通过“X-Accel-Redirect”头或者<a href="ngx_http_core_module.html#error_page">error_page</a>有内部跳转，那么这些服务器组之间会以冒号隔开，比如：“<code>192.168.1.1:80, 192.168.1.2:80, unix:/tmp/sock : 192.168.10.1:80, 192.168.10.2:80</code>”。
+</dd>
+
+<dt><code>$upstream_response_time</code></dt>
+<dd>
+以毫秒的精度保留服务器的响应时间，（输出）单位是秒。
+出现多个响应时，也是以逗号和冒号隔开。
+</dd>
+
+<dt><code>$upstream_status</code></dt>
+<dd>
+保存服务器的响应代码。
+出现多个响应时，也是以逗号和冒号隔开。
+</dd>
+
+<dt><code>$upstream_http_...</code></dt>
+<dd>
+保存服务器的响应头的值。比如“Server”响应头的值可以通过<code>$upstream_http_server</code>变量来获取。
+需要注意的是只有最后一个响应的头会被保留下来。
+</dd>
+
+</dl><p> 
+</p>
+
+<table width="100%"><tr><td align="right">翻译: Weibin Yao<br></td></tr></table></td></tr></table></body></html>

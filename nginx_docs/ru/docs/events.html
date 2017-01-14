@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Методы обработки соединений</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Методы обработки соединений</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../en/docs/events.html">english</a><br>русский<br><br><a href="../../cn/docs/events.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../">новости</a> [en]<br><a href="../../ru/">об nginx</a><br><a href="../../ru/download.html">скачать</a><br><a href="../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="./">документация</a><br><a href="faq.html">faq</a><br><a href="../../en/links.html">ссылки</a> [en]<br><a href="../../en/books.html">книги</a> [en]<br><a href="../../ru/support.html">поддержка</a><br><a href="../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><p>
+nginx поддерживает различные методы обработки соединений.
+Наличие того или иного метода зависит от используемой платформы.
+Если на платформе доступно сразу несколько методов, nginx обычно
+сам выбирает наиболее эффективный метод.
+Однако, при необходимости можно явно выбрать метод обработки
+соединений с помощью директивы
+<a href="ngx_core_module.html#use">use</a>.
+</p><p>
+Поддерживаются следующие методы обработки соединений:
+</p> <ul class="compact">
+
+<li id="select">
+<p>
+<code>select</code> — стандартный метод.
+Модуль для поддержки этого метода собирается автоматически,
+если на платформе не обнаружено более эффективного метода.
+Можно принудительно разрешить или запретить сборку этого модуля
+с помощью параметров <code>--with-select_module</code> и
+<code>--without-select_module</code>.
+</p>
+</li>
+
+<li id="poll">
+<p>
+<code>poll</code> — стандартный метод.
+Модуль для поддержки этого метода собирается автоматически,
+если на платформе не обнаружено более эффективного метода.
+Можно принудительно разрешить или запретить сборку этого модуля
+с помощью параметров <code>--with-poll_module</code> и
+<code>--without-poll_module</code>.
+</p>
+</li>
+
+<li id="kqueue">
+<p>
+<code>kqueue</code> — эффективный метод, используемый
+во FreeBSD 4.1+, OpenBSD 2.9+, NetBSD 2.0 и Mac OS X.
+</p>
+</li>
+
+<li id="epoll">
+<p>
+<code>epoll</code> — эффективный метод, используемый
+в Linux 2.6+.
+</p> <blockquote class="note">
+В некоторых старых дистрибутивах, например SuSE 8.2,
+есть патчи для поддержки epoll ядром 2.4.
+</blockquote><p> 
+</p>
+</li>
+
+<li id="rtsig">
+<p>
+<code>rtsig</code> — real time signals, эффективный метод,
+используемый в Linux 2.2.19+.
+По умолчанию в общесистемной очереди событий может одновременно
+находиться не более 1024 сигналов.
+На нагруженных серверах может потребоваться увеличить размер очереди
+с помощью параметра ядра <code>/proc/sys/kernel/rtsig-max</code>.
+Однако, начиная с Linux 2.6.6-mm2, этого параметра уже нет и для каждого
+процесса существует отдельная очередь сигналов, размер которой
+ограничивается с помощью <code>RLIMIT_SIGPENDING</code>
+и может быть изменён с помощью
+<a href="ngx_core_module.html#worker_rlimit_sigpending">worker_rlimit_sigpending</a>.
+</p>
+
+<p>
+При переполнении очереди nginx сбрасывает её и начинает обрабатывать
+соединения с помощью метода <code>poll</code> до тех пор,
+пока ситуация не нормализуется.
+</p>
+</li>
+
+<li id="devpoll">
+<p>
+<code>/dev/poll</code> — эффективный метод, используемый
+в Solaris 7 11/99+, HP/UX 11.22+ (eventport), IRIX 6.5.15+
+и Tru64 UNIX 5.1A+.
+</p>
+</li>
+
+<li id="eventport">
+<p>
+<code>eventport</code> — event ports, эффективный метод,
+используемый в Solaris 10.
+</p>
+</li>
+
+</ul><p> 
+</p></td></tr></table></body></html>

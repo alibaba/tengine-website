@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>nginx はどのようにリクエストを処理するか</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>nginx はどのようにリクエストを処理するか</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/request_processing.html">english</a><br><a href="../../../ru/docs/http/request_processing.html">русский</a><br><br><a href="../../../cn/docs/http/request_processing.html">简体中文</a><br><a class="notrans">עברית</a><br>日本語<br><a href="../../../tr/docs/http/request_processing.html">türkçe</a><br><br><a href="../../../">ニュース</a> [en]<br><a href="../../../ja/">nginx について</a><br><a href="../../../en/download.html">ダウンロード</a> [en]<br><a href="../../../en/security_advisories.html">セキュリティ情報</a> [en]<br><a href="../../../ja/docs/">ドキュメント</a><br><a href="../../../ja/docs/faq.html">faq</a><br><a href="../../../en/links.html">リンク</a> [en]<br><a href="../../../en/books.html">本</a> [en]<br><a href="../../../en/support.html">サポート</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">This translation may be out of date.
+Check the <a href="../../../en/docs/http/request_processing.html">English version</a>
+for recent changes.</blockquote></span><table width="100%"><tr><td align="left"><a href="#how_to_prevent_undefined_server_names">サーバ名未定義のリクエストの処理を防ぐ</a><br><a href="#mixed_name_ip_based_servers">名前ベースとIPベースをミックスした仮想サーバ</a><br><a href="#simple_php_site_configuration">単純な PHP サイトの設定</a><br></td></tr></table><center><h4>名前ベースの仮想サーバ</h4></center><p>
+nginx はまず最初にどの<i>サーバ</i>がそのリクエストを処理すべきなのかを決定します。手はじめに、３つすべての仮想サーバが port *:80 で待ち受けている単純な設定から見てみましょう:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org  www.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  example.net  www.example.net;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  example.com  www.example.com;
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+この設定では nginx は、（ブラウザからの）HTTP リクエストの “Host” ヘッダだけを考査して、そのリクエストをどのサーバに振り向けるべきかを決定します。もし “Host” ヘッダがどのサーバ名ともマッチしない場合、またはリクエストにこのフィールドがまったく含まれていない場合は、nginxはこのリクエストをデフォルトサーバに振り向けます。上記の設定ではデフォルトサーバは最初のもので、これは nginx の標準的なデフォルトの挙動です。設定内の最初のサーバをデフォルトサーバにしたくない場合は、<code>listen</code> ディレクティブに <code>default_server</code> パラメータを使って明示的に設定することができます:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80  <b>default_server</b>;
+    server_name  example.net  www.example.net;
+    ...
+}
+</pre></blockquote><p> 
+
+</p> <blockquote class="note">
+この <code>default_server</code> パラメータはバージョン 0.8.21 以上で利用できます。それ以前のバージョンでは代わりに <code>default</code> パラメータを使用してください。
+</blockquote><p> 
+
+このデフォルトサーバは <code>listen</code> ディレクティブのプロパティで、<code>server_name</code> ディレクティブのプロパティではないことに注意してください。詳細は後述します。
+</p><a name="how_to_prevent_undefined_server_names"></a><center><h4>サーバ名未定義のリクエストの処理を防ぐ</h4></center><p>
+“Host” ヘッダが未定義のリクエストを処理させたくない場合は、リクエストを単にドロップさせるデフォルトサーバを設定できます:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80  default_server;
+    server_name  _;
+    return       444;
+}
+</pre></blockquote><p> 
+
+ここでは存在しないドメイン名 “_” をサーバ名として選択し、接続を閉じる nginx の特別な標準外コード 444 を返します。このサーバ用にサーバ名を設定しなければならないことに注意してください。さもなければ nginx は<i>ホスト名</i>を使用します。
+</p><a name="mixed_name_ip_based_servers"></a><center><h4>名前ベースとIPベースをミックスした仮想サーバ</h4></center><p>
+異なるアドレスで待ち受けている仮想サーバのより複雑な設定をみてみましょう:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       192.168.1.1:80;
+    server_name  example.org  www.example.org;
+    ...
+}
+
+server {
+    listen       192.168.1.1:80;
+    server_name  example.net  www.example.net;
+    ...
+}
+
+server {
+    listen       192.168.1.2:80;
+    server_name  example.com  www.example.com;
+    ...
+}
+</pre></blockquote><p> 
+
+この設定では、nginx はまず最初に <code>server</code> ブロックの <code>listen</code> ディレクティブに対してリクエストの IP アドレスとポートを考査します。次に、その IP アドレスとポートにマッチする <code>server</code> ブロックの <code>server_name</code> ディレクティブに対して、その HTTP リクエストの “Host” ヘッダを考査します。
+
+もしサーバ名が見つからなければ、そのリクエストはデフォルトサーバによって処理されます。例えば、192.168.1.1:80 ポートで受信された <code>www.example.com</code> へのリクエストは 192.168.1.1:80 ポートのデフォルトサーバ、つまり最初のサーバで処理されます。これはこのポートでは <code>www.example.com</code> は定義されていないからです。
+</p><p>
+すでに述べたように、デフォルトサーバは <code>listen</code> ディレクティブのプロパティで、別の <code>listen</code> ディレクティブには別のデフォルトサーバが定義されています:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen        192.168.1.1:80;
+    server_name   example.org  www.example.org;
+    ...
+}
+
+server {
+    listen        192.168.1.1:80  default_server;
+    server_name   example.net  www.example.net;
+    ...
+}
+
+server {
+    listen        192.168.1.2:80  default_server;
+    server_name   example.com  www.example.com;
+    ...
+}
+</pre></blockquote><p> 
+</p><a name="simple_php_site_configuration"></a><center><h4>単純な PHP サイトの設定</h4></center><p>
+では、典型的で単純な PHP サイトで nginx がどのように<i>ロケーション（location）</i>を選択してリクエストを処理するのかを見てみましょう:
+
+</p> <blockquote class="example"><pre>
+server {
+    listen        80;
+    server_name   example.org  www.example.org;
+    root          /data/www;
+
+    location / {
+        index     index.html  index.php;
+    }
+
+    location ~* \.(gif|jpg|png)$ {
+        expires   30d;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   localhost:9000;
+        fastcgi_param  SCRIPT_FILENAME
+                       $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+</pre></blockquote><p> 
+</p><p>
+nginx はまず最初に、リストの順序には関係なくリテラルな文字列によって指定されているもっとも限定されたロケーションを検索します。上記の設定では唯一のリテラルなロケーションは <code>/</code> であり、したがってどのリクエストでもマッチして最終的にこのロケーションが使われます。次に nginx は、設定ファイルにリストされている順番で正規表現によって指定されているロケーションをチェックします。最初にマッチした正規表現で検索はストップし、 nginx そのロケーションを使用します。もしどの正規表現もリクエストにマッチしない場合は、nginx はその前に見つかったもっとも限定されたリテラルなロケーションを使用します。
+</p><p>
+すべてのタイプのロケーションはクエリー部分を除いたリクエスト URI 部分のみを考査することに注意してください。これはクエリー文字列の引数がいろいろな方法で渡されることがあるためです。例えば:
+
+</p> <blockquote class="example"><pre>
+/index.php?user=john&amp;page=1
+/index.php?page=1&amp;user=john
+</pre></blockquote><p> 
+
+さらに、クエリー文字列ではどのようなリクエストでも可能だからです:
+
+</p> <blockquote class="example"><pre>
+/index.php?page=1&amp;something+else&amp;user=john
+</pre></blockquote><p> 
+</p><p>
+では、上記の設定ではどのようにリクエストが処理されるのかを見てみましょう:
+
+</p> <ul class="compact">
+
+<li>
+<p>
+リクエスト <code>/logo.gif</code> はリテラルなロケーション <code>/</code> に最初にマッチし、次に正規表現 <code>\.(gif|jpg|png)$</code> にマッチするので、後者のロケーションによって処理されます。 このリクエストは <code>root /data/www</code> ディレクティブを使用してファイル <code>/data/www/logo.gif</code> にマップされ、このファイルがクライアントに送られます。
+</p>
+</li>
+
+<li>
+<p>
+リクエスト <code>/index.php</code> もまたリテラルなロケーション <code>/</code> に最初にマッチし、次に正規表現 <code>\.(php)$</code> にマッチします。したがって、このリクエストは後者のロケーションによって処理され、localhost:9000 で待ち受けている FastCGI サーバに渡されます。<code>fastcgi_param</code> ディレクティブは FastCGI のパラメータ SCRIPT_FILENAME を <code>/data/www/index.php</code> にセットし、この FastCGI サーバがこのファイルを実行します。変数 $document_root は <code>root</code> ディレクティブの値と同等で、変数 $fastcgi_script_name はリクエスト URI、例えば <code>/index.php</code> と同等です。
+</p>
+</li>
+
+<li>
+<p>
+リクエスト <code>/about.html</code> はリテラルなロケーション <code>/</code> のみにマッチします。したがってこのロケーションで処理されます。このリクエストは <code>root</code> ディレクティブのパラメータ <code>/data/www</code> を使い、ファイル <code>/data/www/about.html</code> にマップされ、クライアントに送られます。
+</p>
+</li>
+
+<li>
+<p>
+リクエスト <code>/</code> の処理はより複雑です。これはリテラルなロケーション <code>/</code> のみにマッチし、このロケーションで処理されます。ついで <code>index</code> ディレクティブがパラメータと <code>root</code> ディレクティブのパラメータ <code>/data/www</code> にしたがって index ファイルが存在するかどうかを考査します。もし <code>/data/www/index.php</code> ファイル存在すればこのディレクティブは <code>/index.php</code> への内部リダイレクトを実行し、nginx はまるでこのリクエストがクライアントに送られたかのようにこのロケーションを再び検索します。先に見たように、リダイレクトされたリクエストは最終的に FastCGI サーバで処理されます。
+</p>
+</li>
+
+</ul><p> 
+</p><table width="100%"><tr><td align="right">作成: Igor Sysoev<br>翻訳: DigitalCube Co. Ltd., wokamoto<br></td></tr></table></td></tr></table></body></html>

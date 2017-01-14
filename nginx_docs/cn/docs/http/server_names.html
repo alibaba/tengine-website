@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>虚拟主机名</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>虚拟主机名</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/server_names.html">english</a><br><a href="../../../ru/docs/http/server_names.html">русский</a><br><br>简体中文<br><a href="../../../he/docs/http/server_names.html">עברית</a><br><a href="../../../ja/docs/http/server_names.html">日本語</a><br><a href="../../../tr/docs/http/server_names.html">türkçe</a><br><br><a href="../../../">新闻</a> [en]<br><a href="../../../cn/">nginx 介绍</a><br><a href="../../../en/download.html">下载</a> [en]<br><a href="../../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="../../../cn/docs/">文档</a><br><a href="../../../cn/docs/faq.html">FAQ</a><br><a href="../../../en/links.html">外部连接</a> [en]<br><a href="../../../en/books.html">书籍</a> [en]<br><a href="../../../en/support.html">支持</a> [en]<br><a href="../../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#wildcard_names">通配符名字</a><br><a href="#regex_names">正则表达式名字</a><br><a href="#miscellaneous_names">其他类型的名字</a><br><a href="#optimization">优化</a><br><a href="#compatibility">兼容性</a><br></td></tr></table><p>
+
+虚拟主机名使用<a href="ngx_http_core_module.html#server_name">server_name</a>指令定义，用于决定由某台<a href="ngx_http_core_module.html#server">虚拟主机</a>来处理请求。具体请参考《<a href="request_processing.html">nginx如何处理一个请求</a>》。虚拟主机名可以使用确切的名字，通配符，或者是正则表达式来定义：
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org  www.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  *.example.org;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  mail.*;
+    ...
+}
+
+server {
+    listen       80;
+    server_name  ~^(?&lt;user&gt;.+)\.example\.net$;
+    ...
+}
+</pre></blockquote><p> 
+
+nginx以名字查找虚拟主机时，如果名字可以匹配多于一个主机名定义，比如同时匹配了通配符的名字和正则表达式的名字，那么nginx按照下面的优先级别进行查找，并选中第一个匹配的虚拟主机：
+
+</p> <ol class="compact">
+
+<li>
+确切的名字；
+</li>
+
+<li>
+最长的以星号起始的通配符名字：<code>*.example.org</code>；
+</li>
+
+<li>
+最长的以星号结束的通配符名字：<code>mail.*</code>；
+</li>
+
+<li>
+第一个匹配的正则表达式名字（按在配置文件中出现的顺序）。
+</li>
+
+</ol><p> 
+</p><a name="wildcard_names"></a><center><h4>通配符名字</h4></center><p>
+通配符名字只可以在名字的起始处或结尾处包含一个星号，并且星号与其他字符之间用点分隔。所以，“<code>www.*.example.org</code>”和“<code>w*.example.org</code>”都是非法的。不过，上面的两个名字可以使用正则表达式描述，即“<code>~^www\..+\.example\.org$</code>”和“<code>~^w.*\.example\.org$</code>”。星号可以匹配名字的多个节（各节都是以点号分隔的）。“<code>*.example.org</code>”不仅匹配<code>www.example.org</code>，也匹配<code>www.sub.example.org</code>。
+</p><p>
+有一种形如“<code>.example.org</code>”的特殊通配符，它可以既匹配确切的名字“<code>example.org</code>”，又可以匹配一般的通配符名字“<code>*.example.org</code>”。
+</p><a name="regex_names"></a><center><h4>正则表达式名字</h4></center><p>
+nginx使用的正则表达式兼容PCRE。为了使用正则表达式，虚拟主机名必须以波浪线“~”起始：
+
+</p> <blockquote class="example"><pre>
+server_name  ~^www\d+\.example\.net$;
+</pre></blockquote><p> 
+
+否则该名字会被认为是个确切的名字，如果表达式含星号，则会被认为是个通配符名字（而且很可能是一个非法的通配符名字）。不要忘记设置“<code>^</code>”和“<code>$</code>”锚点，语法上它们不是必须的，但是逻辑上是的。同时需要注意的是，域名中的点“.”需要用反斜线“\”转义。含有“<code>{</code>”和“<code>}</code>”的正则表达式需要被引用，如：
+
+</p> <blockquote class="example"><pre>
+server_name  "~^(?&lt;name&gt;\w\d<b>{</b>1,3<b>}</b>+)\.example\.net$";
+</pre></blockquote><p> 
+
+否则nginx就不能启动，错误提示是：
+
+</p> <blockquote class="example"><pre>
+directive "server_name" is not terminated by ";" in ...
+</pre></blockquote><p> 
+
+命名的正则表达式捕获组在后面可以作为变量使用：
+
+</p> <blockquote class="example"><pre>
+server {
+    server_name   ~^(www\.)?(<b>?&lt;domain&gt;</b>.+)$;
+
+    location / {
+        root   /sites/<b>$domain</b>;
+    }
+}
+</pre></blockquote><p> 
+
+PCRE使用下面语法支持命名捕获组：
+
+<blockquote><table width="100%">
+
+<tr>
+<td><code>?&lt;<code><i>name</i></code>&gt;</code></td>
+<td>从PCRE-7.0开始支持，兼容Perl 5.10语法</td>
+</tr>
+
+<tr>
+<td><code>?'<code><i>name</i></code>'</code></td>
+<td>从PCRE-7.0开始支持，兼容Perl 5.10语法</td>
+</tr>
+
+<tr>
+<td><code>?P&lt;<code><i>name</i></code>&gt;</code></td>
+<td>从PCRE-4.0开始支持，兼容Python语法</td>
+</tr>
+
+</table></blockquote>
+
+如果nginx不能启动，并显示错误信息：
+
+</p> <blockquote class="example"><pre>
+pcre_compile() failed: unrecognized character after (?&lt; in ...
+</pre></blockquote><p> 
+
+说明PCRE版本太旧，应该尝试使用<code>?P&lt;name&gt;</code>。捕获组也可以以数字方式引用：
+
+</p> <blockquote class="example"><pre>
+server {
+    server_name   ~^(www\.)?(.+)$;
+
+    location / {
+        root   /sites/<b>$2</b>;
+    }
+}
+</pre></blockquote><p> 
+
+不过，这种用法只限于简单的情况（比如上面的例子），因为数字引用很容易被覆盖。
+</p><a name="miscellaneous_names"></a><center><h4>其他类型的名字</h4></center><p>
+有一些主机名会被特别对待。
+</p><p>
+如果需要用一个非默认的<a href="ngx_http_core_module.html#server">虚拟主机</a>处理请求头中不含“Host”字段的请求，需要指定一个空名字：
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org  www.example.org  "";
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+如果<a href="ngx_http_core_module.html#server">server</a>块中没有定义<a href="ngx_http_core_module.html#server_name">server_name</a>，nginx使用空名字作为虚拟主机名。
+</p> <blockquote class="note">
+nginx 0.8.48版本以下（含）在同样的情况下会使用机器名作为虚拟主机名。
+</blockquote><p> 
+</p><p>
+如果以“<code>$hostname</code>”（nginx 0.9.4及以上版本）定义虚拟主机名，机器名将被使用。
+</p><p>
+如果使用IP地址而不是主机名来请求服务器，那么请求头的“Host”字段包含的将是IP地址。可以将IP地址作为虚拟主机名来处理这种请求：
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  nginx.org
+                 www.nginx.org
+                 ""
+                 <b>192.168.1.1</b>
+                 ;
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+在匹配所有的服务器的例子中，可以见到一个奇怪的名字“<code>_</code>”：
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80  default_server;
+    server_name  _;
+    return       444;
+}
+</pre></blockquote><p> 
+
+这没什么特别的，它只不过是成千上万的与真实的名字绝无冲突的非法域名中的一个而已。当然，也可以使用“<code>--</code>”和“<code>!@#</code>”等等。
+</p><p>
+nginx直到0.6.25版本还支持一个特殊的名字“<code>*</code>”，这个名字一直被错误地理解成是一个匹配所有的名字。但它从来没有像匹配所有的名字，或者通配符那样工作过，而是用来支持一种功能，此功能现在已经改由<a href="ngx_http_core_module.html#server_name_in_redirect">server_name_in_redirect</a>指令提供支持了。所以，现在这个特殊的名字“<code>*</code>”已经过时了，应该使用<a href="ngx_http_core_module.html#server_name_in_redirect">server_name_in_redirect</a>指令取代它。需要注意的是，使用<a href="ngx_http_core_module.html#server_name">server_name</a>指令无法描述匹配所有的名字或者默认服务器。这是<a href="ngx_http_core_module.html#listen">listen</a>指令的属性，而不是<a href="ngx_http_core_module.html#server_name">server_name</a>指令的属性。具体请参考《<a href="request_processing.html">nginx如何处理一个请求</a>》。可以定义两个服务器都监听*:80和*:8080端口，然后指定一个作为端口*:8080的默认服务器，另一个作为端口*:80的默认服务器：
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    listen       8080  default_server;
+    server_name  example.net;
+    ...
+}
+
+server {
+    listen       80  default_server;
+    listen       8080;
+    server_name  example.org;
+    ...
+}
+</pre></blockquote><p> 
+</p><a name="optimization"></a><center><h4>优化</h4></center><p>
+确切名字和通配符名字存储在哈希表中。哈希表和监听端口关联。哈希表的尺寸在配置阶段进行了优化，可以以最小的CPU缓存命中失败来找到名字。设置哈希表的细节参见<a href="../hash.html">这篇文档</a>
+</p><p>
+nginx首先搜索确切名字的哈希表，如果没有找到，搜索以星号起始的通配符名字的哈希表，如果还是没有找到，继续搜索以星号结束的通配符名字的哈希表。
+</p><p>
+因为名字是按照域名的节来搜索的，所以搜索通配符名字的哈希表比搜索确切名字的哈希表慢。注意特殊的通配符名字“<code>.example.org</code>”存储在通配符名字的哈希表中，而不在确切名字的哈希表中。
+</p><p>
+正则表达式是一个一个串行的测试，所以是最慢的，而且不可扩展。
+</p><p>
+鉴于以上原因，请尽可能使用确切的名字。举个例子，如果使用<code>example.org</code>和<code>www.example.org</code>来访问服务器是最频繁的，那么将它们明确的定义出来就更为有效：
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  example.org  www.example.org  *.example.org;
+    ...
+}
+</pre></blockquote><p> 
+
+下面这种方法相比更简单，但是效率也更低：
+
+</p> <blockquote class="example"><pre>
+server {
+    listen       80;
+    server_name  .example.org;
+    ...
+}
+</pre></blockquote><p> 
+</p><p>
+如果定义了大量名字，或者定义了非常长的名字，那可能需要在<i>http</i>配置块中使用<a href="ngx_http_core_module.html#server_names_hash_max_size">server_names_hash_max_size</a>和<a href="ngx_http_core_module.html#server_names_hash_bucket_size">server_names_hash_bucket_size</a>指令进行调整。<a href="ngx_http_core_module.html#server_names_hash_bucket_size">server_names_hash_bucket_size</a>的默认值可能是32，或者是64，或者是其他值，取决于CPU的缓存行的长度。如果这个值是32，那么定义“<code>too.long.server.name.example.org</code>”作为虚拟主机名就会失败，而nginx显示下面错误信息： 
+</p> <blockquote class="example"><pre>
+could not build the server_names_hash,
+you should increase server_names_hash_bucket_size: 32
+</pre></blockquote><p> 
+
+出现了这种情况，那就需要将指令的值扩大一倍：
+
+</p> <blockquote class="example"><pre>
+http {
+    server_names_hash_bucket_size  64;
+    ...
+</pre></blockquote><p> 
+
+如果定义了大量名字，得到了另外一个错误：
+
+</p> <blockquote class="example"><pre>
+could not build the server_names_hash,
+you should increase either server_names_hash_max_size: 512
+or server_names_hash_bucket_size: 32
+</pre></blockquote><p> 
+
+那么应该先尝试设置<a href="ngx_http_core_module.html#server_names_hash_max_size">server_names_hash_max_size</a>的值差不多等于名字列表的名字总量。如果还不能解决问题，或者服务器启动非常缓慢，再尝试提高<a href="ngx_http_core_module.html#server_names_hash_bucket_size">server_names_hash_bucket_size</a>的值。
+</p><p>
+如果只为一个监听端口配置了唯一的主机，那么nginx就完全不会测试虚拟主机名了（也不会为监听端口建立哈希表）。不过，有一个例外，如果定义的虚拟主机名是一个含有捕获组的正则表达式，这时nginx就不得不执行这个表达式以得到捕获组。
+</p><a name="compatibility"></a><center><h4>兼容性</h4></center><p>
+</p> <ul class="compact">
+
+<li>
+从0.9.4版本开始，支持特殊的虚拟主机名“<code>$hostname</code>”。
+</li>
+
+<li>
+从0.8.48版本开始，默认的虚拟主机名是空名字“”。
+</li>
+
+<li>
+从0.8.25版本开始，支持虚拟主机名中使用命名的正则表达式捕获组。
+</li>
+
+<li>
+从0.7.40版本开始，支持虚拟主机名中使用正则表达式的捕获组。
+</li>
+
+<li>
+从0.7.12版本开始，支持空名字“”。
+</li>
+
+<li>
+从0.6.25版本开始，通配符和正则表达式名字可以作为第一个虚拟主机名。
+</li>
+
+<li>
+从0.6.7版本开始，支持正则表达式的虚拟主机名。
+</li>
+
+<li>
+从0.6.0版本开始，支持形如<code>example.*</code>的通配符名字。
+</li>
+
+<li>
+从0.3.18版本开始，支持形如<code>.example.org</code>的特殊通配符名字。
+</li>
+
+<li>
+从0.1.13版本开始，支持形如<code>*.example.org</code>的通配符名字。
+</li>
+
+</ul><p> 
+</p><table width="100%"><tr><td align="right">作者: Igor Sysoev<br>编辑: Brian Mercer<br>翻译: cfsego<br></td></tr></table></td></tr></table></body></html>

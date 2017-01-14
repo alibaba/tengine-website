@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Модуль ngx_http_log_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Модуль ngx_http_log_module</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_log_module.html">english</a><br>русский<br><br><a href="../../../cn/docs/http/ngx_http_log_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">новости</a> [en]<br><a href="../../../ru/">об nginx</a><br><a href="../../../ru/download.html">скачать</a><br><a href="../../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="../../../ru/docs/">документация</a><br><a href="../../../ru/docs/faq.html">faq</a><br><a href="../../../en/links.html">ссылки</a> [en]<br><a href="../../../en/books.html">книги</a> [en]<br><a href="../../../ru/support.html">поддержка</a><br><a href="../../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Пример конфигурации</a><br><a href="#directives">Директивы</a><br>     <a href="#access_log">access_log</a><br>     <a href="#log_format">log_format</a><br>     <a href="#open_log_file_cache">open_log_file_cache</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+Модуль <code>ngx_http_log_module</code> записывает логи запросов
+в указанном формате.
+</p><p>
+Логи записываются в контексте location’а, где заканчивается обработка.
+Это может быть location, отличный от первоначального, если в процессе
+обработки запроса происходит
+<a href="ngx_http_core_module.html#internal">внутреннее
+перенаправление</a>.
+</p>
+
+
+<a name="example"></a><center><h4>Пример конфигурации</h4></center><p>
+</p> <blockquote class="example"><pre>
+log_format compression '$remote_addr - $remote_user [$time_local] '
+                       '"$request" $status $bytes_sent '
+                       '"$http_referer" "$http_user_agent" "$gzip_ratio"';
+
+access_log /spool/logs/nginx-access.log compression buffer=32k;
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Директивы</h4></center><a name="access_log"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>access_log</strong> 
+    <code><i>путь</i></code>
+    [<code><i>формат</i></code>
+    [<code>buffer</code>=<code><i>размер</i></code>
+    [<code>flush</code>=<code><i>время</i></code>]]];</code><br><code><strong>access_log</strong> 
+    <code><i>путь</i></code>
+    <code><i>формат</i></code>
+    <code>gzip[=<code><i>степень</i></code>]</code>
+    [<code>buffer</code>=<code><i>размер</i></code>]
+    [<code>flush</code>=<code><i>время</i></code>];</code><br><code><strong>access_log</strong> <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>access_log logs/access.log combined;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code>, <code>if в location</code>, <code>limit_except</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт путь, формат и настройки буферизованной записи в лог.
+На одном уровне может использоваться несколько логов.
+Специальное значение <code>off</code> отменяет все директивы
+<code>access_log</code> для текущего уровня.
+Если формат не указан, то используется предопределённый формат
+“<code>combined</code>”.
+</p><p>
+Если задан размер буфера с помощью параметра <code>buffer</code> или
+указан параметр <code>gzip</code> (1.3.10), то запись будет
+буферизованной.
+</p> <blockquote class="note">
+Размер буфера должен быть не больше размера атомарной записи в дисковый файл.
+Для FreeBSD этот размер неограничен.
+</blockquote><p> 
+</p><p>
+При включённой буферизации данные записываются в файл:
+</p> <ul class="compact">
+
+<li>
+если очередная строка лога не помещается в буфер;
+</li>
+
+<li>
+если данные в буфере находятся дольше интервала времени, заданного
+параметром <code>flush</code> (1.3.10);
+</li>
+
+<li>
+при <a href="../control.html">переоткрытии</a> лог-файла или
+завершении рабочего процесса.
+</li>
+
+</ul><p> 
+</p><p>
+Если задан параметр <code>gzip</code>, то буфер будет сжиматься перед
+записью в файл.
+Степень сжатия может быть задана в диапазоне от 1 (быстрее, но хуже сжатие)
+до 9 (медленнее, но лучше сжатие).
+По умолчанию используется буфер размером 64К байт и степень сжатия 1.
+Данные сжимаются атомарными блоками, и в любой момент времени лог-файл может
+быть распакован или прочитан с помощью утилиты “<code>zcat</code>”.
+</p><p>
+Пример:
+</p> <blockquote class="example"><pre>
+access_log /path/to/log.gz combined gzip flush=5m;
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+Для поддержки gzip-сжатия логов nginx должен быть собран с библиотекой zlib.
+</blockquote><p> 
+</p><p>
+В пути файла можно использовать переменные (0.7.6+),
+но такие логи имеют некоторые ограничения:
+</p> <ul class="compact">
+
+<li>
+<a href="../ngx_core_module.html#user">пользователь</a>,
+с правами которого работают рабочие процессы, должен
+иметь права на создание файлов в каталоге с такими логами;
+</li>
+
+<li>
+не работает буферизация;
+</li>
+
+<li>
+файл открывается для каждой записи в лог и сразу же после записи закрывается.
+Следует однако иметь в виду, что поскольку дескрипторы часто используемых файлов
+могут храниться в <a href="#open_log_file_cache">кэше</a>,
+то при вращении логов в течение времени, заданного параметром
+<code>valid</code> директивы <a href="#open_log_file_cache">open_log_file_cache</a>,
+запись может продолжаться в старый файл.
+</li>
+
+<li>
+при каждой записи в лог проверяется существование
+<a href="ngx_http_core_module.html#root">корневого каталога</a>
+для запроса — если этот каталог не существует, то лог не создаётся.
+Поэтому <a href="ngx_http_core_module.html#root">root</a>
+и <code>access_log</code> нужно описывать на одном уровне:
+<blockquote class="example"><pre>
+server {
+    root       /spool/vhost/data/$host;
+    access_log /spool/vhost/logs/$host;
+    ...
+</pre></blockquote>
+</li>
+
+</ul><p> 
+</p><a name="log_format"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>log_format</strong> 
+    <code><i>название</i></code>
+    <code><i>строка</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>log_format combined "...";</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт формат лога.
+</p><p>
+Кроме общих переменных в формате можно использовать переменные,
+существующие только на момент записи в лог:
+</p> <dl class="compact">
+
+<dt><code>$bytes_sent</code></dt>
+<dd>
+число байт, переданное клиенту
+<blockquote class="note">
+Начиная с версий 1.3.8 и 1.2.5 существует общая переменная с
+<a href="ngx_http_core_module.html#var_bytes_sent">тем же
+именем</a>.
+</blockquote>
+</dd>
+
+<dt><code>$connection</code></dt>
+<dd>
+порядковый номер соединения
+<blockquote class="note">
+Начиная с версий 1.3.8 и 1.2.5 существует общая переменная с
+<a href="ngx_http_core_module.html#var_connection">тем же
+именем</a>.
+</blockquote>
+</dd>
+
+<dt><code>$connection_requests</code></dt>
+<dd>
+текущее число запросов в соединении (1.1.18)
+<blockquote class="note">
+Начиная с версий 1.3.8 и 1.2.5 существует общая переменная с
+<a href="ngx_http_core_module.html#var_connection_requests">тем же
+именем</a>.
+</blockquote>
+</dd>
+
+<dt><code>$msec</code></dt>
+<dd>
+время в секундах с точностью до миллисекунд на момент записи в лог
+<blockquote class="note">
+Начиная с версий 1.3.9 и 1.2.6 существует общая переменная с
+<a href="ngx_http_core_module.html#var_msec">тем же именем</a>.
+</blockquote>
+</dd>
+
+<dt><code>$pipe</code></dt>
+<dd>
+“<code>p</code>” если запрос был pipelined, иначе “<code>.</code>”
+</dd>
+
+<dt><code>$request_length</code></dt>
+<dd>
+длина запроса (включая строку запроса, заголовок и тело запроса)
+</dd>
+
+<dt><code>$request_time</code></dt>
+<dd>
+время обработки запроса в секундах с точностью до миллисекунд;
+время, прошедшее с момента чтения первых байт от клиента до
+момента записи в лог после отправки последних байт клиенту
+<blockquote class="note">
+Начиная с версий 1.3.9 и 1.2.6 существует общая переменная с
+<a href="ngx_http_core_module.html#var_request_time">тем же именем</a>.
+</blockquote>
+</dd>
+
+<dt><code>$status</code></dt>
+<dd>
+статус ответа
+<blockquote class="note">
+Начиная с версий 1.3.2 и 1.2.2 существует общая переменная с
+<a href="ngx_http_core_module.html#var_status">тем же именем</a>.
+</blockquote>
+</dd>
+
+<dt><code>$time_iso8601</code></dt>
+<dd>
+локальное время в формате по стандарту ISO 8601
+</dd>
+
+<dt><code>$time_local</code></dt>
+<dd>
+локальное время в Common Log Format
+</dd>
+
+</dl><p> 
+</p><p>
+Строки заголовка, переданные клиенту, начинаются с префикса
+“<code>sent_http_</code>”, например,
+<code>$sent_http_content_range</code>.
+</p><p>
+В конфигурации всегда существует предопределённый формат
+“<code>combined</code>”:
+</p> <blockquote class="example"><pre>
+log_format combined '$remote_addr - $remote_user [$time_local] '
+                    '"$request" $status $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent"';
+</pre></blockquote><p> 
+</p><a name="open_log_file_cache"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>open_log_file_cache</strong> 
+<code>max</code>=<code><i>N</i></code>
+[<code>inactive</code>=<code><i>время</i></code>]
+[<code>min_uses</code>=<code><i>N</i></code>]
+[<code>valid</code>=<code><i>время</i></code>];</code><br><code><strong>open_log_file_cache</strong> <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>open_log_file_cache off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт кэш, в котором хранятся дескрипторы файлов часто используемых
+логов, имена которых заданы с использованием переменных.
+Параметры директивы:
+</p> <dl class="compact">
+
+<dt><code>max</code></dt>
+<dd>
+задаёт максимальное число дескрипторов в кэше;
+при переполнении кэша наименее востребованные (LRU)
+дескрипторы закрываются
+</dd>
+
+<dt><code>inactive</code></dt>
+<dd>
+задаёт время, после которого закэшированный дескриптор закрывается,
+если к нему не было обращений в течение этого времени;
+по умолчанию 10 секунд
+</dd>
+
+<dt><code>min_uses</code></dt>
+<dd>
+задаёт минимальное число использований файла в течение
+времени, заданного параметром <code>inactive</code>,
+после которого дескриптор файла будет оставаться открытым в кэше;
+по умолчанию 1
+</dd>
+
+<dt><code>valid</code></dt>
+<dd>
+задаёт, через какое время нужно проверять, что файл ещё
+существует под тем же именем;
+по умолчанию 60 секунд
+</dd>
+
+<dt><code>off</code></dt>
+<dd>
+запрещает кэш
+</dd>
+
+</dl><p> 
+</p><p>
+Пример использования:
+</p> <blockquote class="example"><pre>
+open_log_file_cache max=1000 inactive=20s valid=1m min_uses=2;
+</pre></blockquote><p> 
+</p>
+
+</td></tr></table></body></html>

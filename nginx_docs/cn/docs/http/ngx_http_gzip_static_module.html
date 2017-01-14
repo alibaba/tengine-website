@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>ngx_http_gzip_static_module模块</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>ngx_http_gzip_static_module模块</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_gzip_static_module.html">english</a><br><a href="../../../ru/docs/http/ngx_http_gzip_static_module.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">新闻</a> [en]<br><a href="../../../cn/">nginx 介绍</a><br><a href="../../../en/download.html">下载</a> [en]<br><a href="../../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="../../../cn/docs/">文档</a><br><a href="../../../cn/docs/faq.html">FAQ</a><br><a href="../../../en/links.html">外部连接</a> [en]<br><a href="../../../en/books.html">书籍</a> [en]<br><a href="../../../en/support.html">支持</a> [en]<br><a href="../../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><span><blockquote class="note">翻译内容可能已经过旧。
+你可以通过 <a href="../../../en/docs/http/ngx_http_gzip_static_module.html">英文版本</a>
+查看最近的更新。</blockquote></span><table width="100%"><tr><td align="left"><a href="#example">配置范例</a><br><a href="#directives">指令</a><br>     <a href="#gzip_static">gzip_static</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+模块 <code>ngx_http_gzip_static_module</code> 允许发送以“<code>.gz</code>”作为文件扩展名的预压缩文件，以替代发送普通文件。
+</p><p>
+这个模块不是默认编译的，因此需要指定
+<code>--with-http_gzip_static_module</code>
+编译选项。
+</p>
+
+
+<a name="example"></a><center><h4>配置范例</h4></center><p>
+</p> <blockquote class="example"><pre>
+gzip_static  on;
+gzip_proxied expired no-cache no-store private auth;
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>指令</h4></center><a name="gzip_static"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>gzip_static</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>gzip_static off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+启用或者禁用检查预压缩文件是否存在。
+与以下指令共同确定功能开启:
+<a href="ngx_http_gzip_module.html#gzip_http_version">gzip_http_version</a>,
+<a href="ngx_http_gzip_module.html#gzip_proxied">gzip_proxied</a>,
+<a href="ngx_http_gzip_module.html#gzip_disable">gzip_disable</a>,
+和<a href="ngx_http_gzip_module.html#gzip_vary">gzip_vary</a>.
+</p><p>
+文件可以使用 <code>gzip</code> 命令来进行压缩，或任何其他兼容的命令。
+建议压缩文件和原始文件的修改日期和时间保持一致。
+</p>
+
+<table width="100%"><tr><td align="right">翻译: WenMing<br></td></tr></table></td></tr></table></body></html>

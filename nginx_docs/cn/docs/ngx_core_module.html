@@ -1,0 +1,1004 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>核心机能</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>核心机能</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../en/docs/ngx_core_module.html">english</a><br><a href="../../ru/docs/ngx_core_module.html">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../">新闻</a> [en]<br><a href="../../cn/">nginx 介绍</a><br><a href="../../en/download.html">下载</a> [en]<br><a href="../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="./">文档</a><br><a href="faq.html">FAQ</a><br><a href="../../en/links.html">外部连接</a> [en]<br><a href="../../en/books.html">书籍</a> [en]<br><a href="../../en/support.html">支持</a> [en]<br><a href="../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">示例配置</a><br><a href="#directives">指令</a><br>     <a href="#accept_mutex">accept_mutex</a><br>     <a href="#accept_mutex_delay">accept_mutex_delay</a><br>     <a href="#daemon">daemon</a><br>     <a href="#debug_connection">debug_connection</a><br>     <a href="#debug_points">debug_points</a><br>     <a href="#error_log">error_log</a><br>     <a href="#env">env</a><br>     <a href="#events">events</a><br>     <a href="#include">include</a><br>     <a href="#lock_file">lock_file</a><br>     <a href="#master_process">master_process</a><br>     <a href="#multi_accept">multi_accept</a><br>     <a href="#pcre_jit">pcre_jit</a><br>     <a href="#pid">pid</a><br>     <a href="#ssl_engine">ssl_engine</a><br>     <a href="#timer_resolution">timer_resolution</a><br>     <a href="#use">use</a><br>     <a href="#user">user</a><br>     <a href="#worker_aio_requests">worker_aio_requests</a><br>     <a href="#worker_connections">worker_connections</a><br>     <a href="#worker_cpu_affinity">worker_cpu_affinity</a><br>     <a href="#worker_priority">worker_priority</a><br>     <a href="#worker_processes">worker_processes</a><br>     <a href="#worker_rlimit_core">worker_rlimit_core</a><br>     <a href="#worker_rlimit_nofile">worker_rlimit_nofile</a><br>     <a href="#worker_rlimit_sigpending">worker_rlimit_sigpending</a><br>     <a href="#working_directory">working_directory</a><br></td></tr></table>
+
+<a name="example"></a><center><h4>示例配置</h4></center><p>
+</p> <blockquote class="example"><pre>
+user www www;
+worker_processes 2;
+
+error_log /var/log/nginx-error.log info;
+
+events {
+    use kqueue;
+    worker_connections 2048;
+}
+
+...
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>指令</h4></center><a name="accept_mutex"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>accept_mutex</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>accept_mutex on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+如果使用，nginx的多个工作进程将以串行方式接入新连接。否则，新连接将通报给所有工作进程，而且如果新连接数量较少，某些工作进程可能只是在浪费系统资源。
+</p> <blockquote class="note">
+必须开启<code>accept_mutex</code>才能使用<a href="events.html#rtsig">rtsig</a>连接处理方式。
+</blockquote><p> 
+</p><a name="accept_mutex_delay"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>accept_mutex_delay</strong> <code><i>time</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>accept_mutex_delay 500ms;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+使用<a href="#accept_mutex">accept_mutex</a>时，可以指定某个工作进程检测到其它工作进程正在接入新连接时，自身等待直到重新开始尝试接入新连接的最大时间间隔。
+</p><a name="daemon"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>daemon</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>daemon on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+决定nginx是否应以守护进程的方式工作。主要用于开发。
+</p><a name="debug_connection"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>debug_connection</strong> 
+    <code><i>address</i></code> |
+    <code><i>CIDR</i></code> |
+    <code>unix:</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+开启针对特定客户端连接的调试日志。除开这些连接，其它连接将使用<a href="#error_log">error_log</a>指令设置的日志级别。
+被调试的连接可以使用IPv4或IPv6(1.3.0, 1.2.1)网络地址来指定，
+也可以使用主机名来设置连接。
+对于UNIX域套接字(1.3.0, 1.2.1)，使用“<code>unix:</code>”参数来启用调试日志。
+</p> <blockquote class="example"><pre>
+events {
+    debug_connection 127.0.0.1;
+    debug_connection localhost;
+    debug_connection 192.0.2.0/24;
+    debug_connection ::1;
+    debug_connection 2001:0db8::/32;
+    debug_connection unix:;
+    ...
+}
+</pre></blockquote><p> 
+</p> <blockquote class="note">
+只有在编译时设置<code>--with-debug</code>，上述指令才可以工作。
+</blockquote><p> 
+</p><a name="debug_points"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>debug_points</strong> <code>abort</code> | <code>stop</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+这条指令用于调试。
+</p><p>
+当nginx检测到内部错误，比如重启工作进程时出现套接字泄漏，开启<code>debug_points</code>将导致创建core文件(<code>abort</code>)，
+或者停止进程(<code>stop</code>)以便使用系统调试器进行进一步分析。
+</p><a name="error_log"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>error_log</strong> 
+<code><i>file</i></code> | <code>stderr</code>
+[<code>debug</code> |
+<code>info</code> |
+<code>notice</code> |
+<code>warn</code> |
+<code>error</code> |
+<code>crit</code> |
+<code>alert</code> |
+<code>emerg</code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>error_log logs/error.log error;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code>, <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+配置日志。
+</p><p>
+第一个参数定义了存放日志的文件。
+
+如果设置为特殊值<code>stderr</code>，nginx会将日志输出到标准错误输出。
+</p><p>
+第二个参数定义日志级别。
+日志级别在上面已经按严重性由轻到重的顺序列出。
+设置为某个日志级别将会使指定级别和更高级别的日志都被记录下来。
+比如，默认级别<code>error</code>会使nginx记录所有<code>error</code>、<code>crit</code>、<code>alert</code>和<code>emerg</code>级别的消息。
+如果省略这个参数，nginx会使用<code>error</code>。
+</p> <blockquote class="note">
+为了使<code>debug</code>日志工作，需要添加<code>--with-debug</code>编译选项。
+</blockquote><p> 
+</p><a name="env"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>env</strong> <code><i>variable</i></code>[=<code><i>value</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>env TZ;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+nginx默认会删除从父进程继承的除TZ变量以外的所有环境变量。
+这条指令允许nginx保留某些继承的环境变量，改变它们的值，或者创建新的环境变量。
+这些变量将：
+</p> <ul class="compact">
+
+<li>
+在<a href="control.html#upgrade">热升级</a>nginx执行文件时被继承；
+</li>
+
+<li>
+被<a href="http/ngx_http_perl_module.html">ngx_http_perl_module</a>模块使用；
+</li>
+
+<li>
+被工作进程使用。
+请大家牢记于心，使用这种方法控制系统库不总是可行的，因为在这条指令设置环境变量以前，系统库初始化时就已检查这些环境变量的情况也并非少见。
+但有一个例外，就是上面提到的<a href="control.html#upgrade">热升级</a>nginx执行文件。
+</li>
+
+</ul><p> 
+</p><p>
+TZ变量总是被继承，并且可被<a href="http/ngx_http_perl_module.html">ngx_http_perl_module</a>模块使用，
+除非明确配置不允许这样。
+</p><p>
+使用示例：
+</p> <blockquote class="example"><pre>
+env MALLOC_OPTIONS;
+env PERL5LIB=/data/site/modules;
+env OPENSSL_ALLOW_PROXY_CERTS=1;
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+NGINX环境变量是由nginx内部设置和使用，用户不应直接设置它。
+</blockquote><p> 
+</p><a name="events"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>events</strong> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+提供配置上下文，以解析那些影响连接处理的指令。
+</p><a name="include"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>include</strong> <code><i>file</i></code> | <code><i>mask</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>任意</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+将另一个<code><i>file</i></code>，或者匹配指定<code><i>mask</i></code>的文件，包含到配置中。
+被包含的文件应由语法正确的指令和块组成。
+</p><p>
+使用示例：
+</p> <blockquote class="example"><pre>
+include mime.types;
+include vhosts/*.conf;
+</pre></blockquote><p> 
+</p><a name="lock_file"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>lock_file</strong> <code><i>file</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>lock_file logs/nginx.lock;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+nginx使用锁机制来实现<a href="#accept_mutex">accept_mutex</a>，并将访问串行化到共享内存。
+绝大多数系统中，锁是由原子操作实现，那么可以忽略这条指令。
+另外一些系统使用“锁文件”的机制，那么这条指令将指定锁文件的前缀。
+</p><a name="master_process"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>master_process</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>master_process on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+决定是否启动工作进程。这条指令是为nginx开发者设计的。
+</p><a name="multi_accept"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>multi_accept</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>multi_accept off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+关闭时，工作进程一次只会接入一个新连接。否则，工作进程一次会将所有新连接全部接入。
+</p> <blockquote class="note">
+使用<a href="events.html#kqueue">kqueue</a>连接处理方式时，可忽略这条指令，因为kqueue可以报告有多少新连接等待接入。
+</blockquote><p> 
+</p> <blockquote class="note">
+使用<a href="events.html#rtsig">rtsig</a>连接处理方式将自动开启<code>multi_accept</code>。
+</blockquote><p> 
+</p><a name="pcre_jit"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>pcre_jit</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>pcre_jit off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table><p>这个指令出现在版本 1.1.12.
+
+            </p></div><p>
+开启或禁止在配置解析阶段为正则表达式使用“即时编译”(PCRE JIT)技术。
+</p><p>
+PCRE JIT可以显著提升处理正则表达式的速度。
+</p> <blockquote class="note">
+从PCRE 8.20版本开始，可用PCRE的<code>--enable-jit</code>编译选项打开JIT功能。
+当使用PCRE源码库编译nginx时(<code>--with-pcre=</code>)，
+应该使用nginx的<code>--with-pcre-jit</code>编译选项开启JIT支持。
+</blockquote><p> 
+</p><a name="pid"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>pid</strong> <code><i>file</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>pid nginx.pid;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义存储nginx主进程ID的<code><i>file</i></code>。
+</p><a name="ssl_engine"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>ssl_engine</strong> <code><i>device</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义SSL硬件加速器的名字。
+</p><a name="timer_resolution"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>timer_resolution</strong> <code><i>interval</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+在工作进程中降低定时器的精度，因此可以减少产生<code>gettimeofday()</code>系统调用的次数。
+默认情况下，每收到一个内核事件，nginx都会调用<code>gettimeofday()</code>。
+使用此指令后，nginx仅在每经过指定的<code><i>interval</i></code>时间间隔后调用一次<code>gettimeofday()</code>。
+</p><p>
+Example:
+</p> <blockquote class="example"><pre>
+timer_resolution 100ms;
+</pre></blockquote><p> 
+</p><p>
+时间间隔的内部实现取决于使用的方法：
+</p> <ul class="compact">
+
+<li>
+使用<code>kqueue</code>时，会使用<code>EVFILT_TIMER</code>过滤器；
+</li>
+
+<li>
+使用<code>eventport</code>时，会使用<code>timer_create()</code>；
+</li>
+
+<li>
+否则会使用<code>setitimer()</code>。
+</li>
+
+</ul><p> 
+</p><a name="use"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>use</strong> <code><i>method</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+指定使用的<a href="events.html">连接处理</a><code><i>method(方式)</i></code>。
+通常不需要明确设置，因为nginx默认会使用最高效的方法。
+</p><a name="user"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>user</strong> <code><i>user</i></code> [<code><i>group</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>user nobody nobody;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义工作进程使用的<code><i>user</i></code>和<code><i>group</i></code>身份。
+如果省略<code><i>group</i></code>，nginx会使用与<code><i>user</i></code>相同的组名。
+</p><a name="worker_aio_requests"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_aio_requests</strong> <code><i>number</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>worker_aio_requests 32;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table>
+                        <p>
+                    这个指令出现在版本 1.1.4 和 1.0.7.
+                  
+                        </p>
+                    </div><p>
+在使用<a href="../docs/events.html#epoll">epoll</a>连接处理方式的情况下使用<a href="http/ngx_http_core_module.html#aio">aio</a>时，
+可以设置单个工作进程未处理的异步I/O操作的最大<code><i>number(数量)</i></code>。
+</p><a name="worker_connections"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_connections</strong> <code><i>number</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>worker_connections 512;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+设置每个工作进程可以打开的最大并发连接数。
+</p><p>
+需要记住，这个数量包含所有连接(比如，和后端服务器建立的连接，还有其他的），
+而不仅仅是和客户端的连接。
+另外需要考虑的是，实际的并发连接数是不能超过打开文件的最大数量限制的，这个限制可以用<a href="#worker_rlimit_nofile">worker_rlimit_nofile</a>指令修改。
+</p><a name="worker_cpu_affinity"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_cpu_affinity</strong> <code><i>cpumask</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+绑定工作进程到指定的CPU集合。每个CPU集合使用一个标记允许使用的CPU的位图来表示。
+需要为每个工作进程分别设置CPU集合。
+工作进程默认不会绑定到任何特定的CPU。
+</p><p>
+比如
+</p> <blockquote class="example"><pre>
+worker_processes    4;
+worker_cpu_affinity 0001 0010 0100 1000;
+</pre></blockquote><p> 
+将每个工作进程分别绑定至不同的CPU，而
+</p> <blockquote class="example"><pre>
+worker_processes    2;
+worker_cpu_affinity 0101 1010;
+</pre></blockquote><p> 
+将第一个工作进程绑定至CPU0/CPU2，将第二个工作进程绑定至CPU1/CPU3。
+上面第二个例子适合于超线程的机器。
+</p><p>
+</p> <blockquote class="note">
+这条指令仅在FreeFSD和Linux系统有效。
+</blockquote><p> 
+</p><a name="worker_priority"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_priority</strong> <code><i>number</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>worker_priority 0;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义工作进程的调度优先级。这与<code>nice</code>命令行所做的相同：
+<code><i>number</i></code>为负数代表优先级更高。通常允许的范围是[-20, 20]。
+</p><p>
+举例：
+</p> <blockquote class="example"><pre>
+worker_priority -10;
+</pre></blockquote><p> 
+</p><a name="worker_processes"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_processes</strong> <code><i>number</i></code> | <code>auto</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>worker_processes 1;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义工作进程的数量。
+</p><p>
+关于这个值的优化依赖很多因素，其中包括（但不限于）CPU的核数，存储数据的硬盘数量和负载模式。
+如果感觉到迷惑，将它设置为等于可用的CPU核数是一个不错的开始（值为“<code>auto</code>”时，nginx会自动检测它）。
+</p> <blockquote class="note">
+<code>auto</code>参数从版本1.3.8和1.2.5开始支持。
+</blockquote><p> 
+</p><a name="worker_rlimit_core"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_rlimit_core</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+修改工作进程的core文件尺寸的最大值限制(<code>RLIMIT_CORE</code>)，用于在不重启主进程的情况下增大该限制。
+</p><a name="worker_rlimit_nofile"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_rlimit_nofile</strong> <code><i>number</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+修改工作进程的打开文件数的最大值限制(<code>RLIMIT_NOFILE</code>)，用于在不重启主进程的情况下增大该限制。
+</p><a name="worker_rlimit_sigpending"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>worker_rlimit_sigpending</strong> <code><i>number</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+在支持<a href="events.html#rtsig">rtsig</a>连接处理方式的系统中，修改工作进程的信号队列长度限制(<code>RLIMIT_SIGPENDING</code>)，用于在不重启主进程的情况下增大该限制。
+</p><a name="working_directory"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>working_directory</strong> <code><i>directory</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+定义工作进程的当前工作路径。
+主要用于设置core文件的目标地址。工作进程应当具有指定路径的写权限。
+</p>
+
+<table width="100%"><tr><td align="right">翻译: cfsego<br></td></tr></table></td></tr></table></body></html>

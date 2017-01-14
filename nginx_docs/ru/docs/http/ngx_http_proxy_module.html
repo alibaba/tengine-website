@@ -1,0 +1,2109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Модуль ngx_http_proxy_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Модуль ngx_http_proxy_module</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_proxy_module.html">english</a><br>русский<br><br><a href="../../../cn/docs/http/ngx_http_proxy_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">новости</a> [en]<br><a href="../../../ru/">об nginx</a><br><a href="../../../ru/download.html">скачать</a><br><a href="../../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="../../../ru/docs/">документация</a><br><a href="../../../ru/docs/faq.html">faq</a><br><a href="../../../en/links.html">ссылки</a> [en]<br><a href="../../../en/books.html">книги</a> [en]<br><a href="../../../ru/support.html">поддержка</a><br><a href="../../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Пример конфигурации</a><br><a href="#directives">Директивы</a><br>     <a href="#proxy_bind">proxy_bind</a><br>     <a href="#proxy_buffer_size">proxy_buffer_size</a><br>     <a href="#proxy_buffering">proxy_buffering</a><br>     <a href="#proxy_buffers">proxy_buffers</a><br>     <a href="#proxy_busy_buffers_size">proxy_busy_buffers_size</a><br>     <a href="#proxy_cache">proxy_cache</a><br>     <a href="#proxy_cache_bypass">proxy_cache_bypass</a><br>     <a href="#proxy_cache_key">proxy_cache_key</a><br>     <a href="#proxy_cache_lock">proxy_cache_lock</a><br>     <a href="#proxy_cache_lock_timeout">proxy_cache_lock_timeout</a><br>     <a href="#proxy_cache_methods">proxy_cache_methods</a><br>     <a href="#proxy_cache_min_uses">proxy_cache_min_uses</a><br>     <a href="#proxy_cache_path">proxy_cache_path</a><br>     <a href="#proxy_cache_use_stale">proxy_cache_use_stale</a><br>     <a href="#proxy_cache_valid">proxy_cache_valid</a><br>     <a href="#proxy_connect_timeout">proxy_connect_timeout</a><br>     <a href="#proxy_cookie_domain">proxy_cookie_domain</a><br>     <a href="#proxy_cookie_path">proxy_cookie_path</a><br>     <a href="#proxy_headers_hash_bucket_size">proxy_headers_hash_bucket_size</a><br>     <a href="#proxy_headers_hash_max_size">proxy_headers_hash_max_size</a><br>     <a href="#proxy_hide_header">proxy_hide_header</a><br>     <a href="#proxy_http_version">proxy_http_version</a><br>     <a href="#proxy_ignore_client_abort">proxy_ignore_client_abort</a><br>     <a href="#proxy_ignore_headers">proxy_ignore_headers</a><br>     <a href="#proxy_intercept_errors">proxy_intercept_errors</a><br>     <a href="#proxy_max_temp_file_size">proxy_max_temp_file_size</a><br>     <a href="#proxy_method">proxy_method</a><br>     <a href="#proxy_next_upstream">proxy_next_upstream</a><br>     <a href="#proxy_no_cache">proxy_no_cache</a><br>     <a href="#proxy_pass">proxy_pass</a><br>     <a href="#proxy_pass_header">proxy_pass_header</a><br>     <a href="#proxy_read_timeout">proxy_read_timeout</a><br>     <a href="#proxy_pass_request_body">proxy_pass_request_body</a><br>     <a href="#proxy_pass_request_headers">proxy_pass_request_headers</a><br>     <a href="#proxy_redirect">proxy_redirect</a><br>     <a href="#proxy_send_lowat">proxy_send_lowat</a><br>     <a href="#proxy_send_timeout">proxy_send_timeout</a><br>     <a href="#proxy_set_body">proxy_set_body</a><br>     <a href="#proxy_set_header">proxy_set_header</a><br>     <a href="#proxy_ssl_session_reuse">proxy_ssl_session_reuse</a><br>     <a href="#proxy_store">proxy_store</a><br>     <a href="#proxy_store_access">proxy_store_access</a><br>     <a href="#proxy_temp_file_write_size">proxy_temp_file_write_size</a><br>     <a href="#proxy_temp_path">proxy_temp_path</a><br><a href="#variables">Встроенные переменные</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+Модуль <code>ngx_http_proxy_module</code> позволяет передавать
+запросы другому серверу.
+</p>
+
+
+<a name="example"></a><center><h4>Пример конфигурации</h4></center><p>
+</p> <blockquote class="example"><pre>
+location / {
+    proxy_pass       http://localhost:8000;
+    proxy_set_header Host      $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Директивы</h4></center><a name="proxy_bind"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_bind</strong> <code><i>адрес</i></code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_bind off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 0.8.22.
+
+            </p></div><p>
+Задаёт локальный IP-<code><i>адрес</i></code>, который будет использоваться в
+исходящих соединениях с проксируемым сервером.
+В значении параметра допустимо использование переменных (1.3.12).
+Специальное значение <code>off</code> (1.3.12) отменяет действие
+унаследованной с предыдущего уровня конфигурации
+директивы <code>proxy_bind</code>, позволяя системе
+самостоятельно выбирать локальный адрес.
+</p><a name="proxy_buffer_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_buffer_size</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_buffer_size 4k|8k;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт <code><i>размер</i></code> буфера, в который будет читаться
+первая часть ответа, получаемого от проксируемого сервера.
+В этой части ответа находится, как правило, небольшой заголовок ответа.
+По умолчанию размер буфера равен размеру одного буфера в директиве
+<a href="#proxy_buffers">proxy_buffers</a>, однако его можно сделать меньше.
+</p><a name="proxy_buffering"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_buffering</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_buffering on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Разрешает или запрещает использовать буферизацию ответов проксируемого сервера.
+</p><p>
+Если буферизация включена, то nginx принимает ответ проксируемого сервера
+как можно быстрее, сохраняя его в буферы, заданные директивами
+<a href="#proxy_buffer_size">proxy_buffer_size</a> и <a href="#proxy_buffers">proxy_buffers</a>.
+Если ответ не вмещается целиком в память, то его часть может быть записана
+на диск во <a href="#proxy_temp_path">временный файл</a>.
+Запись во временные файлы контролируется директивами
+<a href="#proxy_max_temp_file_size">proxy_max_temp_file_size</a> и
+<a href="#proxy_temp_file_write_size">proxy_temp_file_write_size</a>.
+</p><p>
+Если буферизация выключена, то ответ синхронно передаётся клиенту сразу же
+по мере его поступления.
+nginx не пытается считать весь ответ проксируемого сервера.
+Максимальный размер данных, который nginx может принять от сервера
+за один раз, задаётся директивой <a href="#proxy_buffer_size">proxy_buffer_size</a>.
+</p><p>
+Буферизация может быть также включена или выключена путём передачи
+значения “<code>yes</code>” или “<code>no</code>” в поле
+“X-Accel-Buffering” заголовка ответа.
+Эту возможность можно запретить с помощью директивы
+<a href="ngx_http_proxy_module.html#proxy_ignore_headers">proxy_ignore_headers</a>.
+</p><a name="proxy_buffers"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_buffers</strong> <code><i>число</i></code> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_buffers 8 4k|8k;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт <code><i>число</i></code> и <code><i>размер</i></code> буферов
+для одного соединения,
+в которые будет читаться ответ, получаемый от проксируемого сервера.
+По умолчанию размер одного буфера равен размеру страницы.
+В зависимости от платформы это или 4K, или 8K.
+</p><a name="proxy_busy_buffers_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_busy_buffers_size</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_busy_buffers_size 8k|16k;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+При включённой <a href="#proxy_buffering">буферизации</a> ответов
+проксируемого сервера, ограничивает суммарный <code><i>размер</i></code>
+буферов, которые могут быть заняты для отправки ответа клиенту, пока
+ответ ещё не прочитан целиком.
+Оставшиеся буферы тем временем могут использоваться для чтения ответа
+и, при необходимости, буферизации части ответа во временный файл.
+По умолчанию <code><i>размер</i></code> ограничен двумя буферами, заданными
+директивами <a href="#proxy_buffer_size">proxy_buffer_size</a> и <a href="#proxy_buffers">proxy_buffers</a>.
+</p><a name="proxy_cache"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache</strong> <code><i>зона</i></code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cache off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт зону разделяемой памяти, используемой для кэширования.
+Одна и та же зона может использоваться в нескольких местах.
+Параметр <code>off</code> запрещает кэширование, унаследованное
+с предыдущего уровня конфигурации.
+</p><a name="proxy_cache_bypass"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_bypass</strong> <code><i>строка</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт условия, при которых ответ не будет браться из кэша.
+Если значение хотя бы одного из строковых параметров непустое и не равно “0”,
+то ответ не берётся из кэша:
+</p> <blockquote class="example"><pre>
+proxy_cache_bypass $cookie_nocache $arg_nocache$arg_comment;
+proxy_cache_bypass $http_pragma    $http_authorization;
+</pre></blockquote><p> 
+Можно использовать совместно с директивой <a href="#proxy_no_cache">proxy_no_cache</a>.
+</p><a name="proxy_cache_key"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_key</strong> <code><i>строка</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cache_key $scheme$proxy_host$request_uri;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт ключ для кэширования, например,
+</p> <blockquote class="example"><pre>
+proxy_cache_key "$host$request_uri $cookie_user";
+</pre></blockquote><p> 
+По умолчанию значение директивы близко к строке
+</p> <blockquote class="example"><pre>
+proxy_cache_key $scheme$proxy_host$uri$is_args$args;
+</pre></blockquote><p> 
+</p><a name="proxy_cache_lock"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_lock</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cache_lock off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.1.12.
+
+            </p></div><p>
+Если включено, одновременно только одному запросу будет позволено
+заполнить новый элемент кэша, идентифицируемый согласно директиве
+<a href="#proxy_cache_key">proxy_cache_key</a>, передав запрос на проксируемый сервер.
+Остальные запросы этого же элемента будут либо ожидать
+появления ответа в кэше, либо освобождения блокировки
+этого элемента, в течение времени, заданного директивой
+<a href="#proxy_cache_lock_timeout">proxy_cache_lock_timeout</a>.
+</p><a name="proxy_cache_lock_timeout"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_lock_timeout</strong> <code><i>время</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cache_lock_timeout 5s;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.1.12.
+
+            </p></div><p>
+Задаёт таймаут для <a href="#proxy_cache_lock">proxy_cache_lock</a>.
+</p><a name="proxy_cache_methods"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_methods</strong> 
+    <code>GET</code> |
+    <code>HEAD</code> |
+    <code>POST</code>
+    ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cache_methods GET HEAD;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 0.7.59.
+
+            </p></div><p>
+Если метод запроса клиента указан в этой директиве,
+то ответ будет закэширован.
+Методы “<code>GET</code>” и “<code>HEAD</code>” всегда добавляются
+в список, но тем не менее рекомендуется перечислять их явно.
+См. также директиву <a href="#proxy_no_cache">proxy_no_cache</a>.
+</p><a name="proxy_cache_min_uses"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_min_uses</strong> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cache_min_uses 1;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт <code><i>число</i></code> запросов, после которого ответ будет закэширован.
+</p><a name="proxy_cache_path"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_path</strong> 
+    <code><i>путь</i></code>
+    [<code>levels</code>=<code><i>уровни</i></code>]
+    <code>keys_zone</code>=<code><i>имя</i></code>:<code><i>размер</i></code>
+    [<code>inactive</code>=<code><i>время</i></code>]
+    [<code>max_size</code>=<code><i>размер</i></code>]
+    [<code>loader_files</code>=<code><i>число</i></code>]
+    [<code>loader_sleep</code>=<code><i>время</i></code>]
+    [<code>loader_threshold</code>=<code><i>время</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт путь и другие параметры кэша.
+Данные кэша хранятся в файлах.
+Ключом и именем файла в кэше является результат функции MD5
+от проксированного URL.
+Параметр <code>levels</code> задаёт уровни иерархии кэша,
+например, при использовании
+</p> <blockquote class="example"><pre>
+proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=one:10m;
+</pre></blockquote><p> 
+имена файлов в кэше будут такого вида:
+</p> <blockquote class="example"><pre>
+/data/nginx/cache/<strong>c</strong>/<strong>29</strong>/b7f54b2df7773722d382f4809d650<strong>29c</strong>
+</pre></blockquote><p> 
+</p><p>
+Кэшируемый ответ сначала записывается во временный файл, а потом этот файл
+переименовывается.
+Начиная с версии 0.8.9, временные файлы и кэш
+могут располагаться на разных файловых системах, но нужно учитывать,
+что в этом случае вместо дешёвой операции переименовывания в пределах
+одной файловой системы файл копируется с одной файловой системы на другую.
+Поэтому лучше, если кэш будет находиться на той же файловой
+системе, что и каталог с временными файлами, задаваемый директивой
+<a href="#proxy_temp_path">proxy_temp_path</a> для данного location.
+</p><p>
+Кроме того, все активные ключи и информация о данных хранятся в зоне
+разделяемой памяти, <code><i>имя</i></code> и <code><i>размер</i></code> которой
+задаются параметром <code>keys_zone</code>.
+Если к данным кэша не обращаются в течение времени, заданного параметром
+<code>inactive</code>, то данные удаляются, независимо от их свежести.
+По умолчанию <code>inactive</code> равен 10 минутам.
+</p><p>
+Специальный процесс “cache manager” следит за максимальным размером кэша,
+заданным параметром <code>max_size</code>, и при превышении
+его размеров удаляет наименее востребованные данные.
+</p><p>
+Через минуту после старта активируется специальный процесс “cache loader”,
+который загружает в зону кэша информацию о ранее закэшированных данных,
+хранящихся на файловой системе.
+Загрузка происходит итерациями.
+За одну итерацию загружается не более <code>loader_files</code>
+элементов (по умолчанию 100).
+Кроме того, время работы одной итерации ограничено параметром
+<code>loader_threshold</code> (по умолчанию 200 миллисекунд).
+Между итерациями делается пауза на время, заданное параметром
+<code>loader_sleep</code> (по умолчанию 50 миллисекунд).
+</p><a name="proxy_cache_use_stale"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_use_stale</strong> 
+    <code>error</code> |
+    <code>timeout</code> |
+    <code>invalid_header</code> |
+    <code>updating</code> |
+    <code>http_500</code> |
+    <code>http_502</code> |
+    <code>http_503</code> |
+    <code>http_504</code> |
+    <code>http_404</code> |
+    <code>off</code>
+    ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cache_use_stale off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Определяет, в каких случаях можно использовать
+устаревший закэшированный ответ, если при работе с проксированным
+сервером возникла ошибка.
+Параметры директивы совпадают с параметрами
+директивы <a href="#proxy_next_upstream">proxy_next_upstream</a>.
+</p><p>
+Кроме того, дополнительный параметр <code>updating</code>
+разрешает использовать устаревший закэшированный ответ,
+если на данный момент он уже обновляется.
+Это позволяет минимизировать число обращений к проксированным серверам
+при обновлении закэшированных данных.
+</p><p>
+Чтобы минимизировать число обращений к проксированным серверам при
+заполнении нового элемента кэша, можно воспользоваться директивой
+<a href="#proxy_cache_lock">proxy_cache_lock</a>.
+</p><a name="proxy_cache_valid"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cache_valid</strong> [<code><i>код</i></code> ...] <code><i>время</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт время кэширования для разных кодов ответа.
+Например, директивы
+</p> <blockquote class="example"><pre>
+proxy_cache_valid 200 302 10m;
+proxy_cache_valid 404      1m;
+</pre></blockquote><p> 
+задают время кэширования 10 минут для ответов с кодами 200 и 302,
+и 1 минуту для ответов с кодом 404.
+</p><p>
+Если указано только <code><i>время</i></code> кэширования,
+</p> <blockquote class="example"><pre>
+proxy_cache_valid 5m;
+</pre></blockquote><p> 
+то кэшируются только ответы 200, 301 и 302.
+</p><p>
+Кроме того, можно кэшировать любые ответы с помощью параметра
+<code>any</code>:
+</p> <blockquote class="example"><pre>
+proxy_cache_valid 200 302 10m;
+proxy_cache_valid 301      1h;
+proxy_cache_valid any      1m;
+</pre></blockquote><p> 
+</p><p>
+Параметры кэширования могут также быть заданы непосредственно
+в заголовке ответа.
+Такой способ приоритетнее, чем задание времени кэширования с помощью директивы.
+Поле заголовка “X-Accel-Expires” задаёт время кэширования
+ответа в секундах.
+Значение 0 запрещает кэшировать ответ.
+Если значение начинается с префикса <code>@</code>, оно задаёт абсолютное
+время в секундах с начала эпохи, до которого ответ может быть закэширован.
+Если в заголовке нет поля “X-Accel-Expires”,
+параметры кэширования определяются по полям заголовка
+“Expires” или “Cache-Control”.
+Ответ, в заголовке которого есть поле “Set-Cookie”,
+не будет кэшироваться.
+Обработка одного или более из этих полей заголовка может быть отключена
+при помощи директивы <a href="#proxy_ignore_headers">proxy_ignore_headers</a>.
+</p><a name="proxy_connect_timeout"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_connect_timeout</strong> <code><i>время</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_connect_timeout 60s;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт таймаут для установления соединения с проксированным сервером.
+Необходимо иметь в виду, что этот таймаут обычно не может превышать 75 секунд.
+</p><a name="proxy_cookie_domain"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cookie_domain</strong> <code>off</code>;</code><br><code><strong>proxy_cookie_domain</strong> <code><i>домен</i></code> <code><i>замена</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cookie_domain off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.1.15.
+
+            </p></div><p>
+Задаёт текст, который нужно изменить в атрибуте <code>domain</code>
+полей “Set-Cookie” заголовка ответа проксируемого сервера.
+Предположим, проксируемый сервер вернул поле заголовка
+“Set-Cookie” с атрибутом
+“<code>domain=localhost</code>”.
+Директива
+</p> <blockquote class="example"><pre>
+proxy_cookie_domain localhost example.org;
+</pre></blockquote><p> 
+перепишет данный атрибут в виде
+“<code>domain=example.org</code>”.
+</p><p>
+Точка в начале строк <code><i>домен</i></code> и <code><i>замена</i></code>,
+а равно как и в атрибуте <code>domain</code> игнорируется.
+Регистр значения не имеет.
+</p><p>
+В строках <code><i>домен</i></code> и <code><i>замена</i></code> можно использовать
+переменные:
+</p> <blockquote class="example"><pre>
+proxy_cookie_domain www.$host $host;
+</pre></blockquote><p> 
+</p><p>
+Директиву также можно задать при помощи регулярных выражений.
+При этом <code><i>домен</i></code> должен начинаться с символа
+“<code>~</code>”.
+Регулярное выражение может содержать именованные и позиционные выделения,
+а <code><i>замена</i></code> ссылаться на них:
+</p> <blockquote class="example"><pre>
+proxy_cookie_domain ~\.(?P&lt;sl_domain&gt;[-0-9a-z]+\.[a-z]+)$ $sl_domain;
+</pre></blockquote><p> 
+</p><p>
+Директив <code>proxy_cookie_domain</code> может быть несколько:
+</p> <blockquote class="example"><pre>
+proxy_cookie_domain localhost example.org;
+proxy_cookie_domain ~\.([a-z]+\.[a-z]+)$ $1;
+</pre></blockquote><p> 
+</p><p>
+Параметр <code>off</code> запрещает все директивы
+<code>proxy_cookie_domain</code>
+на данном уровне:
+</p> <blockquote class="example"><pre>
+proxy_cookie_domain off;
+proxy_cookie_domain localhost example.org;
+proxy_cookie_domain www.example.org example.org;
+</pre></blockquote><p> 
+</p><a name="proxy_cookie_path"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_cookie_path</strong> <code>off</code>;</code><br><code><strong>proxy_cookie_path</strong> <code><i>путь</i></code> <code><i>замена</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_cookie_path off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.1.15.
+
+            </p></div><p>
+Задаёт текст, который нужно изменить в атрибуте <code>path</code>
+полей “Set-Cookie” заголовка ответа проксируемого сервера.
+Предположим, проксируемый сервер вернул поле заголовка
+“Set-Cookie” с атрибутом
+“<code>path=/two/some/uri/</code>”.
+Директива
+</p> <blockquote class="example"><pre>
+proxy_cookie_path /two/ /;
+</pre></blockquote><p> 
+перепишет данный атрибут в виде
+“<code>path=/some/uri/</code>”.
+</p><p>
+В строках <code><i>путь</i></code> и <code><i>замена</i></code> можно использовать
+переменные:
+</p> <blockquote class="example"><pre>
+proxy_cookie_path $uri /some$uri;
+</pre></blockquote><p> 
+</p><p>
+Директиву также можно задать при помощи регулярных выражений.
+При этом <code><i>путь</i></code> должен начинаться либо с символа
+“<code>~</code>”, если при сравнении следует учитывать регистр символов,
+либо с символов “<code>~*</code>”, если регистр символов учитывать
+не нужно.
+Регулярное выражение может содержать именованные и позиционные выделения,
+а <code><i>замена</i></code> ссылаться на них:
+</p> <blockquote class="example"><pre>
+proxy_cookie_path ~*^/user/([^/]+) /u/$1;
+</pre></blockquote><p> 
+</p><p>
+Директив <code>proxy_cookie_path</code> может быть несколько:
+</p> <blockquote class="example"><pre>
+proxy_cookie_path /one/ /;
+proxy_cookie_path / /two/;
+</pre></blockquote><p> 
+</p><p>
+Параметр <code>off</code> запрещает все директивы
+<code>proxy_cookie_path</code>
+на данном уровне:
+</p> <blockquote class="example"><pre>
+proxy_cookie_path off;
+proxy_cookie_path /two/ /;
+proxy_cookie_path ~*^/user/([^/]+) /u/$1;
+</pre></blockquote><p> 
+</p><a name="proxy_headers_hash_bucket_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_headers_hash_bucket_size</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_headers_hash_bucket_size 64;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт <code><i>размер</i></code> корзины для хэш-таблиц,
+используемых директивами <a href="#proxy_hide_header">proxy_hide_header</a>
+и <a href="#proxy_set_header">proxy_set_header</a>.
+Подробнее настройка хэш-таблиц обсуждается в отдельном
+<a href="../hash.html">документе</a>.
+</p><a name="proxy_headers_hash_max_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_headers_hash_max_size</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_headers_hash_max_size 512;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт максимальный <code><i>размер</i></code> хэш-таблиц,
+используемых директивами <a href="#proxy_hide_header">proxy_hide_header</a> и
+<a href="#proxy_set_header">proxy_set_header</a>.
+Подробнее настройка хэш-таблиц обсуждается в отдельном
+<a href="../hash.html">документе</a>.
+</p><a name="proxy_hide_header"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_hide_header</strong> <code><i>поле</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+По умолчанию
+nginx не передаёт клиенту поля заголовка “Date”,
+“Server”, “X-Pad” и
+“X-Accel-...” из ответа проксированного сервера.
+Директива <code>proxy_hide_header</code> задаёт дополнительные поля,
+которые не будут передаваться.
+Если же передачу полей нужно разрешить, можно воспользоваться
+директивой <a href="#proxy_pass_header">proxy_pass_header</a>.
+</p><a name="proxy_http_version"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_http_version</strong> <code>1.0</code> | <code>1.1</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_http_version 1.0;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.1.4.
+
+            </p></div><p>
+Задаёт версию протокола HTTP для проксирования.
+По умолчанию используется версия 1.0.
+Для работы
+<a href="ngx_http_upstream_module.html#keepalive">постоянных
+соединений</a> рекомендуется версия 1.1.
+</p><a name="proxy_ignore_client_abort"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_ignore_client_abort</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_ignore_client_abort off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Определяет, закрывать ли соединение с проксированным сервером
+в случае, если клиент закрыл соединение, не дождавшись ответа.
+</p><a name="proxy_ignore_headers"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_ignore_headers</strong> <code><i>поле</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Запрещает обработку некоторых полей заголовка из ответа проксированного сервера.
+В директиве можно указать поля “X-Accel-Redirect”,
+“X-Accel-Expires”, “X-Accel-Limit-Rate” (1.1.6),
+“X-Accel-Buffering” (1.1.6),
+“X-Accel-Charset” (1.1.6), “Expires”,
+“Cache-Control” и “Set-Cookie” (0.8.44).
+</p><p>
+Если не запрещено, обработка этих полей заголовка заключается в следующем:
+</p> <ul>
+
+<li>
+“X-Accel-Expires”, “Expires”,
+“Cache-Control” и “Set-Cookie”
+задают параметры <a href="#proxy_cache_valid">кэширования</a> ответа;
+</li>
+
+<li>
+“X-Accel-Redirect” производит
+<a href="ngx_http_core_module.html#internal">внутреннее
+перенаправление</a> на указанный URI;
+</li>
+
+<li>
+“X-Accel-Limit-Rate” задаёт
+<a href="ngx_http_core_module.html#limit_rate">ограничение
+скорости</a> передачи ответа клиенту;
+</li>
+
+<li>
+“X-Accel-Buffering” включает или выключает
+<a href="#proxy_buffering">буферизацию</a> ответа;
+</li>
+
+<li>
+“X-Accel-Charset” задаёт желаемую
+<a href="ngx_http_charset_module.html#charset">кодировку</a>
+ответа.
+</li>
+
+</ul><p> 
+</p><a name="proxy_intercept_errors"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_intercept_errors</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_intercept_errors off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Определяет, передавать ли клиенту проксированные ответы с кодом
+больше либо равным 400, или же перенаправлять их на обработку nginx’у с помощью
+директивы <a href="ngx_http_core_module.html#error_page">error_page</a>.
+</p><a name="proxy_max_temp_file_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_max_temp_file_size</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_max_temp_file_size 1024m;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Если включена <a href="#proxy_buffering">буферизация</a> ответов
+проксируемого сервера, и ответ не вмещается целиком в буферы памяти,
+заданные директивами <a href="#proxy_buffer_size">proxy_buffer_size</a> и
+<a href="#proxy_buffers">proxy_buffers</a>, часть ответа может быть записана во временный файл.
+Эта директива задаёт максимальный <code><i>размер</i></code> временного файла.
+Размер данных, сбрасываемых во временный файл за один раз, задаётся
+директивой <a href="#proxy_temp_file_write_size">proxy_temp_file_write_size</a>.
+</p><p>
+Значение 0 отключает возможность буферизации ответов во временные файлы.
+</p><a name="proxy_method"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_method</strong> <code><i>метод</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт HTTP-<code><i>метод</i></code>, который будет использоваться
+в передаваемых на проксируемый сервер запросах вместо метода
+из клиентского запроса.
+</p><a name="proxy_next_upstream"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_next_upstream</strong> 
+    <code>error</code> |
+    <code>timeout</code> |
+    <code>invalid_header</code> |
+    <code>http_500</code> |
+    <code>http_502</code> |
+    <code>http_503</code> |
+    <code>http_504</code> |
+    <code>http_404</code> |
+    <code>off</code>
+    ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_next_upstream error timeout;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Определяет, в каких случаях запрос будет передан следующему серверу:
+</p> <dl class="compact">
+
+<dt><code>error</code></dt>
+<dd>произошла ошибка соединения с сервером, передачи ему запроса или
+чтения заголовка ответа сервера;</dd>
+
+<dt><code>timeout</code></dt>
+<dd>произошёл таймаут во время соединения с сервером,
+передачи ему запроса или чтения заголовка ответа сервера;</dd>
+
+<dt><code>invalid_header</code></dt>
+<dd>сервер вернул пустой или неверный ответ;</dd>
+
+<dt><code>http_500</code></dt>
+<dd>сервер вернул ответ с кодом 500;</dd>
+
+<dt><code>http_502</code></dt>
+<dd>сервер вернул ответ с кодом 502;</dd>
+
+<dt><code>http_503</code></dt>
+<dd>сервер вернул ответ с кодом 503;</dd>
+
+<dt><code>http_504</code></dt>
+<dd>сервер вернул ответ с кодом 504;</dd>
+
+<dt><code>http_404</code></dt>
+<dd>сервер вернул ответ с кодом 404;</dd>
+
+<dt><code>off</code></dt>
+<dd>запрещает передачу запроса следующему серверу.</dd>
+
+</dl><p> 
+</p><p>
+Необходимо понимать, что передача запроса следующему серверу возможна
+только при условии, что клиенту ещё ничего не передавалось.
+То есть, если ошибка или таймаут возникли в середине передачи ответа,
+то исправить это уже невозможно.
+</p><a name="proxy_no_cache"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_no_cache</strong> <code><i>строка</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт условия, при которых ответ не будет сохраняться в кэш.
+Если значение хотя бы одного из строковых параметров непустое и не равно “0”,
+то ответ не будет сохранён:
+</p> <blockquote class="example"><pre>
+proxy_no_cache $cookie_nocache $arg_nocache$arg_comment;
+proxy_no_cache $http_pragma    $http_authorization;
+</pre></blockquote><p> 
+Можно использовать совместно с директивой <a href="#proxy_cache_bypass">proxy_cache_bypass</a>.
+</p><a name="proxy_pass"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_pass</strong> <code><i>URL</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>location</code>, <code>if в location</code>, <code>limit_except</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт протокол и адрес проксируемого сервера, а также необязательный URI,
+на который должен отображаться location.
+В качестве протокола можно указать
+“<code>http</code>” или “<code>https</code>”.
+Адрес может быть указан в виде доменного имени или IP-адреса,
+и необязательного порта:
+</p> <blockquote class="example"><pre>
+proxy_pass http://localhost:8000/uri/;
+</pre></blockquote><p> 
+или в виде пути UNIX-сокета, который указывается после слова
+“<code>unix</code>” и заключается в двоеточия:
+</p> <blockquote class="example"><pre>
+proxy_pass http://unix:/tmp/backend.socket:/uri/;
+</pre></blockquote><p> 
+</p><p>
+Если доменному имени соответствует несколько адресов, то все они будут
+использоваться по очереди (round-robin).
+Кроме того, в качестве адреса можно указать
+<a href="ngx_http_upstream_module.html">группу серверов</a>.
+</p><p>
+URI запроса передаётся на сервер так:
+</p> <ul>
+
+<li>
+Если <code>proxy_pass</code> указана с URI,
+то при передаче запроса серверу часть
+<a href="ngx_http_core_module.html#location">нормализованного</a>
+URI запроса, соответствующая location, заменяется на URI,
+указанный в директиве:
+<blockquote class="example"><pre>
+location /name/ {
+    proxy_pass http://127.0.0.1/remote/;
+}
+</pre></blockquote>
+</li>
+
+<li>
+Если <code>proxy_pass</code> указана без URI,
+то при обработке первоначального запроса на сервер передаётся
+URI запроса в том же виде, в каком его прислал клиент,
+а при обработке изменённого URI - 
+нормализованный URI запроса целиком:
+<blockquote class="example"><pre>
+location /some/path/ {
+    proxy_pass http://127.0.0.1;
+}
+</pre></blockquote>
+<blockquote class="note">
+До версии 1.1.12,
+если <code>proxy_pass</code> указана без URI,
+в ряде случаев при изменении URI на сервер мог передаваться
+URI первоначального запроса вместо изменённого URI.
+</blockquote>
+</li>
+</ul><p> 
+</p><p>
+В ряде случаев часть URI запроса, подлежащую замене, выделить невозможно:
+</p> <ul>
+
+<li>
+Если location задан регулярным выражением.
+<p>
+В этом случае директиву следует указывать без URI.
+</p>
+</li>
+
+<li>
+Если внутри проксируемого location с помощью директивы
+<a href="ngx_http_rewrite_module.html#rewrite">rewrite</a> изменяется
+URI, и именно с этой конфигурацией будет обрабатываться запрос
+(<code>break</code>):
+<blockquote class="example"><pre>
+location /name/ {
+    rewrite    /name/([^/]+) /users?name=$1 break;
+    proxy_pass http://127.0.0.1;
+}
+</pre></blockquote>
+<p>
+В этом случае URI, указанный в директиве, игнорируется, и на сервер
+передаётся изменённый URI запроса целиком.
+</p>
+</li>
+</ul><p> 
+</p><p>
+Имя сервера, его порт и передаваемый URI можно также полностью задать
+с помощью переменных:
+</p> <blockquote class="example"><pre>
+proxy_pass http://$host$uri;
+</pre></blockquote><p> 
+или даже так:
+</p> <blockquote class="example"><pre>
+proxy_pass $request;
+</pre></blockquote><p> 
+</p><p>
+В этом случае имя сервера ищется среди описанных
+<a href="ngx_http_upstream_module.html">групп серверов</a>
+и если не найдено, то определяется с помощью
+<a href="ngx_http_core_module.html#resolver">resolver</a>’а.
+</p><a name="proxy_pass_header"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_pass_header</strong> <code><i>поле</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Разрешает передавать от проксируемого сервера клиенту
+<a href="#proxy_hide_header">запрещённые для передачи</a> поля заголовка.
+</p><a name="proxy_read_timeout"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_read_timeout</strong> <code><i>время</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_read_timeout 60s;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт таймаут при чтении ответа проксированного сервера.
+Таймаут устанавливается не на всю передачу ответа,
+а только между двумя операциями чтения.
+Если по истечении этого времени проксируемый сервер ничего не передаст,
+соединение закрывается.
+</p><a name="proxy_pass_request_body"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_pass_request_body</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_pass_request_body on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Если запрещено, то исходное тело запроса не будет передано
+на проксируемый сервер.
+</p> <blockquote class="example"><pre>
+location /x-accel-redirect-here/ {
+    proxy_method GET;
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
+
+    proxy_pass ...
+}
+</pre></blockquote><p> 
+См. также директивы <a href="#proxy_set_header">proxy_set_header</a> и
+<a href="#proxy_pass_request_headers">proxy_pass_request_headers</a>.
+</p><a name="proxy_pass_request_headers"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_pass_request_headers</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_pass_request_headers on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Если запрещено, то поля заголовка исходного запроса не будут переданы на
+проксируемый сервер.
+</p> <blockquote class="example"><pre>
+location /x-accel-redirect-here/ {
+    proxy_method GET;
+    proxy_pass_request_headers off;
+    proxy_pass_request_body off;
+
+    proxy_pass ...
+}
+</pre></blockquote><p> 
+См. также директивы <a href="#proxy_set_header">proxy_set_header</a> и
+<a href="#proxy_pass_request_body">proxy_pass_request_body</a>.
+</p><a name="proxy_redirect"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_redirect</strong> <code>default</code>;</code><br><code><strong>proxy_redirect</strong> <code>off</code>;</code><br><code><strong>proxy_redirect</strong> <code><i>перенаправление</i></code> <code><i>замена</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_redirect default;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт текст, который нужно изменить в полях заголовка
+“Location” и “Refresh” в ответе
+проксируемого сервера.
+Предположим, проксируемый сервер вернул поле заголовка
+“<code>Location: http://localhost:8000/two/some/uri/</code>”.
+Директива
+</p> <blockquote class="example"><pre>
+proxy_redirect http://localhost:8000/two/ http://frontend/one/;
+</pre></blockquote><p> 
+перепишет эту строку в виде
+“<code>Location: http://frontend/one/some/uri/</code>”.
+</p><p>
+В заменяемой строке можно не указывать имя сервера:
+</p> <blockquote class="example"><pre>
+proxy_redirect http://localhost:8000/two/ /;
+</pre></blockquote><p> 
+тогда будет подставлено основное имя сервера и порт, если он отличен от 80.
+</p><p>
+Стандартная замена, задаваемая параметром <code>default</code>,
+использует параметры директив
+<a href="ngx_http_core_module.html#location">location</a> и
+<a href="#proxy_pass">proxy_pass</a>.
+Поэтому две нижеприведённые конфигурации одинаковы:
+</p> <blockquote class="example"><pre>
+location /one/ {
+    proxy_pass     http://upstream:port/two/;
+    proxy_redirect default;
+</pre></blockquote><p> 
+
+</p> <blockquote class="example"><pre>
+location /one/ {
+    proxy_pass     http://upstream:port/two/;
+    proxy_redirect http://upstream:port/two/ /one/;
+</pre></blockquote><p> 
+Параметр <code>default</code> недопустим, если в <a href="#proxy_pass">proxy_pass</a>
+используются переменные.
+</p><p>
+В строке <code><i>замена</i></code> можно использовать переменные:
+</p> <blockquote class="example"><pre>
+proxy_redirect http://localhost:8000/ http://$host:$server_port/;
+</pre></blockquote><p> 
+</p><p>
+В строке <code><i>перенаправление</i></code> тоже можно использовать (1.1.11)
+переменные:
+</p> <blockquote class="example"><pre>
+proxy_redirect http://$proxy_host:8000/ /;
+</pre></blockquote><p> 
+</p><p>
+Директиву также можно задать (1.1.11) при помощи регулярных выражений.
+При этом <code><i>перенаправление</i></code> должно начинаться либо с символа
+“<code>~</code>”, если при сравнении следует учитывать регистр символов,
+либо с символов “<code>~*</code>”, если регистр символов учитывать
+не нужно.
+Регулярное выражение может содержать именованные и позиционные выделения,
+а <code><i>замена</i></code> ссылаться на них:
+</p> <blockquote class="example"><pre>
+proxy_redirect ~^(http://[^:]+):\d+(/.+)$ $1$2;
+proxy_redirect ~*/user/([^/]+)/(.+)$      http://$1.example.com/$2;
+</pre></blockquote><p> 
+</p><p>
+Директив <code>proxy_redirect</code> может быть несколько:
+</p> <blockquote class="example"><pre>
+proxy_redirect default;
+proxy_redirect http://localhost:8000/  /;
+proxy_redirect http://www.example.com/ /;
+</pre></blockquote><p> 
+</p><p>
+Параметр <code>off</code> запрещает все директивы
+<code>proxy_redirect</code>
+на данном уровне:
+</p> <blockquote class="example"><pre>
+proxy_redirect off;
+proxy_redirect default;
+proxy_redirect http://localhost:8000/  /;
+proxy_redirect http://www.example.com/ /;
+</pre></blockquote><p> 
+</p><p>
+С помощью этой директивы можно также добавлять имя хоста к относительным
+перенаправлениям, выдаваемым проксируемым сервером:
+</p> <blockquote class="example"><pre>
+proxy_redirect / /;
+</pre></blockquote><p> 
+</p><a name="proxy_send_lowat"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_send_lowat</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_send_lowat 0;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+При установке в ненулевое значение nginx будет пытаться минимизировать
+число операций отправки на исходящих соединениях с проксируемым сервером либо
+при помощи флага <code>NOTE_LOWAT</code> метода
+<a href="../events.html#kqueue">kqueue</a>,
+либо при помощи параметра сокета <code>SO_SNDLOWAT</code>,
+с указанным <code><i>размером</i></code>.
+</p><p>
+Эта директива игнорируется на Linux, Solaris и Windows.
+</p><a name="proxy_send_timeout"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_send_timeout</strong> <code><i>время</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_send_timeout 60s;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт таймаут при передаче запроса проксированному серверу.
+Таймаут устанавливается не на всю передачу запроса,
+а только между двумя операциями записи.
+Если по истечении этого времени проксируемый сервер не примет новых данных,
+соединение закрывается.
+</p><a name="proxy_set_body"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_set_body</strong> <code><i>значение</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Позволяет переопределить тело запроса, передаваемое на проксируемый сервер.
+В качестве значения можно использовать текст, переменные и их комбинации.
+</p><a name="proxy_set_header"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_set_header</strong> <code><i>поле</i></code> <code><i>значение</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_set_header Host $proxy_host;</pre><pre>proxy_set_header Connection close;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Позволяет переопределять или добавлять поля заголовка запроса,
+<a href="#proxy_pass_request_headers">передаваемые</a> проксируемому серверу.
+В качестве значения можно использовать текст, переменные и их комбинации.
+Директивы наследуются с предыдущего уровня при условии, что на данном
+уровне не описаны свои директивы <code>proxy_set_header</code>.
+По умолчанию переопределяются только два поля:
+</p> <blockquote class="example"><pre>
+proxy_set_header Host       $proxy_host;
+proxy_set_header Connection close;
+</pre></blockquote><p> 
+</p><p>
+Неизменённое поле заголовка запроса “Host” можно передать так:
+</p> <blockquote class="example"><pre>
+proxy_set_header Host       $http_host;
+</pre></blockquote><p> 
+</p><p>
+Однако, если это поле отсутствует в заголовке запроса клиента, то ничего
+передаваться не будет.
+В этом случае лучше воспользоваться переменной <code>$host</code> - её
+значение равно имени сервера в поле “Host”
+заголовка запроса, или же основному имени сервера, если поля нет:
+</p> <blockquote class="example"><pre>
+proxy_set_header Host       $host;
+</pre></blockquote><p> 
+</p><p>
+Кроме того, можно передать имя сервера вместе с портом проксируемого сервера:
+</p> <blockquote class="example"><pre>
+proxy_set_header Host       $host:$proxy_port;
+</pre></blockquote><p> 
+</p><p>
+Если значение поля заголовка — пустая строка, то поле вообще
+не будет передаваться проксируемому серверу:
+</p> <blockquote class="example"><pre>
+proxy_set_header Accept-Encoding "";
+</pre></blockquote><p> 
+</p><a name="proxy_ssl_session_reuse"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_ssl_session_reuse</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_ssl_session_reuse on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Определяет, использовать ли повторно SSL-сессии при
+работе с проксированным сервером.
+Если в логах появляются ошибки
+“<code>SSL3_GET_FINISHED:digest check failed</code>”,
+то можно попробовать выключить
+повторное использование сессий.
+</p><a name="proxy_store"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_store</strong> 
+    <code>on</code> |
+    <code>off</code> |
+    <code><i>строка</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_store off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Разрешает сохранение на диск файлов.
+Параметр <code>on</code> сохраняет файлы в соответствии с путями,
+указанными в директивах
+<a href="ngx_http_core_module.html#alias">alias</a> или
+<a href="ngx_http_core_module.html#root">root</a>.
+Параметр <code>off</code> запрещает сохранение файлов.
+Кроме того, имя файла можно задать явно с помощью строки с переменными:
+</p> <blockquote class="example"><pre>
+proxy_store /data/www$original_uri;
+</pre></blockquote><p> 
+</p><p>
+Время изменения файлов выставляется согласно полученному полю
+“Last-Modified” в заголовке ответа.
+Ответ сначала записывается во временный файл, а потом этот файл
+переименовывается.
+Начиная с версии 0.8.9, временный файл и постоянное место хранения ответа
+могут располагаться на разных файловых системах, но нужно учитывать,
+что в этом случае вместо дешёвой операции переименовывания в пределах
+одной файловой системы файл копируется с одной файловой системы на другую.
+Поэтому лучше, если сохраняемые файлы будут находиться на той же файловой
+системе, что и каталог с временными файлами, задаваемый директивой
+<a href="#proxy_temp_path">proxy_temp_path</a> для данного location.
+</p><p>
+Директиву можно использовать для создания локальных копий статических
+неизменяемых файлов, например, так:
+</p> <blockquote class="example"><pre>
+location /images/ {
+    root                   /data/www;
+    open_file_cache_errors off;
+    error_page             404 = /fetch$uri;
+}
+
+location /fetch/ {
+    internal;
+
+    proxy_pass             http://backend/;
+    proxy_store            on;
+    proxy_store_access     user:rw group:rw all:r;
+    proxy_temp_path        /data/temp;
+
+    alias                  /data/www/;
+}
+</pre></blockquote><p> 
+</p><p>
+или так:
+</p> <blockquote class="example"><pre>
+location /images/ {
+    root               /data/www;
+    error_page         404 = @fetch;
+}
+
+location @fetch {
+    internal;
+
+    proxy_pass         http://backend;
+    proxy_store        on;
+    proxy_store_access user:rw group:rw all:r;
+    proxy_temp_path    /data/temp;
+
+    root               /data/www;
+}
+</pre></blockquote><p> 
+</p><a name="proxy_store_access"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_store_access</strong> <code><i>пользователи</i></code>:<code><i>права</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_store_access user:rw;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт права доступа для создаваемых файлов и каталогов, например,
+</p> <blockquote class="example"><pre>
+proxy_store_access user:rw group:rw all:r;
+</pre></blockquote><p> 
+</p><p>
+Если заданы какие-либо права для <code>group</code> или
+<code>all</code>, то права для <code>user</code>
+указывать необязательно:
+</p> <blockquote class="example"><pre>
+proxy_store_access group:rw all:r;
+</pre></blockquote><p> 
+</p><a name="proxy_temp_file_write_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_temp_file_write_size</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_temp_file_write_size 8k|16k;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Ограничивает <code><i>размер</i></code> данных, сбрасываемых во временный файл
+за один раз, при включённой буферизации ответов проксируемого сервера
+во временные файлы.
+По умолчанию <code><i>размер</i></code> ограничен двумя буферами, заданными
+директивами <a href="#proxy_buffer_size">proxy_buffer_size</a> и <a href="#proxy_buffers">proxy_buffers</a>.
+Максимальный размер временного файла задаётся директивой
+<a href="#proxy_max_temp_file_size">proxy_max_temp_file_size</a>.
+</p><a name="proxy_temp_path"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>proxy_temp_path</strong> 
+    <code><i>путь</i></code>
+    [<code><i>уровень1</i></code>
+    [<code><i>уровень2</i></code>
+    [<code><i>уровень3</i></code>]]];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>proxy_temp_path proxy_temp;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт имя каталога для хранения временных файлов с данными,
+полученными от проксируемых серверов.
+В каталоге может использоваться иерархия подкаталогов до трёх уровней.
+Например, при такой конфигурации
+</p> <blockquote class="example"><pre>
+proxy_temp_path /spool/nginx/proxy_temp 1 2;
+</pre></blockquote><p> 
+временный файл будет следующего вида:
+</p> <blockquote class="example"><pre>
+/spool/nginx/proxy_temp/<strong>7</strong>/<strong>45</strong>/00000123<strong>457</strong>
+</pre></blockquote><p> 
+</p>
+
+
+<a name="variables"></a><center><h4>Встроенные переменные</h4></center><p>
+В модуле <code>ngx_http_proxy_module</code> есть встроенные переменные,
+которые можно использовать для формирования заголовков с помощью директивы
+<a href="#proxy_set_header">proxy_set_header</a>:
+</p> <dl class="compact">
+
+<dt><code>$proxy_host</code></dt>
+<dd>имя проксируемого хоста и порт;</dd>
+
+<dt><code>$proxy_port</code></dt>
+<dd>порт проксируемого хоста;</dd>
+
+<dt><code>$proxy_add_x_forwarded_for</code></dt>
+<dd>поле заголовка запроса клиента “X-Forwarded-For”
+и добавленная к нему через запятую переменная <code>$remote_addr</code>.
+Если же поля “X-Forwarded-For” в заголовке запроса клиента нет,
+то переменная <code>$proxy_add_x_forwarded_for</code>
+равна переменной <code>$remote_addr</code>.</dd>
+</dl><p> 
+</p>
+
+</td></tr></table></body></html>

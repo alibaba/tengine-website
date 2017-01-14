@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Module ngx_mail_proxy_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Module ngx_mail_proxy_module</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../../../ru/docs/mail/ngx_mail_proxy_module.html">русский</a><br><br><a href="../../../cn/docs/mail/ngx_mail_proxy_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">news</a><br><a href="../../../en/">about</a><br><a href="../../../en/download.html">download</a><br><a href="../../../en/security_advisories.html">security advisories</a><br><a href="../../../en/docs/">documentation</a><br><a href="../../../en/pgp_keys.html">pgp keys</a><br><a href="../../../en/docs/faq.html">faq</a><br><a href="../../../en/links.html">links</a><br><a href="../../../en/books.html">books</a><br><a href="../../../en/support.html">support</a><br><a href="../../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#directives">Directives</a><br>     <a href="#proxy_buffer">proxy_buffer</a><br>     <a href="#proxy_pass_error_message">proxy_pass_error_message</a><br>     <a href="#proxy_timeout">proxy_timeout</a><br>     <a href="#xclient">xclient</a><br></td></tr></table>
+
+<a name="directives"></a><center><h4>Directives</h4></center><a name="proxy_buffer"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>proxy_buffer</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>proxy_buffer 4k|8k;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Sets size of the buffer used for proxying.
+The buffer size is equal to one memory page by default.
+Depending on a platform, this is either 4K or 8K.
+</p><a name="proxy_pass_error_message"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>proxy_pass_error_message</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>proxy_pass_error_message off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Defines whether to pass the error message obtained during
+an authentication on the backend to the client.
+</p><p>
+Usually, if the authentication in nginx was successful,
+backend can’t return an error, but if it nonetheless exists,
+this means there is some problem inside.
+In such cases the backend message can contain the information
+that should not be shown to the client.
+However responding with an error for the correct password
+is a normal behavior of some POP3 servers.
+For example, CommuniGatePro informs user about
+<a href="http://www.stalker.com/CommuniGatePro/Alerts.html#Quota">mailbox
+overflow</a> or other events by periodically outputting the
+<a href="http://www.stalker.com/CommuniGatePro/POP.html#Alerts">authentication
+error</a>.
+The directive should be enabled in this case.
+</p><a name="proxy_timeout"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>proxy_timeout</strong> <code><i>timeout</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>proxy_timeout 24h;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Defines a timeout used after the proxying to the backend had started.
+</p><a name="xclient"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>xclient</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>xclient on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>mail</code>, <code>server</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Enables or disables issuing of the <code>XCLIENT</code> command
+upon the connection to the SMTP backend.
+For the <code>XCLIENT</code> command to work it is required to have
+Postfix with the
+<a href="http://citrin.ru/nginx:xclient-login-patch">patch</a>,
+which adds the <code>LOGIN</code> parameter.
+If the <code>XCLIENT</code> command is not used, the MTA will be unable
+to write the client’s
+<code>IP</code>/<code>HELO</code>/<code>LOGIN</code>
+to the log and apply various limitations based on this data.
+</p><p>
+If the <code>xclient</code> is enabled,
+then upon a backend connection nginx first issues
+</p> <blockquote class="example"><pre>
+EHLO server_name
+</pre></blockquote><p> 
+and then
+</p> <blockquote class="example"><pre>
+XCLIENT PROTO=ESMTP HELO=client_hello ADDR=192.168.1.1 LOGIN=good_user NAME=[UNAVAILABLE]
+</pre></blockquote><p> 
+If the client upon a connection to nginx issued the <code>EHLO</code>,
+then the <code>XCLIENT</code> command will pass
+the <code>PROTO=ESMTP</code>.
+Otherwise, <code>PROTO=SMTP</code> will be passed.
+The IP address of a client is specified in the <code>ADDR</code>
+parameter, and since nginx does not use DNS to resolve the hostname,
+the <code>NAME=[UNAVAILABLE]</code> is specified.
+</p><p>
+If the <code>xclient</code> is disabled,
+then the <code>EHLO</code> is issued upon the connection to the backend
+if the client had passed it and the <code>HELO</code>
+otherwise.
+</p>
+
+</td></tr></table></body></html>

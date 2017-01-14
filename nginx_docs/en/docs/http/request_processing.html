@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>How nginx processes a request</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>How nginx processes a request</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../../../ru/docs/http/request_processing.html">русский</a><br><br><a href="../../../cn/docs/http/request_processing.html">简体中文</a><br><a class="notrans">עברית</a><br><a href="../../../ja/docs/http/request_processing.html">日本語</a><br><a href="../../../tr/docs/http/request_processing.html">türkçe</a><br><br><a href="../../../">news</a><br><a href="../../../en/">about</a><br><a href="../../../en/download.html">download</a><br><a href="../../../en/security_advisories.html">security advisories</a><br><a href="../../../en/docs/">documentation</a><br><a href="../../../en/pgp_keys.html">pgp keys</a><br><a href="../../../en/docs/faq.html">faq</a><br><a href="../../../en/links.html">links</a><br><a href="../../../en/books.html">books</a><br><a href="../../../en/support.html">support</a><br><a href="../../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#how_to_prevent_undefined_server_names">How to prevent processing requests with undefined server names</a><br><a href="#mixed_name_ip_based_servers">Mixed name-based and IP-based virtual servers</a><br><a href="#simple_php_site_configuration">A simple PHP site configuration</a><br></td></tr></table><center><h4>Name-based virtual servers</h4></center><p>
+nginx first decides which <i>server</i> should process the request.
+Let’s start with a simple configuration
+where all three virtual servers listen on port *:80:
+</p> <blockquote class="example"><pre>
+server {
+    listen      80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      80;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      80;
+    server_name example.com www.example.com;
+    ...
+}
+</pre></blockquote><p> 
+
+</p><p>
+In this configuration nginx tests only the request’s header field
+“Host” to determine which server the request should be routed to.
+If its value does not match any server name,
+or the request does not contain this header field at all,
+then nginx will route the request to the default server for this port.
+In the configuration above, the default server is the first
+one — which is nginx’s standard default behaviour.
+It can also be set explicitly which server should be default,
+with the <code>default_server</code> parameter
+in the <a href="ngx_http_core_module.html#listen">listen</a> directive:
+</p> <blockquote class="example"><pre>
+server {
+    listen      80 <b>default_server</b>;
+    server_name example.net www.example.net;
+    ...
+}
+</pre></blockquote><p> 
+
+</p> <blockquote class="note">
+The <code>default_server</code> parameter has been available since
+version 0.8.21.
+In earlier versions the <code>default</code> parameter should be used
+instead.
+</blockquote><p> 
+Note that the default server is a property of the listen port
+and not of the server name.
+More about this later.
+</p><a name="how_to_prevent_undefined_server_names"></a><center><h4>How to prevent processing requests with undefined server names</h4></center><p>
+If requests without the “Host” header field should not be
+allowed, a server that just drops the requests can be defined:
+</p> <blockquote class="example"><pre>
+server {
+    listen      80;
+    server_name "";
+    return      444;
+}
+</pre></blockquote><p> 
+Here, the server name is set to an empty string that will match
+requests without the “Host” header field,
+and a special nginx’s non-standard code 444
+is returned that closes the connection.
+</p> <blockquote class="note">
+Since version 0.8.48, this is the default setting for the
+server name, so the <code>server_name ""</code> can be omitted.
+In earlier versions, the machine’s <i>hostname</i> was used as
+a default server name.
+</blockquote><p> 
+</p><a name="mixed_name_ip_based_servers"></a><center><h4>Mixed name-based and IP-based virtual servers</h4></center><p>
+Let’s look at a more complex configuration
+where some virtual servers listen on different addresses:
+</p> <blockquote class="example"><pre>
+server {
+    listen      192.168.1.1:80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      192.168.1.1:80;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      192.168.1.2:80;
+    server_name example.com www.example.com;
+    ...
+}
+</pre></blockquote><p> 
+In this configuration, nginx first tests the IP address and port
+of the request against the
+<a href="ngx_http_core_module.html#listen">listen</a> directives
+of the
+<a href="ngx_http_core_module.html#server">server</a> blocks.
+It then tests the “Host”
+header field of the request against the
+<a href="ngx_http_core_module.html#server_name">server_name</a>
+entries of the
+<a href="ngx_http_core_module.html#server">server</a>
+blocks that matched
+the IP address and port.
+If the server name is not found, the request will be processed by
+the default server.
+For example, a request for <code>www.example.com</code> received on
+the 192.168.1.1:80 port will be handled by the default server
+of the 192.168.1.1:80 port, i.e., by the first server,
+since there is no <code>www.example.com</code> defined for this port.
+</p><p>
+As already stated, a default server is a property of the listen port,
+and different default servers may be defined for different ports:
+</p> <blockquote class="example"><pre>
+server {
+    listen      192.168.1.1:80;
+    server_name example.org www.example.org;
+    ...
+}
+
+server {
+    listen      192.168.1.1:80 <b>default_server</b>;
+    server_name example.net www.example.net;
+    ...
+}
+
+server {
+    listen      192.168.1.2:80 <b>default_server</b>;
+    server_name example.com www.example.com;
+    ...
+}
+</pre></blockquote><p> 
+
+</p><a name="simple_php_site_configuration"></a><center><h4>A simple PHP site configuration</h4></center><p>
+Now let’s look at how nginx chooses a <i>location</i> to process a request
+for a typical, simple PHP site:
+</p> <blockquote class="example"><pre>
+server {
+    listen      80;
+    server_name example.org www.example.org;
+    root        /data/www;
+
+    location / {
+        index   index.html index.php;
+    }
+
+    location ~* \.(gif|jpg|png)$ {
+        expires 30d;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass  localhost:9000;
+        fastcgi_param SCRIPT_FILENAME
+                      $document_root$fastcgi_script_name;
+        include       fastcgi_params;
+    }
+}
+</pre></blockquote><p> 
+
+</p><p>
+nginx first searches for the most specific prefix location given by
+literal strings regardless of the listed order.
+In the configuration above
+the only prefix location is “<code>/</code>” and since it matches
+any request it will be used as a last resort.
+Then nginx checks locations given by
+regular expression in the order listed in the configuration file.
+The first matching expression stops the search and nginx will use this
+location.
+If no regular expression matches a request, then nginx uses
+the most specific prefix location found earlier.
+</p><p>
+Note that locations of all types test only a URI part of request line
+without arguments.
+This is done because arguments in the query string may be given in
+several ways, for example:
+</p> <blockquote class="example"><pre>
+/index.php?user=john&amp;page=1
+/index.php?page=1&amp;user=john
+</pre></blockquote><p> 
+Besides, anyone may request anything in the query string:
+</p> <blockquote class="example"><pre>
+/index.php?page=1&amp;something+else&amp;user=john
+</pre></blockquote><p> 
+
+</p><p>
+Now let’s look at how requests would be processed
+in the configuration above:
+</p> <ul>
+
+<li>
+A request “<code>/logo.gif</code>” is matched by the prefix location
+“<code>/</code>” first and then by the regular expression
+“<code>\.(gif|jpg|png)$</code>”,
+therefore, it is handled by the latter location.
+Using the directive “<code>root /data/www</code>” the request
+is mapped to the file <code>/data/www/logo.gif</code>, and the file
+is sent to the client.
+</li>
+
+<li>
+A request “<code>/index.php</code>” is also matched by the prefix location
+“<code>/</code>” first and then by the regular expression
+“<code>\.(php)$</code>”.
+Therefore, it is handled by the latter location
+and the request is passed to a FastCGI server listening on localhost:9000.
+The
+<a href="ngx_http_fastcgi_module.html#fastcgi_param">fastcgi_param</a>
+directive sets the FastCGI parameter
+<code>SCRIPT_FILENAME</code> to “<code>/data/www/index.php</code>”,
+and the FastCGI server executes the file.
+The variable <code>$document_root</code> is equal to
+the value of the
+<a href="ngx_http_core_module.html#root">root</a>
+directive and the variable <code>$fastcgi_script_name</code> is equal to
+the request URI, i.e. “<code>/index.php</code>”.
+</li>
+
+<li>
+A request “<code>/about.html</code>” is matched by the prefix location
+“<code>/</code>” only, therefore, it is handled in this location.
+Using the directive “<code>root /data/www</code>” the request is mapped
+to the file <code>/data/www/about.html</code>, and the file is sent
+to the client.
+</li>
+
+<li>
+Handling a request “<code>/</code>” is more complex.
+It is matched by the prefix location “<code>/</code>” only,
+therefore, it is handled by this location.
+Then the
+<a href="ngx_http_index_module.html#index">index</a>
+directive tests for the existence
+of index files according to its parameters and
+the “<code>root /data/www</code>” directive.
+If the file <code>/data/www/index.html</code> does not exist,
+and the file <code>/data/www/index.php</code> exists,
+then the directive does an internal redirect to “<code>/index.php</code>”,
+and nginx searches the locations again
+as if the request had been sent by a client.
+As we saw before, the redirected request will eventually be handled
+by the FastCGI server.
+</li>
+
+</ul><p> 
+
+</p><table width="100%"><tr><td align="right">written by Igor Sysoev<br>edited by Brian Mercer<br></td></tr></table></td></tr></table></body></html>

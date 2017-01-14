@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>ngx_http_mp4_module 模块</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }p { text-align: left; } li { text-align: left; } dd { text-align: left; } blockquote.note { text-align: left; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>ngx_http_mp4_module 模块</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/">english</a><br><a href="../../../ru/">русский</a><br><br>简体中文<br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">新闻</a> [en]<br><a href="../../../cn/">nginx 介绍</a><br><a href="../../../en/download.html">下载</a> [en]<br><a href="../../../en/security_advisories.html">安全漏洞</a> [en]<br><a href="../../../cn/docs/">文档</a><br><a href="../../../cn/docs/faq.html">FAQ</a><br><a href="../../../en/links.html">外部连接</a> [en]<br><a href="../../../en/books.html">书籍</a> [en]<br><a href="../../../en/support.html">支持</a> [en]<br><a href="../../../en/donation.html">捐献</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">示例配置</a><br><a href="#directives">指令</a><br>     <a href="#mp4">mp4</a><br>     <a href="#mp4_buffer_size">mp4_buffer_size</a><br>     <a href="#mp4_max_buffer_size">mp4_max_buffer_size</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+模块<code>ngx_http_mp4_module</code>为H.264/AAC文件，主要是以
+<code>.mp4</code>、<code>.m4v</code>、和<code>.m4a</code>为扩展名的文件，
+提供伪流媒体服务端支持。
+</p><p>
+伪流媒体是与Flash播放器一起配合使用的。
+播放器向服务端发送HTTP请求，请求中的查询串是以开始时间为参数的(以
+<code>start</code>简单命名)，而服务端以流响应，这样流的开始
+位置就能于请求中的时间相对应。
+
+例如：
+</p> <blockquote class="example"><pre>
+http://example.com/elephants_dream.mp4?start=238.88
+</pre></blockquote><p> 
+这样就允许随意拖放，或者从节目的中途开始回放。
+</p><p>
+为了支持随机访问，H.264格式将元数据放到所谓的"moov atom"中。
+"moov atom"是文件的一部分，放有整个文件的索引信息。
+</p><p>
+为了开启回放，播放器首先需要读取元数据。
+这是通过发送一个特别的以<code>start=0</code>为
+参数请求来完成的。
+许多编码软件会将元数据插入到文件末尾，
+这样做对伪流媒体来说是不好的：
+元数据需要在文件开始时定位好，否则整个文件需要下载完才能开始播放。
+如果文件组织的很好（将元数据放到文件开头），那么nginx仅仅返回文件的内容，
+否则，nginx不得不读取文件并准备一个新的流，将元数据放在媒体数据前面，
+这将导致一些CPU，内存，磁盘I/O开销。
+所以一个比较好的主意是
+
+<a href="http://flowplayer.org/plugins/streaming/pseudostreaming.html#prepare">
+为伪流媒体准备文件</a>，
+而不是让nginx处理请求时做。
+</p><p>
+对于匹配有非零
+<code>start</code>
+参数的请求，nginx从文件中读取元数据，从请求的偏移位置开始准备流数据
+发送给客户端。
+这与上面描述的情况有同样的开销。
+</p><p>
+如果匹配的请求没有包含
+<code>start</code>
+参数，就不会有额外开销，而文件仅仅是以静态资源被发送。
+一些播放器也支持字节范围请求，所以就根本不需要这个模块。
+</p><p>
+这个模块默认是不安装的，需要通过
+<code>--with-http_mp4_module</code>
+来配置开启。
+
+</p> <blockquote class="note">
+假如你在使用第三方的mp4模块，一定要关闭该模块。
+</blockquote><p> 
+</p><p>
+一个简单的支持FLV文件的伪流媒体由模块
+<a href="ngx_http_flv_module.html">ngx_http_flv_module</a>
+提供。
+</p>
+
+
+<a name="example"></a><center><h4>示例配置</h4></center><p>
+</p> <blockquote class="example"><pre>
+location /video/ {
+    mp4;
+    mp4_buffer_size     1m;
+    mp4_max_buffer_size 5m;
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>指令</h4></center><a name="mp4"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>mp4</strong>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+配置开启该模块处理当前路径。
+</p><a name="mp4_buffer_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>mp4_buffer_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>mp4_buffer_size 512K;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+设置处理MP4文件的初始内存大小。
+</p><a name="mp4_max_buffer_size"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            语法:
+                </td>
+                <td>
+            <code><strong>mp4_max_buffer_size</strong> <code><i>size</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            默认值:
+                </td>
+                <td>
+            <pre>mp4_max_buffer_size 10M;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            上下文:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+在处理元数据时，可能必需较大的缓存。
+它的大小不能超过<code><i>size</i></code>指定的值，
+否则nginx将会返回服务器错误，
+500 (Internal Server Error)，
+并记录如下日志：
+</p> <blockquote class="example"><pre>
+"/some/movie/file.mp4" mp4 moov atom is too large:
+12583268, you may want to increase mp4_max_buffer_size"
+</pre></blockquote><p> 
+</p>
+
+<table width="100%"><tr><td align="right">翻译: litianqing<br></td></tr></table></td></tr></table></body></html>

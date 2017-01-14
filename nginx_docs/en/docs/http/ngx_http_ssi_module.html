@@ -1,0 +1,467 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Module ngx_http_ssi_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Module ngx_http_ssi_module</h3></center></td><td rowspan="2" align="right" valign="top"><br>english<br><a href="../../../ru/docs/http/ngx_http_ssi_module.html">русский</a><br><br><a href="../../../cn/docs/http/ngx_http_ssi_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">news</a><br><a href="../../../en/">about</a><br><a href="../../../en/download.html">download</a><br><a href="../../../en/security_advisories.html">security advisories</a><br><a href="../../../en/docs/">documentation</a><br><a href="../../../en/pgp_keys.html">pgp keys</a><br><a href="../../../en/docs/faq.html">faq</a><br><a href="../../../en/links.html">links</a><br><a href="../../../en/books.html">books</a><br><a href="../../../en/support.html">support</a><br><a href="../../../en/donation.html">donation</a><br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Example Configuration</a><br><a href="#directives">Directives</a><br>     <a href="#ssi">ssi</a><br>     <a href="#ssi_min_file_chunk">ssi_min_file_chunk</a><br>     <a href="#ssi_silent_errors">ssi_silent_errors</a><br>     <a href="#ssi_types">ssi_types</a><br>     <a href="#ssi_value_length">ssi_value_length</a><br><a href="#commands">SSI Commands</a><br><a href="#variables">Embedded Variables</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+The <code>ngx_http_ssi_module</code> module is a filter
+that processes SSI (Server Side Includes) commands in responses
+passing through it.
+Currently, the list of supported SSI commands is incomplete.
+</p>
+
+
+<a name="example"></a><center><h4>Example Configuration</h4></center><p>
+</p> <blockquote class="example"><pre>
+location / {
+    ssi on;
+    ...
+}
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Directives</h4></center><a name="ssi"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssi</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssi off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code>, <code>if in location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Enables or disables processing of SSI commands in responses.
+</p><a name="ssi_min_file_chunk"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssi_min_file_chunk</strong> <code>size</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssi_min_file_chunk 1k;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Sets the minimum <code><i>size</i></code> for parts of a response stored on disk,
+starting from which it makes sense to send them using
+<a href="ngx_http_core_module.html#sendfile">sendfile</a>.
+</p><a name="ssi_silent_errors"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssi_silent_errors</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssi_silent_errors off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Allows to suppress output of the string
+“<code>[an error occurred while processing the directive]</code>”
+if an error occurred during SSI processing.
+</p><a name="ssi_types"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssi_types</strong> <code><i>mime-type</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssi_types text/html;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Enables processing of SSI commands in responses with the specified MIME types
+in addition to “<code>text/html</code>”.
+The special value “<code>*</code>” matches any MIME type (0.8.29).
+</p><a name="ssi_value_length"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            syntax:
+                </td>
+                <td>
+            <code><strong>ssi_value_length</strong> <code><i>length</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            default:
+                </td>
+                <td>
+            <pre>ssi_value_length 256;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            context:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Sets the maximum length for values of parameters in SSI commands.
+</p>
+
+
+<a name="commands"></a><center><h4>SSI Commands</h4></center><p>
+SSI commands have the following generic format:
+</p> <blockquote class="example"><pre>
+&lt;!--# command parameter1=value1 parameter2=value2 ... --&gt;
+</pre></blockquote><p> 
+</p><p>
+The following commands are supported:
+</p> <dl class="compact">
+
+<dt><code>block</code></dt>
+<dd>
+Defines a block that can be used as a stub
+in the <code>include</code> command.
+The block can contain other SSI commands.
+The command has the following parameter:
+
+<dl class="compact">
+<dt><code>name</code></dt>
+<dd>
+block name.
+</dd>
+</dl>
+
+Example:
+<blockquote class="example"><pre>
+&lt;!--# block name="one" --&gt;
+stub
+&lt;!--# endblock --&gt;
+</pre></blockquote>
+
+</dd>
+
+
+<dt><code>config</code></dt>
+<dd>
+Sets some parameters used during SSI processing, namely:
+
+<dl class="compact">
+<dt><code>errmsg</code></dt>
+<dd>
+a string that is output if an error occurs during SSI processing.
+By default, the following string is output:
+<blockquote class="example"><pre>
+[an error occurred while processing the directive]
+</pre></blockquote>
+</dd>
+
+<dt><code>timefmt</code></dt>
+<dd>
+a format string passed to the <code>strftime()</code> function
+used to output date and time.
+By default, the following format is used:
+<blockquote class="example"><pre>
+"%A, %d-%b-%Y %H:%M:%S %Z"
+</pre></blockquote>
+The “<code>%s</code>” format is suitable to output time in seconds.
+</dd>
+</dl>
+
+</dd>
+
+
+<dt><code>echo</code></dt>
+<dd>
+Outputs the value of a variable.
+The command has the following parameters:
+
+<dl class="compact">
+<dt><code>var</code></dt>
+<dd>
+variable name.
+</dd>
+
+<dt><code>encoding</code></dt>
+<dd>
+encoding method.
+Possible values include <code>none</code>, <code>url</code>, and
+<code>entity</code>.
+By default, <code>entity</code> is used.
+</dd>
+
+<dt><code>default</code></dt>
+<dd>
+non-standard parameter that sets a string to be output
+if a variable is undefined.
+By default, “<code>none</code>” is output.
+The command
+<blockquote class="example"><pre>
+&lt;!--# echo var="name" default="<strong>no</strong>" --&gt;
+</pre></blockquote>
+replaces the following sequence of commands:
+<blockquote class="example"><pre>
+&lt;!--# if expr="$name" --&gt;&lt;!--# echo var="name" --&gt;&lt;!--#
+       else --&gt;<strong>no</strong>&lt;!--# endif --&gt;
+</pre></blockquote>
+</dd>
+</dl>
+
+</dd>
+
+
+<dt><code>if</code></dt>
+<dd>
+Performs a conditional inclusion.
+The following commands are supported:
+<blockquote class="example"><pre>
+&lt;!--# if expr="..." --&gt;
+...
+&lt;!--# elif expr="..." --&gt;
+...
+&lt;!--# else --&gt;
+...
+&lt;!--# endif --&gt;
+</pre></blockquote>
+Only one level of nesting is currently supported.
+The command has the following parameter:
+
+<dl class="compact">
+<dt><code>expr</code></dt>
+<dd>
+expression.
+An expression can be:
+
+<ul class="compact">
+
+<li>
+variable existence check:
+<blockquote class="example"><pre>
+&lt;!--# if expr="$name" --&gt;
+</pre></blockquote>
+</li>
+
+<li>
+comparison of a variable with a text:
+<blockquote class="example"><pre>
+&lt;!--# if expr="$name = <code><i>text</i></code>" --&gt;
+&lt;!--# if expr="$name != <code><i>text</i></code>" --&gt;
+</pre></blockquote>
+</li>
+
+<li>
+comparison of a variable with a regular expression:
+<blockquote class="example"><pre>
+&lt;!--# if expr="$name = /<code><i>text</i></code>/" --&gt;
+&lt;!--# if expr="$name != /<code><i>text</i></code>/" --&gt;
+</pre></blockquote>
+</li>
+</ul>
+
+If a <code><i>text</i></code> contains variables,
+their values are substituted.
+A regular expression can contain positional and named captures
+that can later be used through variables, for example:
+<blockquote class="example"><pre>
+&lt;!--# if expr="$name = /(.+)@(?P&lt;domain&gt;.+)/" --&gt;
+    &lt;!--# echo var="1" --&gt;
+    &lt;!--# echo var="domain" --&gt;
+&lt;!--# endif --&gt;
+</pre></blockquote>
+</dd>
+</dl>
+
+</dd>
+
+
+<dt><code>include</code></dt>
+<dd>
+Includes the result of another request into a response.
+The command has the following parameters:
+
+<dl class="compact">
+<dt><code>file</code></dt>
+<dd>
+specifies an included file, for example:
+<blockquote class="example"><pre>
+&lt;!--# include file="footer.html" --&gt;
+</pre></blockquote>
+</dd>
+
+<dt><code>virtual</code></dt>
+<dd>
+specifies an included request, for example:
+<blockquote class="example"><pre>
+&lt;!--# include virtual="/remote/body.php?argument=value" --&gt;
+</pre></blockquote>
+Several requests specified on one page and processed by proxied or
+FastCGI servers run in parallel.
+If sequential processing is desired, the <code>wait</code>
+parameter should be used.
+</dd>
+
+<dt><code>stub</code></dt>
+<dd>
+non-standard parameter that names the block whose
+content will be output if an included request results in an empty
+body or if an error occurs during request processing, for example:
+<blockquote class="example"><pre>
+&lt;!--# block name="one" --&gt;&amp;nbsp;&lt;!--# endblock --&gt;
+&lt;!--# include virtual="/remote/body.php?argument=value" stub="one" --&gt;
+</pre></blockquote>
+The replacement block content is processed in the included request context.
+</dd>
+
+<dt><code>wait</code></dt>
+<dd>
+non-standard parameter that instructs to wait for a request to fully
+complete before continuing with SSI processing, for example:
+<blockquote class="example"><pre>
+&lt;!--# include virtual="/remote/body.php?argument=value" wait="yes" --&gt;
+</pre></blockquote>
+</dd>
+
+<dt><code>set</code></dt>
+<dd>
+non-standard parameter that instructs to write a successful result
+of request processing to the specified variable,
+for example:
+<blockquote class="example"><pre>
+&lt;!--# include virtual="/remote/body.php?argument=value" set="one" --&gt;
+</pre></blockquote>
+It should be noted that only the results of responses obtained using the
+<a href="ngx_http_proxy_module.html">ngx_http_proxy_module</a> and
+<a href="ngx_http_memcached_module.html">ngx_http_memcached_module</a>
+modules can be written into variables.
+</dd>
+
+</dl>
+
+</dd>
+
+
+<dt><code>set</code></dt>
+<dd>
+Sets a value of a variable.
+The command has the following parameters:
+
+<dl class="compact">
+<dt><code>var</code></dt>
+<dd>
+variable name.
+</dd>
+
+<dt><code>value</code></dt>
+<dd>
+variable value.
+If an assigned value contains variables,
+their values are substituted.
+</dd>
+</dl>
+
+</dd>
+
+</dl><p> 
+</p>
+
+
+<a name="variables"></a><center><h4>Embedded Variables</h4></center><p>
+The <code>ngx_http_ssi_module</code> module supports
+two embedded variables:
+</p> <dl class="compact">
+
+<dt><code>$date_local</code></dt>
+<dd>
+current time in local time zone.
+The format is set by the <code>config</code> command
+with the <code>timefmt</code> parameter.
+</dd>
+
+<dt><code>$date_gmt</code></dt>
+<dd>
+current time in GMT.
+The format is set by the <code>config</code> command
+with the <code>timefmt</code> parameter.
+</dd>
+
+</dl><p> 
+</p>
+
+</td></tr></table></body></html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Модуль ngx_http_limit_conn_module</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Модуль ngx_http_limit_conn_module</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../../en/docs/http/ngx_http_limit_conn_module.html">english</a><br>русский<br><br><a href="../../../cn/docs/http/ngx_http_limit_conn_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../../">новости</a> [en]<br><a href="../../../ru/">об nginx</a><br><a href="../../../ru/download.html">скачать</a><br><a href="../../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="../../../ru/docs/">документация</a><br><a href="../../../ru/docs/faq.html">faq</a><br><a href="../../../en/links.html">ссылки</a> [en]<br><a href="../../../en/books.html">книги</a> [en]<br><a href="../../../ru/support.html">поддержка</a><br><a href="../../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Пример конфигурации</a><br><a href="#directives">Директивы</a><br>     <a href="#limit_conn">limit_conn</a><br>     <a href="#limit_conn_log_level">limit_conn_log_level</a><br>     <a href="#limit_conn_zone">limit_conn_zone</a><br>     <a href="#limit_zone">limit_zone</a><br></td></tr></table>
+
+<a name="summary"></a><p>
+Модуль <code>ngx_http_limit_conn_module</code> позволяет ограничить
+число соединений по заданному ключу или,
+как частный случай, число соединений с одного IP-адреса.
+</p><p>
+Ограничиваются не любые соединения, а лишь те, в которых имеются
+запросы, обрабатываемые сервером, и заголовок запроса уже прочитан.
+</p>
+
+
+<a name="example"></a><center><h4>Пример конфигурации</h4></center><p>
+</p> <blockquote class="example"><pre>
+http {
+    limit_conn_zone $binary_remote_addr zone=addr:10m;
+
+    ...
+
+    server {
+
+        ...
+
+        location /download/ {
+            limit_conn addr 1;
+        }
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Директивы</h4></center><a name="limit_conn"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>limit_conn</strong> <code><i>зона</i></code> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт зону разделяемой памяти и максимально допустимое число соединений
+для одного значения ключа.
+При превышении этого числа в ответ на запрос сервер вернёт ошибку
+503 (Service Temporarily Unavailable).
+Например, директивы
+</p> <blockquote class="example"><pre>
+limit_conn_zone $binary_remote_addr zone=addr:10m;
+
+server {
+    location /download/ {
+        limit_conn addr 1;
+    }
+</pre></blockquote><p> 
+разрешают одновременно обрабатывать не более одного соединения с одного
+IP-адреса.
+</p><p>
+Допустимо одновременное указание нескольких директив
+<code>limit_conn</code>,
+при этом будет срабатывать любое из ограничений.
+Например, следующая конфигурация ограничивает число соединений с сервером
+с одного клиентского IP-адреса и в то же время ограничивает общее число
+соединений с виртуальным хостом:
+</p> <blockquote class="example"><pre>
+limit_conn_zone $binary_remote_addr zone=perip:10m;
+limit_conn_zone $server_name zone=perserver:10m;
+
+server {
+    ...
+    limit_conn perip 10;
+    limit_conn perserver 100;
+}
+</pre></blockquote><p> 
+
+</p><p>
+Директивы наследуются с предыдущего уровня при условии, что на данном уровне
+не описаны свои директивы <code>limit_conn</code>.
+</p><a name="limit_conn_log_level"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>limit_conn_log_level</strong> 
+<code>info</code> |
+<code>notice</code> |
+<code>warn</code> |
+<code>error</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>limit_conn_log_level error;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 0.8.18.
+
+            </p></div><p>
+Задаёт желаемый уровень записи в лог случаев ограничения
+числа соединений.
+</p><a name="limit_conn_zone"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>limit_conn_zone</strong> 
+    <code><i>$переменная</i></code>
+    <code>zone</code>=<code><i>название</i></code>:<code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт параметры зоны разделяемой памяти, которая хранит состояние
+для разных значений ключа.
+Состояние в частности хранит текущее число соединений.
+Ключом является любое непустое значение заданной переменной
+(пустые значения не учитываются).
+Пример использования:
+</p> <blockquote class="example"><pre>
+limit_conn_zone $binary_remote_addr zone=addr:10m;
+</pre></blockquote><p> 
+Здесь в качестве ключа используется IP-адрес клиента.
+Обратите внимание, что вместо переменной <code>$remote_addr</code>
+использована переменная <code>$binary_remote_addr</code>.
+Длина значения переменной <code>$remote_addr</code> может колебаться
+от 7 до 15 байт, при этом размер хранимого состояния составляет
+либо 32, либо 64 байта на 32-битных платформах, и всегда 64
+байта на 64-битных.
+Длина значения переменной <code>$binary_remote_addr</code> всегда
+равна 4 байтам, при этом размер состояния всегда равен 32 байтам
+на 32-битных платформах и 64 байтам на 64-битных.
+В зоне размером 1 мегабайт может разместиться около 32 тысяч состояний
+размером 32 байта, или 16 тысяч состояний размером 64 байта.
+При переполнении зоны в ответ на последующие запросы сервер будет
+возвращать ошибку
+503 (Service Temporarily Unavailable).
+</p><a name="limit_zone"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>limit_zone</strong> 
+    <code><i>название</i></code>
+    <code><i>$переменная</i></code>
+    <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>http</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Эта директива устарела в версии 1.1.8, вместо неё следует
+использовать аналогичную директиву <a href="#limit_conn_zone">limit_conn_zone</a>
+с изменённым синтаксисом:
+</p> <blockquote class="note">
+<code>limit_conn_zone</code>
+<code><i>$переменная</i></code>
+<code>zone</code>=<code><i>название</i></code>:<code><i>размер</i></code>;
+</blockquote><p> 
+</p>
+
+</td></tr></table></body></html>

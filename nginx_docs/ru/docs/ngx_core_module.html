@@ -1,0 +1,1089 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Основная функциональность</title><style type="text/css">body { font-family: Georgia, serif; } p { text-align: justify; } table.news p { margin-top: 0; } table.news td { vertical-align: baseline; } table.news .date { text-align: right; padding-right: 0.5em; white-space: nowrap; } table.donors td { vertical-align: baseline; } table.donors li { text-align: left; } div.directive { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } div.directive td { vertical-align: baseline; } div.directive pre { padding: 0; margin: 0; } div.directive p { margin: 5pt 0 0 0; font-size: 80%; } div#banner { background: #EEEEEE; padding: 10pt 10pt 10pt 0; } a.notrans { color: gray; text-decoration:none; } span.initial { font-size: 200%; float: left; padding-right: 10pt;} li { text-align: justify; padding-top: 0.5em; } .compact li { padding-top: 0; } dt { padding-top: 0.5em; } .compact dt { padding-top: 0; } dd { text-align: justify; } td.list { background: #EEEEEE; } blockquote.note { text-align: justify; background: #EEEEEE; border: none; margin: 1em; padding: 0.5em; } blockquote.example { background: transparent; border: none; margin: 1em; padding: 0.5em; } blockquote.example pre { padding: 0; margin: 0; } sup { font-size: 50%; }</style><script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-27974099-2']);
+        _gaq.push(['_setDomainName', 'nginx.org']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script></head><body><table width="100%"><tr><td width="70%"><div id="banner"><center><table><tr><td align="center"><a href="http://nginx.com/support.html"><strong>nginx professional services</strong></a></td></tr><tr><td align="center"><i>Prioritize. Save time. Stay focused.</i></td></tr></table></center></div></td><td align="right"><a href="http://nginx.org"><img src="http://nginx.org/nginx.gif" alt="nginx" border="0"></a></td></tr><tr><td width="70%"><center><h3>Основная функциональность</h3></center></td><td rowspan="2" align="right" valign="top"><br><a href="../../en/docs/ngx_core_module.html">english</a><br>русский<br><br><a href="../../cn/docs/ngx_core_module.html">简体中文</a><br><a class="notrans">עברית</a><br><a class="notrans">日本語</a><br><a class="notrans">türkçe</a><br><br><a href="../../">новости</a> [en]<br><a href="../../ru/">об nginx</a><br><a href="../../ru/download.html">скачать</a><br><a href="../../en/security_advisories.html">безопасность</a> [en]<br><a href="../../en/pgp_keys.html">pgp ключи</a> [en]<br><a href="./">документация</a><br><a href="faq.html">faq</a><br><a href="../../en/links.html">ссылки</a> [en]<br><a href="../../en/books.html">книги</a> [en]<br><a href="../../ru/support.html">поддержка</a><br><a href="../../en/donation.html">пожертвования</a> [en]<br><br><a href="http://trac.nginx.org/nginx">trac</a><br><a href="http://wiki.nginx.org/">wiki</a><br><a href="http://twitter.com/nginxorg">twitter</a><br><a href="http://www.nginx.com/">nginx.com</a><br></td></tr><tr><td valign="top"><table width="100%"><tr><td align="left"><a href="#example">Пример конфигурации</a><br><a href="#directives">Директивы</a><br>     <a href="#accept_mutex">accept_mutex</a><br>     <a href="#accept_mutex_delay">accept_mutex_delay</a><br>     <a href="#daemon">daemon</a><br>     <a href="#debug_connection">debug_connection</a><br>     <a href="#debug_points">debug_points</a><br>     <a href="#error_log">error_log</a><br>     <a href="#env">env</a><br>     <a href="#events">events</a><br>     <a href="#include">include</a><br>     <a href="#lock_file">lock_file</a><br>     <a href="#master_process">master_process</a><br>     <a href="#multi_accept">multi_accept</a><br>     <a href="#pcre_jit">pcre_jit</a><br>     <a href="#pid">pid</a><br>     <a href="#ssl_engine">ssl_engine</a><br>     <a href="#timer_resolution">timer_resolution</a><br>     <a href="#use">use</a><br>     <a href="#user">user</a><br>     <a href="#worker_aio_requests">worker_aio_requests</a><br>     <a href="#worker_connections">worker_connections</a><br>     <a href="#worker_cpu_affinity">worker_cpu_affinity</a><br>     <a href="#worker_priority">worker_priority</a><br>     <a href="#worker_processes">worker_processes</a><br>     <a href="#worker_rlimit_core">worker_rlimit_core</a><br>     <a href="#worker_rlimit_nofile">worker_rlimit_nofile</a><br>     <a href="#worker_rlimit_sigpending">worker_rlimit_sigpending</a><br>     <a href="#working_directory">working_directory</a><br></td></tr></table>
+
+<a name="example"></a><center><h4>Пример конфигурации</h4></center><p>
+</p> <blockquote class="example"><pre>
+user www www;
+worker_processes 2;
+
+error_log /var/log/nginx-error.log info;
+
+events {
+    use kqueue;
+    worker_connections 2048;
+}
+
+...
+</pre></blockquote><p> 
+</p>
+
+
+<a name="directives"></a><center><h4>Директивы</h4></center><a name="accept_mutex"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>accept_mutex</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>accept_mutex on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Если <code>accept_mutex</code> включён,
+рабочие процессы будут принимать новые соединения по очереди.
+В противном случае о новых соединениях будет сообщаться сразу всем рабочим
+процессам, и при низкой интенсивности поступления новых соединений
+часть рабочих процессов может работать вхолостую.
+</p> <blockquote class="note">
+Использование метода обработки соединений
+<a href="events.html#rtsig">rtsig</a>
+требует обязательного включения <code>accept_mutex</code>.
+</blockquote><p> 
+</p><a name="accept_mutex_delay"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>accept_mutex_delay</strong> <code><i>время</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>accept_mutex_delay 500ms;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+При включённом <a href="#accept_mutex">accept_mutex</a> задаёт максимальное время,
+в течение которого рабочий процесс вновь попытается начать принимать
+новые соединения, если в настоящий момент этим уже занимается другой
+рабочий процесс.
+</p><a name="daemon"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>daemon</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>daemon on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Определяет, будет ли nginx запускаться в режиме демона.
+Используется в основном для разработки.
+</p><a name="debug_connection"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>debug_connection</strong> 
+    <code><i>адрес</i></code> |
+    <code><i>CIDR</i></code> |
+    <code>unix:</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Включает отладочный лог для отдельных клиентских соединений.
+Для остальных соединений используется уровень лога, заданный директивой
+<a href="#error_log">error_log</a>.
+Отлаживаемые соединения задаются IPv4 или IPv6 (1.3.0, 1.2.1)
+адресом или сетью.
+Соединение может быть также задано при помощи имени хоста.
+Отладочный лог для соединений через UNIX-сокеты (1.3.0, 1.2.1)
+включается параметром “<code>unix:</code>”.
+</p> <blockquote class="example"><pre>
+events {
+    debug_connection 127.0.0.1;
+    debug_connection localhost;
+    debug_connection 192.0.2.0/24;
+    debug_connection ::1;
+    debug_connection 2001:0db8::/32;
+    debug_connection unix:;
+    ...
+}
+</pre></blockquote><p> 
+</p> <blockquote class="note">
+Для работы директивы необходимо сконфигурировать nginx с параметром
+<code>--with-debug</code>.
+</blockquote><p> 
+</p><a name="debug_points"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>debug_points</strong> <code>abort</code> | <code>stop</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Эта директива используется для отладки.
+</p><p>
+В случае обнаружения внутренней ошибки, например, утечки сокетов в момент
+перезапуска рабочих процессов, включение <code>debug_points</code>
+приводит к созданию core-файла (<code>abort</code>)
+или остановке процесса (<code>stop</code>) с целью последующей
+диагностики с помощью системного отладчика.
+</p><a name="error_log"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>error_log</strong> 
+<code><i>файл</i></code> | <code>stderr</code>
+[<code>debug</code> |
+<code>info</code> |
+<code>notice</code> |
+<code>warn</code> |
+<code>error</code> |
+<code>crit</code> |
+<code>alert</code> |
+<code>emerg</code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>error_log logs/error.log error;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code>, <code>http</code>, <code>server</code>, <code>location</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Конфигурирует запись в лог.
+</p><p>
+Первый параметр задаёт файл, который будет хранить лог.
+
+Специальное значение <code>stderr</code> выбирает стандартный файл ошибок.
+</p><p>
+Второй параметр определяет уровень лога.
+Уровни лога, указанные выше, перечислены в порядке возрастания их серьёзности.
+При установке определённого уровня в лог попадают все сообщения
+указанного и более серьёзных уровней.
+Например, при стандартном уровне <code>error</code> в лог попадают
+сообщения уровней <code>error</code>, <code>crit</code>,
+<code>alert</code> и <code>emerg</code>.
+Если этот параметр не задан, используется <code>error</code>.
+</p> <blockquote class="note">
+Для работы уровня лога <code>debug</code> необходимо сконфигурировать
+nginx с <code>--with-debug</code>.
+</blockquote><p> 
+</p><a name="env"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>env</strong> <code><i>переменная</i></code>[=<code><i>значение</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>env TZ;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+По умолчанию nginx удаляет все переменные окружения, унаследованные
+от своего родительского процесса, кроме переменной TZ.
+Эта директива позволяет сохранить часть унаследованных переменных,
+поменять им значения или же создать новые переменные окружения.
+Эти переменные затем:
+</p> <ul class="compact">
+
+<li>
+наследуются во время
+<a href="control.html#upgrade">обновления исполняемого файла на лету</a>;
+</li>
+
+<li>
+используются модулем
+<a href="http/ngx_http_perl_module.html">ngx_http_perl_module</a>;
+</li>
+
+<li>
+используются рабочими процессами.
+Следует иметь в виду, что управление поведением системных библиотек
+подобным образом возможно не всегда, поскольку зачастую библиотеки используют
+переменные только во время инициализации, то есть ещё до того, как их
+можно задать с помощью данной директивы.
+Исключением из этого является вышеописанное
+<a href="control.html#upgrade">обновление исполняемого файла на лету</a>.
+</li>
+
+</ul><p> 
+</p><p>
+Если переменная TZ не описана явно, то она всегда наследуется
+и всегда доступна модулю
+<a href="http/ngx_http_perl_module.html">ngx_http_perl_module</a>.
+</p><p>
+Пример использования:
+</p> <blockquote class="example"><pre>
+env MALLOC_OPTIONS;
+env PERL5LIB=/data/site/modules;
+env OPENSSL_ALLOW_PROXY_CERTS=1;
+</pre></blockquote><p> 
+</p><p>
+</p> <blockquote class="note">
+Переменная окружения NGINX используется для внутренних целей nginx
+и не должна устанавливаться непосредственно самим пользователем.
+</blockquote><p> 
+</p><a name="events"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>events</strong> { ... }</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Предоставляет контекст конфигурационного файла, в котором указываются
+директивы, влияющие на обработку соединений.
+</p><a name="include"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>include</strong> <code><i>файл</i></code> | <code><i>маска</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>любой</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Включает в конфигурацию другой <code><i>файл</i></code> или файлы,
+подходящие под заданную маску.
+Включаемые файлы должны содержать синтаксически верные директивы и блоки.
+</p><p>
+Пример использования:
+</p> <blockquote class="example"><pre>
+include mime.types;
+include vhosts/*.conf;
+</pre></blockquote><p> 
+</p><a name="lock_file"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>lock_file</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>lock_file logs/nginx.lock;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Для реализации <a href="#accept_mutex">accept_mutex</a> и сериализации доступа к
+разделяемой памяти nginx использует механизм блокировок.
+На большинстве систем блокировки реализованы с помощью атомарных
+операций, и эта директива игнорируется.
+Для остальных систем применяется механизм файлов блокировок.
+Эта директива задаёт префикс имён файлов блокировок.
+</p><a name="master_process"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>master_process</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>master_process on;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Определяет, будут ли запускаться рабочие процессы.
+Эта директива предназначена для разработчиков nginx.
+</p><a name="multi_accept"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>multi_accept</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>multi_accept off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Если <code>multi_accept</code> выключен, рабочий процесс
+за один раз будет принимать только одно новое соединение.
+В противном случае рабочий процесс
+за один раз будет принимать сразу все новые соединения.
+</p> <blockquote class="note">
+Директива игнорируется в случае использования метода обработки соединений
+<a href="events.html#kqueue">kqueue</a>, т.к. данный метод сам сообщает
+число новых соединений, ожидающих приёма.
+</blockquote><p> 
+</p> <blockquote class="note">
+Использование метода обработки соединений
+<a href="events.html#rtsig">rtsig</a>
+автоматически включает <code>multi_accept</code>.
+</blockquote><p> 
+</p><a name="pcre_jit"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>pcre_jit</strong> <code>on</code> | <code>off</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>pcre_jit off;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table><p>Эта директива появилась в версии 1.1.12.
+
+            </p></div><p>
+Разрешает или запрещает использование JIT-компиляции (PCRE JIT)
+для регулярных выражений, известных на момент парсинга конфигурации.
+</p><p>
+Использование PCRE JIT способно существенно ускорить обработку
+регулярных выражений.
+</p> <blockquote class="note">
+Для работы JIT необходима библиотека PCRE версии 8.20 или выше,
+собранная с параметром конфигурации <code>--enable-jit</code>.
+При сборке библиотеки PCRE вместе с nginx (<code>--with-pcre=</code>),
+для включения поддержки JIT необходимо использовать параметр
+конфигурации <code>--with-pcre-jit</code>.
+</blockquote><p> 
+</p><a name="pid"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>pid</strong> <code><i>файл</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>pid nginx.pid;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт <code><i>файл</i></code>, в котором будет храниться номер (PID) основного процесса.
+</p><a name="ssl_engine"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>ssl_engine</strong> <code><i>устройство</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт название аппаратного SSL-акселератора.
+</p><a name="timer_resolution"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>timer_resolution</strong> <code><i>интервал</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Уменьшает разрешение таймеров времени в рабочих процессах, за счёт
+чего уменьшается число системных вызовов <code>gettimeofday()</code>.
+По умолчанию <code>gettimeofday()</code> вызывается после каждой
+операции получения событий из ядра.
+C уменьшенным разрешением <code>gettimeofday()</code> вызывается только
+один раз за указанный <code><i>интервал</i></code>.
+</p><p>
+Пример использования:
+</p> <blockquote class="example"><pre>
+timer_resolution 100ms;
+</pre></blockquote><p> 
+</p><p>
+Внутренняя реализация интервала зависит от используемого метода:
+</p> <ul class="compact">
+
+<li>
+фильтр <code>EVFILT_TIMER</code> при использовании <code>kqueue</code>;
+</li>
+
+<li>
+<code>timer_create()</code> при использовании <code>eventport</code>;
+</li>
+
+<li>
+и <code>setitimer()</code> во всех остальных случаях.
+</li>
+
+</ul><p> 
+</p><a name="use"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>use</strong> <code><i>метод</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт <code><i>метод</i></code>, используемый для
+<a href="events.html">обработки соединений</a>.
+Обычно нет необходимости задавать его явно, поскольку по умолчанию
+nginx сам выбирает наиболее эффективный метод.
+</p><a name="user"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>user</strong> <code><i>пользователь</i></code> [<code><i>группа</i></code>];</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>user nobody nobody;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт пользователя и группу, с правами которого будут работать
+рабочие процессы.
+Если <code><i>группа</i></code> не задана, то используется группа, имя
+которой совпадает с именем пользователя.
+</p><a name="worker_aio_requests"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_aio_requests</strong> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>worker_aio_requests 32;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table>
+                        <p>
+                    Эта директива появилась в версиях 1.1.4 и 1.0.7.
+                  
+                        </p>
+                    </div><p>
+При использовании <a href="http/ngx_http_core_module.html#aio">aio</a>
+совместно с методом обработки соединений
+<a href="../docs/events.html#epoll">epoll</a>,
+задаёт максимальное <code><i>число</i></code> ожидающих обработки операций
+асинхронного ввода-вывода для одного рабочего процесса.
+</p><a name="worker_connections"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_connections</strong> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>worker_connections 512;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>events</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт максимальное число соединений, которое одновременно
+может открыть рабочий процесс.
+</p><p>
+Следует иметь в виду, что в это число входят все соединения
+(в том числе, например, соединения с проксируемыми серверами),
+а не только соединения с клиентами.
+Стоит также учитывать, что фактическое число одновременных
+соединений не может превышать действующего ограничения на
+максимальное число открытых файлов,
+которое можно изменить с помощью <a href="#worker_rlimit_nofile">worker_rlimit_nofile</a>.
+</p><a name="worker_cpu_affinity"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_cpu_affinity</strong> <code><i>маска_CPU</i></code> ...;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Привязывает рабочие процессы к группам процессоров.
+Каждая группа процессоров задаётся битовой маской
+разрешённых к использованию процессоров.
+Для каждого рабочего процесса должна быть задана отдельная группа.
+По умолчанию рабочие процессы не привязаны к конкретным процессорам.
+</p><p>
+Например,
+</p> <blockquote class="example"><pre>
+worker_processes    4;
+worker_cpu_affinity 0001 0010 0100 1000;
+</pre></blockquote><p> 
+привязывает каждый рабочий процесс к отдельному процессору, тогда как
+</p> <blockquote class="example"><pre>
+worker_processes    2;
+worker_cpu_affinity 0101 1010;
+</pre></blockquote><p> 
+привязывает первый рабочий процесс к CPU0/CPU2,
+а второй — к CPU1/CPU3.
+Второй пример пригоден для hyper-threading.
+</p><p>
+</p> <blockquote class="note">
+Директива доступна только на FreeBSD и Linux.
+</blockquote><p> 
+</p><a name="worker_priority"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_priority</strong> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>worker_priority 0;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт приоритет планирования рабочих процессов подобно тому,
+как это делается командой <code>nice</code>: отрицательное
+<code><i>число</i></code>
+означает более высокий приоритет.
+Диапазон возможных значений, как правило, варьируется от -20 до 20.
+</p><p>
+Пример использования:
+</p> <blockquote class="example"><pre>
+worker_priority -10;
+</pre></blockquote><p> 
+</p><a name="worker_processes"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_processes</strong> <code><i>число</i></code> | <code>auto</code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            <pre>worker_processes 1;</pre>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт число рабочих процессов.
+</p><p>
+Оптимальное значение зависит от множества факторов, включая
+(но не ограничиваясь ими) число процессорных ядер, число
+жёстких дисков с данными и картину нагрузок.
+Если затрудняетесь в выборе правильного значения, можно начать
+с установки его равным числу процессорных ядер
+(значение “<code>auto</code>” пытается определить его
+автоматически).
+</p> <blockquote class="note">
+Параметр <code>auto</code> поддерживается только начиная
+с версий 1.3.8 и 1.2.5.
+</blockquote><p> 
+</p><a name="worker_rlimit_core"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_rlimit_core</strong> <code><i>размер</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Изменяет ограничение на наибольший размер core-файла
+(<code>RLIMIT_CORE</code>) для рабочих процессов.
+Используется для увеличения ограничения без перезапуска основного процесса.
+</p><a name="worker_rlimit_nofile"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_rlimit_nofile</strong> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Изменяет ограничение на максимальное число открытых файлов
+(<code>RLIMIT_NOFILE</code>) для рабочих процессов.
+Используется для увеличения ограничения без перезапуска основного процесса.
+</p><a name="worker_rlimit_sigpending"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>worker_rlimit_sigpending</strong> <code><i>число</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+На системах с поддержкой метода обработки соединений
+<a href="events.html#rtsig">rtsig</a>,
+изменяет ограничение на размер очереди сигналов
+(<code>RLIMIT_SIGPENDING</code>) для рабочих процессов.
+Используется для увеличения ограничения без перезапуска основного процесса.
+</p><a name="working_directory"></a><div class="directive"><table cellspacing="0">
+                <tr>
+                <td>
+            синтаксис:
+                </td>
+                <td>
+            <code><strong>working_directory</strong> <code><i>каталог</i></code>;</code><br>
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            умолчание:
+                </td>
+                <td>
+            
+            —
+                </td>
+                </tr>
+            
+                <tr>
+                <td>
+            контекст:
+                </td>
+                <td>
+            <code>main</code><br>
+                </td>
+                </tr>
+            </table></div><p>
+Задаёт каталог, который будет текущим для рабочего процесса.
+Основное применение — запись core-файла, в этом случае рабочий
+процесс должен иметь права на запись в этот каталог.
+</p>
+
+</td></tr></table></body></html>
