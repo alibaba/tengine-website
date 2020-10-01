@@ -12,8 +12,8 @@
     line-height: 40px;
     font-size: 16px;
     background: #00293d;
-    color: #9bccd2;
-    border: 1px solid #9bccd2;
+    color: red;
+    border: 2px solid black;
     -webkit-appearance: none;
     text-indent: 10px;
 }
@@ -500,7 +500,7 @@
     }
 
     .global-footer .footer-logo {
-        margin: 2rem;
+        margin: 1.6rem;
     }
 
     .global-footer .lang-switch {
