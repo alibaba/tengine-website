@@ -1,4 +1,0 @@
-How to translate the markdown document to html page?
-
-cd /path/to/util
-./markdown2html.sh /path/to/your/markdown_document > html_page
